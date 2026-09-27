@@ -1,0 +1,19 @@
+name: CI/CD
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  pipelines:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build the Docker Image
+      run: docker build -t hello-site .
+      
+    - name: Test the running container
+      run: |
+        docker run -d -p 8080:80 hello-site
+        sleep 2
+        curl -s http://localhost:8080 | grep "Hello"
