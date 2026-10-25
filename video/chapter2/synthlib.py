@@ -194,6 +194,33 @@ def hit(start, size=1.0, br=True, boom=True):
 
 
 
+def choir(start, dur, chord, gain=0.16):
+    """'Aah' pad: harmonics shaped by two fixed formants, slow vibrato."""
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    sig = np.zeros(n)
+    for i, nm in enumerate(chord):
+        f0 = note(nm)
+        for dt in (-0.005, 0.0, 0.005):
+            vib = 1 + 0.004 * np.sin(2 * np.pi * (5.2 + i * 0.4) * t + rng.uniform(0, 6))
+            ph = 2 * np.pi * np.cumsum(f0 * (1 + dt) * vib) / SR
+            for h in range(1, 24):
+                fh = f0 * h
+                a = (np.exp(-((fh - 700) / 260) ** 2) + 0.6 * np.exp(-((fh - 1150) / 300) ** 2) + 0.15 / h)
+                sig += a * np.sin(h * ph)
+    sig *= env_adsr(n, 0.9, 0, 1, 1.2)
+    place(sig / (3 * len(chord) * 3), start, gain, 0, 0.6)
+
+
+def bansuri(f, dur):
+    n = int(dur * SR)
+    t = np.arange(n) / SR
+    vib = 1 + 0.006 * np.sin(2 * np.pi * 5.0 * t) * np.clip(t / 0.4, 0, 1)
+    ph = 2 * np.pi * np.cumsum(f * vib) / SR
+    s = np.sin(ph) + 0.18 * np.sin(2 * ph) + 0.06 * np.sin(3 * ph)
+    return s * env_adsr(n, 0.08, 0.1, 0.85, 0.25)
+
+
 def master(out):
     global dry, wet
     ir_n = int(3.2 * SR)
