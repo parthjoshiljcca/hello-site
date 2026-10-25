@@ -221,6 +221,19 @@ def bansuri(f, dur):
     return s * env_adsr(n, 0.08, 0.1, 0.85, 0.25)
 
 
+def harp(f, dur=2.4):
+    n = int(dur * SR); t = np.arange(n) / SR
+    s = sum((1 / h ** 1.6) * np.sin(2 * np.pi * f * h * t) * np.exp(-t * (2.2 + 1.4 * h)) for h in range(1, 7))
+    return s * env_adsr(n, 0.002, 0, 1, 0.2)
+
+
+def bell(f, dur=5.0):
+    n = int(dur * SR); t = np.arange(n) / SR
+    parts = ((0.5, 1.0, 0.6), (1.0, 0.9, 1.0), (1.19, 0.5, 1.5), (1.56, 0.45, 1.9), (2.0, 0.35, 2.4), (2.51, 0.25, 3.0), (3.0, 0.2, 3.6))
+    s = sum(a * np.sin(2 * np.pi * f * p * t + rng.uniform(0, 6)) * np.exp(-t * d * 0.55) for p, a, d in parts)
+    return s * env_adsr(n, 0.001, 0, 1, 0.4)
+
+
 def master(out):
     global dry, wet
     ir_n = int(3.2 * SR)
