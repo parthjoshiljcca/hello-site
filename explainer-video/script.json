@@ -1,100 +1,287 @@
 {
   "voice": "en-IN-PrabhatNeural",
   "rate": "-4%",
-  "kokoro": { "voice": "hm_omega", "speed": 0.95, "lang": "en-gb" },
+  "kokoro": {
+    "voice": "hm_omega",
+    "speed": 0.95,
+    "lang": "en-gb"
+  },
   "scenes": [
     {
       "id": "intro",
       "kicker": "Introducing",
       "title": "PaperDispatch",
-      "points": ["Secure exam paper allocation", "For universities and their affiliated colleges", "Time-locked · Fully logged · Auto-deleted"],
+      "points": [
+        "Secure exam paper allocation",
+        "For universities and their affiliated colleges",
+        "Time-locked · Fully logged · Auto-deleted"
+      ],
       "screens": [],
       "narration": "Welcome to Paper Dispatch. A secure way for universities to send exam papers to their affiliated colleges, exactly on time, and only to the right people."
+    },
+    {
+      "id": "hero",
+      "kicker": "The home page",
+      "title": "Exam papers, delivered right on time",
+      "points": [
+        "Upload, schedule and track every download",
+        "Papers unlock only when the exam begins",
+        "Removed a week later"
+      ],
+      "screens": [
+        {
+          "src": "11-hero.jpg"
+        }
+      ],
+      "narration": "This is the Paper Dispatch home page. The promise is simple. Exam papers, delivered right on time. The university uploads question papers, schedules exams across every college, and tracks each download. Papers unlock only when the exam begins, and disappear a week later."
+    },
+    {
+      "id": "preview",
+      "kicker": "A week at a glance",
+      "title": "Open, counting down, or locked",
+      "points": [
+        "Open papers can be downloaded now",
+        "A live countdown to the next unlock",
+        "Every download is recorded"
+      ],
+      "screens": [
+        {
+          "src": "12-preview.jpg"
+        }
+      ],
+      "narration": "Here is a preview of a college's schedule for the week. One paper is open, the next one unlocks in thirteen minutes, and the third stays locked until its exam day. And every download is recorded in the audit log."
+    },
+    {
+      "id": "stats",
+      "kicker": "Built for trust",
+      "title": "Logged, deleted, never early",
+      "points": [
+        "100% of downloads logged",
+        "Auto-deleted 7 days after the exam",
+        "0 papers opened early"
+      ],
+      "screens": [
+        {
+          "src": "13-stats.jpg"
+        }
+      ],
+      "narration": "One hundred percent of downloads are logged. Papers are auto deleted seven days after the exam. And not a single paper can be opened early."
+    },
+    {
+      "id": "features",
+      "kicker": "Features",
+      "title": "Everything for the exam cycle",
+      "points": [
+        "Time-locked access, enforced on the server",
+        "Smart scheduling and CSV timetable import",
+        "Complete audit trail",
+        "Secure temporary storage",
+        "University-managed accounts",
+        "Bulk uploads and admin creation"
+      ],
+      "screens": [
+        {
+          "src": "14-features.jpg",
+          "scrollFrom": 0.0,
+          "scrollTo": 1.0
+        }
+      ],
+      "narration": "Paper Dispatch covers the whole exam cycle. Time locked access, enforced on the server, not just in the browser. Smart scheduling, to send one paper to many colleges, and import a whole timetable from a C S V file. A complete audit trail, that you can export. Secure, temporary storage. Accounts created only by the university, with no sign ups or emails. And bulk operations, to upload dozens of P D Fs, and create every college admin from a single spreadsheet."
+    },
+    {
+      "id": "lifecycle",
+      "kicker": "How it works",
+      "title": "From upload to auto-delete",
+      "points": [
+        "Upload question papers as PDFs",
+        "Allocate to colleges with a date and time window",
+        "Unlock only while the exam window is open",
+        "Auto-delete seven days after the last exam"
+      ],
+      "screens": [
+        {
+          "src": "15-how-it-works.jpg",
+          "scrollFrom": 0.0,
+          "scrollTo": 1.0
+        }
+      ],
+      "narration": "Every paper follows four steps, with the timing enforced by the system. Upload. The university uploads question papers as P D Fs. Allocate. Each paper is scheduled to colleges with an exam date and time window. Unlock on time. Each college can download its paper only while the window is open. And auto delete. Seven days after the last exam, the file is removed for good."
     },
     {
       "id": "roles",
       "kicker": "Who it's for",
       "title": "Two roles, one secure workflow",
-      "points": ["University / Chairperson runs the exam cycle", "College Admin receives the papers"],
-      "screens": [{ "src": "01-roles.jpg", "scrollFrom": 0.0, "scrollTo": 0.45 }],
+      "points": [
+        "University / Chairperson runs the exam cycle",
+        "College Admin receives the papers"
+      ],
+      "screens": [
+        {
+          "src": "01-roles.jpg",
+          "scrollFrom": 0.0,
+          "scrollTo": 0.45
+        }
+      ],
       "narration": "Paper Dispatch has two roles. The University, or Chair person, runs the exam cycle. They add colleges, batches and admin logins, upload papers, schedule exams, and track every download. The College Admin simply receives the papers."
     },
     {
       "id": "flow",
-      "kicker": "How it works",
-      "title": "From university to exam hall",
+      "kicker": "The College Admin's journey",
+      "title": "From sign-in to download",
       "points": [],
       "flow": [
-        ["University registers", "colleges and their admins"],
-        ["College Admin signs in", "with details from the university"],
-        ["Sets a new password", "on the very first login"],
-        ["Downloads the paper", "when its exam window opens"]
+        [
+          "University registers",
+          "colleges and their admins"
+        ],
+        [
+          "College Admin signs in",
+          "with details from the university"
+        ],
+        [
+          "Sets a new password",
+          "on the very first login"
+        ],
+        [
+          "Downloads the paper",
+          "when its exam window opens"
+        ]
       ],
       "screens": [],
-      "narration": "Here is how it works. First, the university registers each college and creates its admin login. The college admin signs in with those details, sets a new password on the first login, and then downloads each paper, only when its exam window opens."
+      "narration": "Now, let us see the portal from the college side. The university registers each college and creates its admin login. The college admin signs in with those details, sets a new password on the first login, and then downloads each paper, only when its exam window opens."
     },
     {
       "id": "login",
       "kicker": "Step 1",
       "title": "Sign in",
-      "points": ["Open paperdispatch.app", "Use the email and temporary password from the university", "Forgot it? The university can reset it"],
-      "screens": [{ "src": "03-login.jpg" }, { "src": "04-login-filled.jpg" }],
+      "points": [
+        "Open paperdispatch.app",
+        "Use the email and temporary password from the university",
+        "Forgot it? The university can reset it"
+      ],
+      "screens": [
+        {
+          "src": "03-login.jpg"
+        },
+        {
+          "src": "04-login-filled.jpg"
+        }
+      ],
       "narration": "To begin, open paper dispatch dot app, and tap Sign in. Enter the email address and the temporary password given to you by the university, and tap Sign in. If you forget your password, the university can reset it for you."
     },
     {
       "id": "password",
       "kicker": "Step 2",
       "title": "Set your own password",
-      "points": ["Asked only on the first login", "At least 8 characters", "Letters and numbers, typed twice"],
-      "screens": [{ "src": "05-set-password.jpg" }],
+      "points": [
+        "Asked only on the first login",
+        "At least 8 characters",
+        "Letters and numbers, typed twice"
+      ],
+      "screens": [
+        {
+          "src": "05-set-password.jpg"
+        }
+      ],
       "narration": "On your first login, you will be asked to set your own password. It must have at least eight characters, with both letters and numbers. Type it twice, and tap Save and continue."
     },
     {
       "id": "dashboard",
       "kicker": "Step 3",
       "title": "Your dashboard",
-      "points": ["Exams scheduled today", "Papers available right now", "What's coming up next"],
-      "screens": [{ "src": "06-dashboard.jpg" }],
+      "points": [
+        "Exams scheduled today",
+        "Papers available right now",
+        "What's coming up next"
+      ],
+      "screens": [
+        {
+          "src": "06-dashboard.jpg"
+        }
+      ],
       "narration": "You now land on your dashboard. At a glance, you can see today's exams, the papers available right now, and what is coming up next."
     },
     {
       "id": "papers",
       "kicker": "Step 4",
       "title": "Scheduled papers",
-      "points": ["Live server time in IST", "Papers unlock when each exam starts", "No need to refresh"],
-      "screens": [{ "src": "07-papers.jpg" }],
+      "points": [
+        "Live server time in IST",
+        "Papers unlock when each exam starts",
+        "No need to refresh"
+      ],
+      "screens": [
+        {
+          "src": "07-papers.jpg"
+        }
+      ],
       "narration": "Open Papers to see your scheduled exams. The clock shows the official server time, in I S T. Papers unlock automatically when each exam starts, so there is no need to refresh the page."
     },
     {
       "id": "downloads",
       "kicker": "Step 5",
       "title": "Download on time",
-      "points": ["Available only inside the exam window", "Every download is logged", "Papers are auto-deleted afterwards"],
-      "screens": [{ "src": "08-downloads.jpg" }],
+      "points": [
+        "Available only inside the exam window",
+        "Every download is logged",
+        "Papers are auto-deleted afterwards"
+      ],
+      "screens": [
+        {
+          "src": "08-downloads.jpg"
+        }
+      ],
       "narration": "When the window opens, the paper appears under Downloads, ready to save. Every download is logged, and papers are deleted automatically afterwards."
     },
     {
       "id": "profile",
       "kicker": "Your account",
       "title": "Profile & security",
-      "points": ["Check your details and assigned college", "Change your password any time"],
-      "screens": [{ "src": "09-profile.jpg", "scrollFrom": 0.0, "scrollTo": 0.38 }],
+      "points": [
+        "Check your details and assigned college",
+        "Change your password any time"
+      ],
+      "screens": [
+        {
+          "src": "09-profile.jpg",
+          "scrollFrom": 0.0,
+          "scrollTo": 0.38
+        }
+      ],
       "narration": "In Profile, you can check your account details and your assigned college, and change your password at any time."
     },
     {
       "id": "menu",
       "kicker": "Getting around",
       "title": "Everything one tap away",
-      "points": ["Dashboard", "Scheduled Papers", "Downloads", "Profile"],
-      "screens": [{ "src": "10-menu.jpg" }],
+      "points": [
+        "Dashboard",
+        "Scheduled Papers",
+        "Downloads",
+        "Profile"
+      ],
+      "screens": [
+        {
+          "src": "10-menu.jpg"
+        }
+      ],
       "narration": "The menu gives you quick access to every section. Dashboard, Scheduled Papers, Downloads, and Profile. It works on any phone or computer."
     },
     {
       "id": "outro",
       "kicker": "Ready for the next exam session?",
       "title": "paperdispatch.app",
-      "points": ["Time-locked · Fully logged · Auto-deleted"],
-      "screens": [{ "src": "02-cta.jpg", "scrollFrom": 0.0, "scrollTo": 0.0 }],
+      "points": [
+        "Time-locked · Fully logged · Auto-deleted"
+      ],
+      "screens": [
+        {
+          "src": "16-cta.jpg"
+        },
+        {
+          "src": "17-footer.jpg"
+        }
+      ],
       "narration": "Paper Dispatch. Time locked, fully logged, and auto deleted. Ready for the next exam session? Sign in today, at paper dispatch dot app."
     }
   ]
