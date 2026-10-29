@@ -1,13 +1,15 @@
 // Renders the PaperDispatch explainer video.
 //
 //   node make_video.js                 -> visuals only, scene timing estimated from the script
-//   node make_video.js --voice         -> Indian-English voice-over, offline Kokoro voice (tts_kokoro.py)
+//   node make_video.js --voice         -> Indian-English voice-over, AI4Bharat Indic-TTS (tts_indic.py)
+//   node make_video.js --voice --kokoro -> offline Kokoro voice instead (tts_kokoro.py)
 //   node make_video.js --voice --edge  -> Indian-English voice-over, Microsoft en-IN neural voice via edge-tts
 //   --voice-name=<name>                -> override the voice (e.g. hf_alpha, or en-IN-NeerjaNeural with --edge)
 // With --voice, every scene is timed to its narration.
 //
 // Needs: Node + Playwright (with Chromium), ffmpeg/ffprobe, and for --voice either
-// `pip install kokoro-onnx soundfile` (+ model files, see tts_kokoro.py) or `pip install edge-tts`.
+// the packages named at the top of tts_indic.py / tts_kokoro.py, or `pip install edge-tts`.
+// INDIC_TTS_PYTHON picks the Python that has coqui-tts installed (default python3).
 const { chromium } = require('playwright');
 const { spawn, execFileSync } = require('child_process');
 const fs = require('fs');
@@ -24,8 +26,8 @@ const args = process.argv.slice(2);
 const withVoice = args.includes('--voice');
 const voiceArg = args.find(a => a.startsWith('--voice-name='));
 const script = JSON.parse(fs.readFileSync(path.join(DIR, 'script.json'), 'utf8'));
-const useEdge = args.includes('--edge');
-const voice = voiceArg ? voiceArg.split('=')[1] : useEdge ? script.voice : script.kokoro.voice;
+const engine = args.includes('--edge') ? 'edge' : args.includes('--kokoro') ? 'kokoro' : 'indic';
+const voice = voiceArg ? voiceArg.split('=')[1] : { edge: script.voice, kokoro: script.kokoro.voice, indic: script.indic.speaker }[engine];
 
 fs.mkdirSync(path.join(OUT, 'audio'), { recursive: true });
 
@@ -34,7 +36,12 @@ function probeDuration(file) {
 }
 
 function synth(scene) {
-  if (!useEdge) {
+  if (engine === 'indic') {
+    const file = path.join(OUT, 'audio', `${scene.id}.wav`);
+    execFileSync(process.env.INDIC_TTS_PYTHON || 'python3', [path.join(DIR, 'tts_indic.py'), voice, file, scene.narration], { stdio: 'inherit' });
+    return file;
+  }
+  if (engine === 'kokoro') {
     const file = path.join(OUT, 'audio', `${scene.id}.wav`);
     const { speed, lang } = script.kokoro;
     execFileSync('python3', [path.join(DIR, 'tts_kokoro.py'), voice, String(speed), lang, file, scene.narration], { stdio: 'inherit' });

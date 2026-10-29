@@ -1,6 +1,7 @@
 {
   "voice": "en-IN-PrabhatNeural",
   "rate": "-4%",
+  "indic": { "speaker": "male" },
   "kokoro": {
     "voice": "hm_omega",
     "speed": 0.95,
