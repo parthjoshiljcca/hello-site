@@ -5,6 +5,8 @@
 //   node make_video.js --voice --indic -> Indian-English voice, AI4Bharat Indic-TTS (tts_indic.py)
 //   node make_video.js --voice --edge  -> Indian-English voice-over, Microsoft en-IN neural voice via edge-tts
 //   --voice-name=<name>                -> override the voice (e.g. af_heart, am_fenrir, bm_george; en-IN-NeerjaNeural with --edge)
+//   --audio-only                       -> keep the rendered video, rebuild only its soundtrack (reuses narration clips)
+//   --no-music                         -> leave out the background music (music.py)
 //   --script=teaser.json --portrait    -> another script, rendered 1080x1920 (9:16) instead of 1920x1080
 // With --voice, every scene is timed to its narration.
 //
@@ -24,9 +26,12 @@ const TAIL = 0.9;   // pause after each narration line
 const WORDS_PER_SEC = 2.45;
 const WHOOSH_LEAD = 0.45;  // start the whoosh this long before the next scene begins
 const WHOOSH_GAIN = 0.35;  // relative to the narration
+const MUSIC_GAIN = 0.32;   // background music, before it ducks under the narration
 
 const args = process.argv.slice(2);
 const withVoice = args.includes('--voice');
+const audioOnly = args.includes('--audio-only');
+const withMusic = !args.includes('--no-music');
 const voiceArg = args.find(a => a.startsWith('--voice-name='));
 const scriptFile = (args.find(a => a.startsWith('--script=')) || '--script=script.json').split('=')[1];
 const script = JSON.parse(fs.readFileSync(path.join(DIR, scriptFile), 'utf8'));
@@ -44,6 +49,10 @@ function probeDuration(file) {
 }
 
 function synth(scene) {
+  if (audioOnly) {
+    const cached = ['wav', 'mp3'].map(ext => path.join(AUDIO, `${scene.id}.${ext}`)).find(f => fs.existsSync(f));
+    if (cached) return cached;
+  }
   if (engine === 'indic') {
     const file = path.join(AUDIO, `${scene.id}.wav`);
     execFileSync(process.env.INDIC_TTS_PYTHON || 'python3', [path.join(DIR, 'tts_indic.py'), voice, file, scene.narration], { stdio: 'inherit' });
@@ -97,6 +106,47 @@ function run(cmd, cmdArgs) {
 
   // 2. Frames: drive the stage page frame by frame and pipe JPEGs into ffmpeg.
   const silent = path.join(OUT, `${NAME}-silent.mp4`);
+  const final = path.join(OUT, `${NAME}.mp4`);
+  if (audioOnly) fs.copyFileSync(final, silent);
+  else await renderFrames(timeline, total, silent);
+
+  // 3. Audio: narration at each scene start, a whoosh on every scene change, and background
+  //    music that ducks under the narration; then mux.
+  const whoosh = path.join(DIR, 'sfx', 'whoosh.wav');
+  if (!fs.existsSync(whoosh)) execFileSync('python3', [path.join(DIR, 'sfx.py')], { stdio: 'inherit' });
+  const inputs = [], filters = [], voice = [], fx = [];
+  const place = (file, at, gain, list) => {
+    const i = inputs.length / 2 + 1, ms = Math.round(at * 1000);
+    inputs.push('-i', file);
+    filters.push(`[${i}:a]aresample=48000,aformat=channel_layouts=stereo,volume=${gain},adelay=${ms}|${ms},apad=whole_dur=${total.toFixed(3)}[s${i}]`);
+    list.push(`[s${i}]`);
+  };
+  if (withVoice) timeline.forEach(e => place(e.audio, e.start + LEAD, 1, voice));
+  timeline.slice(1).forEach(e => place(whoosh, Math.max(0, e.start - WHOOSH_LEAD), WHOOSH_GAIN, fx));
+  const bus = (list, label) => filters.push(list.length > 1 ? `${list.join('')}amix=inputs=${list.length}:normalize=0[${label}]` : `${list[0]}anull[${label}]`);
+  const parts = [];
+  const duck = withMusic && voice.length > 0;
+  if (voice.length) { bus(voice, duck ? 'voxall' : 'vox'); parts.push('[vox]'); }
+  if (fx.length) { bus(fx, 'fx'); parts.push('[fx]'); }
+  if (withMusic) {
+    const music = path.join(AUDIO, 'music.wav');
+    execFileSync('python3', [path.join(DIR, 'music.py'), total.toFixed(3), music], { stdio: 'inherit' });
+    const i = inputs.length / 2 + 1;
+    inputs.push('-i', music);
+    filters.push(`[${i}:a]aresample=48000,volume=${MUSIC_GAIN}[mus]`);
+    if (duck) {
+      filters.push('[voxall]asplit=2[vox][key]', '[mus][key]sidechaincompress=threshold=0.015:ratio=6:attack=60:release=800[duck]');
+      parts.push('[duck]');
+    } else parts.push('[mus]');
+  }
+  filters.push(`${parts.join('')}amix=inputs=${parts.length}:normalize=0,loudnorm=I=-16:TP=-1.5[aout]`);
+  await run('ffmpeg', ['-y', '-loglevel', 'error', '-i', silent, ...inputs, '-filter_complex', filters.join(';'),
+    '-map', '0:v', '-map', '[aout]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', final]);
+  fs.unlinkSync(silent);
+  console.log('Wrote', final);
+})().catch(err => { console.error(err); process.exit(1); });
+
+async function renderFrames(timeline, total, silent) {
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
     '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', silent], { stdio: ['pipe', 'inherit', 'inherit'] });
   const ffDone = new Promise((res, rej) => ff.on('exit', c => (c ? rej(new Error('ffmpeg failed')) : res())));
@@ -115,23 +165,4 @@ function run(cmd, cmdArgs) {
   ff.stdin.end();
   await browser.close();
   await ffDone;
-
-  // 3. Audio: narration clips at their scene starts, a whoosh on every scene change, then mux.
-  const final = path.join(OUT, `${NAME}.mp4`);
-  const whoosh = path.join(DIR, 'sfx', 'whoosh.wav');
-  if (!fs.existsSync(whoosh)) execFileSync('python3', [path.join(DIR, 'sfx.py')], { stdio: 'inherit' });
-  const clips = [];
-  if (withVoice) timeline.forEach(e => clips.push({ file: e.audio, at: e.start + LEAD, gain: 1 }));
-  timeline.slice(1).forEach(e => clips.push({ file: whoosh, at: Math.max(0, e.start - WHOOSH_LEAD), gain: WHOOSH_GAIN }));
-  const inputs = [], filters = [];
-  clips.forEach((c, i) => {
-    inputs.push('-i', c.file);
-    const ms = Math.round(c.at * 1000);
-    filters.push(`[${i + 1}:a]aresample=48000,aformat=channel_layouts=stereo,volume=${c.gain},adelay=${ms}|${ms}[a${i}]`);
-  });
-  filters.push(clips.map((_, i) => `[a${i}]`).join('') + `amix=inputs=${clips.length}:normalize=0,loudnorm=I=-16:TP=-1.5,apad[aout]`);
-  await run('ffmpeg', ['-y', '-loglevel', 'error', '-i', silent, ...inputs, '-filter_complex', filters.join(';'),
-    '-map', '0:v', '-map', '[aout]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', final]);
-  fs.unlinkSync(silent);
-  console.log('Wrote', final);
-})().catch(err => { console.error(err); process.exit(1); });
+}
