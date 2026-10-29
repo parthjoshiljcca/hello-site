@@ -1,0 +1,23 @@
+1
+00:00:00,500 --> 00:00:04,127
+Still sending exam papers by email? Meet Paper Dispatch.
+
+2
+00:00:05,527 --> 00:00:11,201
+Upload question papers, and schedule exams across every affiliated college, in one place.
+
+3
+00:00:12,601 --> 00:00:16,463
+Each paper unlocks only when its exam begins. Not a minute earlier.
+
+4
+00:00:17,863 --> 00:00:22,727
+Every download is logged, and papers are deleted automatically after seven days.
+
+5
+00:00:24,127 --> 00:00:29,119
+College admins just sign in, and download each paper the moment its window opens.
+
+6
+00:00:30,519 --> 00:00:34,017
+Paper Dispatch. Exam papers, delivered right on time.
