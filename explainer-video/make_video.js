@@ -1,10 +1,10 @@
 // Renders the PaperDispatch explainer video.
 //
 //   node make_video.js                 -> visuals only, scene timing estimated from the script
-//   node make_video.js --voice         -> Indian-English voice-over, AI4Bharat Indic-TTS (tts_indic.py)
-//   node make_video.js --voice --kokoro -> offline Kokoro voice instead (tts_kokoro.py)
+//   node make_video.js --voice         -> natural English voice-over, offline Kokoro voice (tts_kokoro.py)
+//   node make_video.js --voice --indic -> Indian-English voice, AI4Bharat Indic-TTS (tts_indic.py)
 //   node make_video.js --voice --edge  -> Indian-English voice-over, Microsoft en-IN neural voice via edge-tts
-//   --voice-name=<name>                -> override the voice (e.g. hf_alpha, or en-IN-NeerjaNeural with --edge)
+//   --voice-name=<name>                -> override the voice (e.g. af_heart, am_fenrir, bm_george; en-IN-NeerjaNeural with --edge)
 // With --voice, every scene is timed to its narration.
 //
 // Needs: Node + Playwright (with Chromium), ffmpeg/ffprobe, and for --voice either
@@ -28,7 +28,7 @@ const args = process.argv.slice(2);
 const withVoice = args.includes('--voice');
 const voiceArg = args.find(a => a.startsWith('--voice-name='));
 const script = JSON.parse(fs.readFileSync(path.join(DIR, 'script.json'), 'utf8'));
-const engine = args.includes('--edge') ? 'edge' : args.includes('--kokoro') ? 'kokoro' : 'indic';
+const engine = args.includes('--edge') ? 'edge' : args.includes('--indic') ? 'indic' : 'kokoro';
 const voice = voiceArg ? voiceArg.split('=')[1] : { edge: script.voice, kokoro: script.kokoro.voice, indic: script.indic.speaker }[engine];
 
 fs.mkdirSync(path.join(OUT, 'audio'), { recursive: true });
@@ -45,7 +45,8 @@ function synth(scene) {
   }
   if (engine === 'kokoro') {
     const file = path.join(OUT, 'audio', `${scene.id}.wav`);
-    const { speed, lang } = script.kokoro;
+    const { speed } = script.kokoro;
+    const lang = voice.startsWith('b') ? 'en-gb' : 'en-us';  // Kokoro: a* = American, b* = British voices
     execFileSync('python3', [path.join(DIR, 'tts_kokoro.py'), voice, String(speed), lang, file, scene.narration], { stdio: 'inherit' });
     return file;
   }
