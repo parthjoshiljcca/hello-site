@@ -35,6 +35,17 @@
   .card p { font:400 26px/1.35 Inter; color:var(--muted); }
   .flowwrap .text { width:1700px; top:290px; }
   #bar { position:absolute; left:0; bottom:0; height:8px; background:var(--amber); }
+  /* 9:16 layout: text on top, phone below */
+  .portrait, .portrait body { width:1080px; height:1920px; }
+  .portrait #ring { right:-420px; top:-260px; }
+  .portrait .brand { left:80px; top:96px; }
+  .portrait .text { left:80px; top:250px; width:920px; }
+  .portrait .title { font-size:92px; margin-bottom:34px; }
+  .portrait .points li { font-size:36px; margin-bottom:18px; }
+  .portrait .phone { left:247px; top:600px; width:586px; height:1150px; border-radius:68px; padding:16px; }
+  .portrait .glass { border-radius:52px; }
+  .portrait .center .text { left:0; width:100%; top:720px; }
+  .portrait .center .title { font-size:104px; letter-spacing:-3px; }
 </style>
 </head>
 <body>
@@ -48,14 +59,15 @@
 <script>
 const TICK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#11223f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 // Status bar / gesture bar heights in the 1080px-wide phone screenshots.
-const CROP_TOP = 118, CROP_BOTTOM = 130, SHOT_W = 1080, GLASS_W = 442, GLASS_H = 872;
+const CROP_TOP = 118, CROP_BOTTOM = 130, SHOT_W = 1080;
 let TL = [], TOTAL = 1;
 
 const clamp = (x, a=0, b=1) => Math.max(a, Math.min(b, x));
 const ease = x => { x = clamp(x); return x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; };
 const ramp = (t, a, d) => ease((t - a) / d);
 
-function build(timeline) {
+function build(timeline, portrait) {
+  document.documentElement.classList.toggle('portrait', !!portrait);
   TL = timeline;
   TOTAL = timeline.length ? timeline[timeline.length - 1].start + timeline[timeline.length - 1].dur : 1;
   const root = document.getElementById('scenes');
@@ -95,6 +107,7 @@ function setTime(t) {
       phone.style.opacity = p;
       phone.style.transform = `translateX(${(1 - p) * 120}px) rotate(${(1 - p) * 3}deg)`;
       const imgs = phone.querySelectorAll('img'), screens = e.scene.screens;
+      const glass = phone.querySelector('.glass'), GLASS_W = glass.clientWidth, GLASS_H = glass.clientHeight;
       imgs.forEach((img, k) => {
         const sc = screens[k], scale = GLASS_W / SHOT_W;
         const fullH = img.naturalHeight * scale, visH = fullH - (CROP_TOP + CROP_BOTTOM) * scale;

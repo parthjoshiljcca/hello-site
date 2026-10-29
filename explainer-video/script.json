@@ -5,7 +5,7 @@
     "speaker": "male"
   },
   "kokoro": {
-    "voice": "am_michael",
+    "voice": "af_heart",
     "speed": 1.0
   },
   "scenes": [

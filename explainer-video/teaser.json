@@ -1,0 +1,57 @@
+{
+  "output": "paperdispatch-teaser",
+  "voice": "en-IN-NeerjaNeural",
+  "rate": "+0%",
+  "indic": { "speaker": "female" },
+  "kokoro": { "voice": "af_heart", "speed": 1.05 },
+  "scenes": [
+    {
+      "id": "hook",
+      "kicker": "Exam day, sorted",
+      "title": "PaperDispatch",
+      "points": ["Exam papers, delivered right on time"],
+      "screens": [],
+      "narration": "Still sending exam papers by email? Meet Paper Dispatch."
+    },
+    {
+      "id": "hero",
+      "kicker": "For universities",
+      "title": "Upload once. Reach every college.",
+      "points": [],
+      "screens": [{ "src": "11-hero.jpg" }],
+      "narration": "Upload question papers, and schedule exams across every affiliated college, in one place."
+    },
+    {
+      "id": "unlock",
+      "kicker": "Time-locked",
+      "title": "Unlocks only when the exam begins",
+      "points": [],
+      "screens": [{ "src": "12-preview.jpg" }],
+      "narration": "Each paper unlocks only when its exam begins. Not a minute earlier."
+    },
+    {
+      "id": "trust",
+      "kicker": "Built for trust",
+      "title": "Logged. Deleted. Never early.",
+      "points": [],
+      "screens": [{ "src": "13-stats.jpg" }],
+      "narration": "Every download is logged, and papers are deleted automatically after seven days."
+    },
+    {
+      "id": "admin",
+      "kicker": "For college admins",
+      "title": "Sign in. Download. Done.",
+      "points": [],
+      "screens": [{ "src": "03-login.jpg" }, { "src": "07-papers.jpg" }],
+      "narration": "College admins just sign in, and download each paper the moment its window opens."
+    },
+    {
+      "id": "cta",
+      "kicker": "Time-locked · Fully logged · Auto-deleted",
+      "title": "paperdispatch.app",
+      "points": ["Ready for the next exam session?"],
+      "screens": [],
+      "narration": "Paper Dispatch. Exam papers, delivered right on time."
+    }
+  ]
+}

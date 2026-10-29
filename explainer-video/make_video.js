@@ -5,6 +5,7 @@
 //   node make_video.js --voice --indic -> Indian-English voice, AI4Bharat Indic-TTS (tts_indic.py)
 //   node make_video.js --voice --edge  -> Indian-English voice-over, Microsoft en-IN neural voice via edge-tts
 //   --voice-name=<name>                -> override the voice (e.g. af_heart, am_fenrir, bm_george; en-IN-NeerjaNeural with --edge)
+//   --script=teaser.json --portrait    -> another script, rendered 1080x1920 (9:16) instead of 1920x1080
 // With --voice, every scene is timed to its narration.
 //
 // Needs: Node + Playwright (with Chromium), ffmpeg/ffprobe, and for --voice either
@@ -27,11 +28,16 @@ const WHOOSH_GAIN = 0.35;  // relative to the narration
 const args = process.argv.slice(2);
 const withVoice = args.includes('--voice');
 const voiceArg = args.find(a => a.startsWith('--voice-name='));
-const script = JSON.parse(fs.readFileSync(path.join(DIR, 'script.json'), 'utf8'));
+const scriptFile = (args.find(a => a.startsWith('--script=')) || '--script=script.json').split('=')[1];
+const script = JSON.parse(fs.readFileSync(path.join(DIR, scriptFile), 'utf8'));
+const portrait = args.includes('--portrait');
+const SIZE = portrait ? { width: 1080, height: 1920 } : { width: 1920, height: 1080 };
+const NAME = script.output || 'paperdispatch-explainer';
+const AUDIO = path.join(OUT, 'audio', NAME);
 const engine = args.includes('--edge') ? 'edge' : args.includes('--indic') ? 'indic' : 'kokoro';
 const voice = voiceArg ? voiceArg.split('=')[1] : { edge: script.voice, kokoro: script.kokoro.voice, indic: script.indic.speaker }[engine];
 
-fs.mkdirSync(path.join(OUT, 'audio'), { recursive: true });
+fs.mkdirSync(AUDIO, { recursive: true });
 
 function probeDuration(file) {
   return parseFloat(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file]).toString());
@@ -39,18 +45,18 @@ function probeDuration(file) {
 
 function synth(scene) {
   if (engine === 'indic') {
-    const file = path.join(OUT, 'audio', `${scene.id}.wav`);
+    const file = path.join(AUDIO, `${scene.id}.wav`);
     execFileSync(process.env.INDIC_TTS_PYTHON || 'python3', [path.join(DIR, 'tts_indic.py'), voice, file, scene.narration], { stdio: 'inherit' });
     return file;
   }
   if (engine === 'kokoro') {
-    const file = path.join(OUT, 'audio', `${scene.id}.wav`);
+    const file = path.join(AUDIO, `${scene.id}.wav`);
     const { speed } = script.kokoro;
     const lang = voice.startsWith('b') ? 'en-gb' : 'en-us';  // Kokoro: a* = American, b* = British voices
     execFileSync('python3', [path.join(DIR, 'tts_kokoro.py'), voice, String(speed), lang, file, scene.narration], { stdio: 'inherit' });
     return file;
   }
-  const file = path.join(OUT, 'audio', `${scene.id}.mp3`);
+  const file = path.join(AUDIO, `${scene.id}.mp3`);
   const proxy = process.env.HTTPS_PROXY ? ['--proxy', process.env.HTTPS_PROXY] : [];
   execFileSync('edge-tts', [...proxy, '--voice', voice, `--rate=${script.rate}`, '--text', scene.narration, '--write-media', file], { stdio: 'inherit' });
   return file;
@@ -86,19 +92,19 @@ function run(cmd, cmdArgs) {
   const total = start;
   console.log(`Total length ${total.toFixed(1)}s, ${timeline.length} scenes`);
 
-  fs.writeFileSync(path.join(OUT, 'paperdispatch-explainer.srt'), timeline.map((e, i) =>
+  fs.writeFileSync(path.join(OUT, `${NAME}.srt`), timeline.map((e, i) =>
     `${i + 1}\n${srtTime(e.start + LEAD)} --> ${srtTime(e.start + LEAD + e.speech)}\n${e.scene.narration}\n`).join('\n'));
 
   // 2. Frames: drive the stage page frame by frame and pipe JPEGs into ffmpeg.
-  const silent = path.join(OUT, 'video-silent.mp4');
+  const silent = path.join(OUT, `${NAME}-silent.mp4`);
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
     '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', silent], { stdio: ['pipe', 'inherit', 'inherit'] });
   const ffDone = new Promise((res, rej) => ff.on('exit', c => (c ? rej(new Error('ffmpeg failed')) : res())));
 
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+  const page = await browser.newPage({ viewport: SIZE });
   await page.goto('file://' + path.join(DIR, 'stage.html'));
-  await page.evaluate(tl => build(tl), timeline.map(({ start, dur, scene }) => ({ start, dur, scene })));
+  await page.evaluate(([tl, p]) => build(tl, p), [timeline.map(({ start, dur, scene }) => ({ start, dur, scene })), portrait]);
   const frames = Math.ceil(total * FPS);
   for (let f = 0; f < frames; f++) {
     await page.evaluate(t => setTime(t), f / FPS);
@@ -111,7 +117,7 @@ function run(cmd, cmdArgs) {
   await ffDone;
 
   // 3. Audio: narration clips at their scene starts, a whoosh on every scene change, then mux.
-  const final = path.join(OUT, 'paperdispatch-explainer.mp4');
+  const final = path.join(OUT, `${NAME}.mp4`);
   const whoosh = path.join(DIR, 'sfx', 'whoosh.wav');
   if (!fs.existsSync(whoosh)) execFileSync('python3', [path.join(DIR, 'sfx.py')], { stdio: 'inherit' });
   const clips = [];
