@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root { --navy:#0a2c63; --navy-d:#021a3d; --amber:#f5b301; --amber-d:#e79a00; --ink:#ffffff; --muted:#b9c6dc; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { width:1920px; height:1080px; overflow:hidden; background:var(--navy-d); font-family:Inter, sans-serif; color:var(--ink); }
+  #bg { position:absolute; inset:0; background:
+        radial-gradient(1200px 800px at 85% 10%, rgba(39,88,170,.55), transparent 60%),
+        radial-gradient(900px 700px at 0% 100%, rgba(245,179,1,.10), transparent 60%),
+        linear-gradient(160deg, #0b3570 0%, #04224d 55%, #021838 100%); }
+  #ring { position:absolute; width:900px; height:900px; border-radius:50%; right:-260px; top:-300px; background:rgba(255,255,255,.04); }
+  .brand { position:absolute; left:120px; top:70px; display:flex; align-items:center; gap:18px; font:800 34px 'Inter Display', Inter; letter-spacing:-.5px; }
+  .logo { width:58px; height:58px; border-radius:16px; background:linear-gradient(160deg,#ffc21a,var(--amber-d)); display:grid; place-items:center; box-shadow:0 10px 30px rgba(245,179,1,.35); }
+  .brand b { color:var(--amber); }
+  .scene { position:absolute; inset:0; opacity:0; }
+  .text { position:absolute; left:120px; top:230px; width:900px; }
+  .kicker { display:inline-block; font:600 26px Inter; letter-spacing:3px; text-transform:uppercase; color:var(--amber); margin-bottom:26px; }
+  .title { font:800 84px/1.05 'Inter Display', Inter; letter-spacing:-2px; margin-bottom:44px; }
+  .points { list-style:none; }
+  .points li { display:flex; gap:22px; align-items:flex-start; font:500 36px/1.3 Inter; color:#e8eef8; margin-bottom:26px; }
+  .tick { flex:none; width:40px; height:40px; margin-top:2px; border-radius:50%; background:var(--amber); display:grid; place-items:center; }
+  .phone { position:absolute; left:1270px; top:90px; width:470px; height:900px; border-radius:58px; background:#0d1117; padding:14px;
+           box-shadow:0 50px 100px rgba(0,0,0,.55), 0 0 0 2px rgba(255,255,255,.08) inset; }
+  .glass { position:relative; width:100%; height:100%; border-radius:46px; overflow:hidden; background:#f7f9fc; }
+  .glass img { position:absolute; left:0; width:100%; }
+  .center .text { left:0; width:100%; top:300px; text-align:center; }
+  .center .points li { justify-content:center; }
+  .center .title { font-size:130px; }
+  .flow { display:flex; gap:28px; margin-top:20px; }
+  .card { width:390px; padding:36px 32px; border-radius:30px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); position:relative; }
+  .card .n { width:64px; height:64px; border-radius:18px; background:var(--amber); color:#11223f; font:800 32px Inter; display:grid; place-items:center; margin-bottom:28px; }
+  .card h3 { font:700 34px/1.15 'Inter Display', Inter; margin-bottom:12px; }
+  .card p { font:400 26px/1.35 Inter; color:var(--muted); }
+  .flowwrap .text { width:1700px; top:290px; }
+  #bar { position:absolute; left:0; bottom:0; height:8px; background:var(--amber); }
+</style>
+</head>
+<body>
+<div id="bg"></div><div id="ring"></div>
+<div class="brand">
+  <div class="logo"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#11223f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><rect x="7" y="13" width="7" height="5" rx="1"/><path d="M8.5 13v-1.5a2 2 0 0 1 4 0V13"/></svg></div>
+  <div>Paper<b>Dispatch</b></div>
+</div>
+<div id="scenes"></div>
+<div id="bar"></div>
+<script>
+const TICK = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#11223f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+// Status bar / gesture bar heights in the 1080px-wide phone screenshots.
+const CROP_TOP = 118, CROP_BOTTOM = 130, SHOT_W = 1080, GLASS_W = 442, GLASS_H = 872;
+let TL = [], TOTAL = 1;
+
+const clamp = (x, a=0, b=1) => Math.max(a, Math.min(b, x));
+const ease = x => { x = clamp(x); return x < .5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; };
+const ramp = (t, a, d) => ease((t - a) / d);
+
+function build(timeline) {
+  TL = timeline;
+  TOTAL = timeline.length ? timeline[timeline.length - 1].start + timeline[timeline.length - 1].dur : 1;
+  const root = document.getElementById('scenes');
+  root.innerHTML = '';
+  timeline.forEach((e, i) => {
+    const s = e.scene;
+    const el = document.createElement('div');
+    const centered = !s.screens.length && !s.flow;
+    el.className = 'scene' + (centered ? ' center' : '') + (s.flow ? ' flowwrap' : '');
+    let html = `<div class="text"><div class="kicker">${s.kicker}</div><div class="title">${s.title}</div>`;
+    if (s.points.length) html += '<ul class="points">' + s.points.map(p => `<li>${centered ? '' : `<span class="tick">${TICK}</span>`}<span>${p}</span></li>`).join('') + '</ul>';
+    if (s.flow) html += '<div class="flow">' + s.flow.map((f, k) => `<div class="card"><div class="n">${k + 1}</div><h3>${f[0]}</h3><p>${f[1]}</p></div>`).join('') + '</div>';
+    html += '</div>';
+    if (s.screens.length) html += '<div class="phone"><div class="glass">' + s.screens.map(sc => `<img src="screens/${sc.src}">`).join('') + '</div></div>';
+    el.innerHTML = html;
+    root.appendChild(el);
+  });
+  return Promise.all([...document.images].map(img => img.complete ? 0 : new Promise(r => { img.onload = img.onerror = r; })));
+}
+
+function setTime(t) {
+  const FADE = 0.6;
+  TL.forEach((e, i) => {
+    const el = document.getElementById('scenes').children[i];
+    const lt = t - e.start, d = e.dur;
+    const vis = lt < -FADE || lt > d ? 0 : Math.min(ramp(lt, 0, FADE), i === TL.length - 1 ? 1 : 1 - ramp(lt, d - FADE, FADE));
+    el.style.opacity = vis;
+    if (!vis) return;
+    const kicker = el.querySelector('.kicker'), title = el.querySelector('.title');
+    [kicker, title].forEach((n, k) => { const p = ramp(lt, 0.15 + k * 0.15, 0.7); n.style.opacity = p; n.style.transform = `translateY(${(1 - p) * 30}px)`; });
+    const items = el.querySelectorAll('.points li, .card');
+    const spread = Math.min(1.1, (d * 0.45) / Math.max(1, items.length));
+    items.forEach((n, k) => { const p = ramp(lt, 0.6 + k * spread, 0.6); n.style.opacity = p; n.style.transform = `translateY(${(1 - p) * 26}px)`; });
+    const phone = el.querySelector('.phone');
+    if (phone) {
+      const p = ramp(lt, 0.1, 0.9);
+      phone.style.opacity = p;
+      phone.style.transform = `translateX(${(1 - p) * 120}px) rotate(${(1 - p) * 3}deg)`;
+      const imgs = phone.querySelectorAll('img'), screens = e.scene.screens;
+      imgs.forEach((img, k) => {
+        const sc = screens[k], scale = GLASS_W / SHOT_W;
+        const fullH = img.naturalHeight * scale, visH = fullH - (CROP_TOP + CROP_BOTTOM) * scale;
+        const maxScroll = Math.max(0, visH - GLASS_H);
+        const slot = d / imgs.length, a = k * slot;
+        const sp = ramp(lt, a + 1.2, Math.max(1, slot - 2.4));
+        const frac = (sc.scrollFrom ?? 0) + ((sc.scrollTo ?? 0) - (sc.scrollFrom ?? 0)) * sp;
+        img.style.top = `${-CROP_TOP * scale - frac * maxScroll}px`;
+        img.style.opacity = k === 0 ? 1 : ramp(lt, a - 0.25, 0.5);
+      });
+    }
+  });
+  document.getElementById('bar').style.width = `${clamp(t / TOTAL) * 100}%`;
+}
+</script>
+</body>
+</html>

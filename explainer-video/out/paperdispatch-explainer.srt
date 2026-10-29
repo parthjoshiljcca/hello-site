@@ -1,0 +1,43 @@
+1
+00:00:00,500 --> 00:00:11,112
+Welcome to Paper Dispatch. A secure way for universities to send exam papers to their affiliated colleges, exactly on time, and only to the right people.
+
+2
+00:00:12,512 --> 00:00:26,798
+Paper Dispatch has two roles. The University, or Chairperson, runs the exam cycle. They add colleges, batches and admin logins, upload papers, schedule exams, and track every download. The College Admin simply receives the papers.
+
+3
+00:00:28,198 --> 00:00:45,749
+Here is how it works. First, the university registers each college and creates its admin login. The college admin signs in with those details, sets a new password on the first login, and then downloads each paper, only when its exam window opens.
+
+4
+00:00:47,149 --> 00:01:03,884
+To begin, open paper dispatch dot app, and tap Sign in. Enter the email address and the temporary password given to you by the university, and tap Sign in. If you forget your password, the university can reset it for you.
+
+5
+00:01:05,284 --> 00:01:18,753
+On your first login, you will be asked to set your own password. It must have at least eight characters, with both letters and numbers. Type it twice, and tap Save and continue.
+
+6
+00:01:20,153 --> 00:01:30,357
+You now land on your dashboard. At a glance, you can see today's exams, the papers available right now, and what is coming up next.
+
+7
+00:01:31,757 --> 00:01:45,635
+Open Papers to see your scheduled exams. The clock shows the official server time, in I S T. Papers unlock automatically when each exam starts, so there is no need to refresh the page.
+
+8
+00:01:47,035 --> 00:01:56,014
+When the window opens, the paper appears under Downloads, ready to save. Every download is logged, and papers are deleted automatically afterwards.
+
+9
+00:01:57,414 --> 00:02:05,169
+In Profile, you can check your account details and your assigned college, and change your password at any time.
+
+10
+00:02:06,569 --> 00:02:15,549
+The menu gives you quick access to every section. Dashboard, Scheduled Papers, Downloads, and Profile. It works on any phone or computer.
+
+11
+00:02:16,949 --> 00:02:26,337
+Paper Dispatch. Time locked, fully logged, and auto deleted. Ready for the next exam session? Sign in today, at paper dispatch dot app.
