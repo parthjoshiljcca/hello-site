@@ -1,6 +1,7 @@
 {
   "voice": "en-IN-PrabhatNeural",
   "rate": "-4%",
+  "kokoro": { "voice": "hm_omega", "speed": 0.95, "lang": "en-gb" },
   "scenes": [
     {
       "id": "intro",
@@ -16,7 +17,7 @@
       "title": "Two roles, one secure workflow",
       "points": ["University / Chairperson runs the exam cycle", "College Admin receives the papers"],
       "screens": [{ "src": "01-roles.jpg", "scrollFrom": 0.0, "scrollTo": 0.45 }],
-      "narration": "Paper Dispatch has two roles. The University, or Chairperson, runs the exam cycle. They add colleges, batches and admin logins, upload papers, schedule exams, and track every download. The College Admin simply receives the papers."
+      "narration": "Paper Dispatch has two roles. The University, or Chair person, runs the exam cycle. They add colleges, batches and admin logins, upload papers, schedule exams, and track every download. The College Admin simply receives the papers."
     },
     {
       "id": "flow",
