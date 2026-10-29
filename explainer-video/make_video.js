@@ -21,6 +21,8 @@ const FPS = 30;
 const LEAD = 0.5;   // silence before each narration line
 const TAIL = 0.9;   // pause after each narration line
 const WORDS_PER_SEC = 2.45;
+const WHOOSH_LEAD = 0.45;  // start the whoosh this long before the next scene begins
+const WHOOSH_GAIN = 0.35;  // relative to the narration
 
 const args = process.argv.slice(2);
 const withVoice = args.includes('--voice');
@@ -107,21 +109,22 @@ function run(cmd, cmdArgs) {
   await browser.close();
   await ffDone;
 
-  // 3. Audio: place each narration clip at its scene start, then mux.
+  // 3. Audio: narration clips at their scene starts, a whoosh on every scene change, then mux.
   const final = path.join(OUT, 'paperdispatch-explainer.mp4');
-  if (!withVoice) {
-    fs.renameSync(silent, final);
-  } else {
-    const inputs = [], filters = [];
-    timeline.forEach((e, i) => {
-      inputs.push('-i', e.audio);
-      const ms = Math.round((e.start + LEAD) * 1000);
-      filters.push(`[${i + 1}:a]adelay=${ms}|${ms},aresample=48000[a${i}]`);
-    });
-    filters.push(timeline.map((_, i) => `[a${i}]`).join('') + `amix=inputs=${timeline.length}:normalize=0,loudnorm=I=-16:TP=-1.5,apad[aout]`);
-    await run('ffmpeg', ['-y', '-loglevel', 'error', '-i', silent, ...inputs, '-filter_complex', filters.join(';'),
-      '-map', '0:v', '-map', '[aout]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', final]);
-    fs.unlinkSync(silent);
-  }
+  const whoosh = path.join(DIR, 'sfx', 'whoosh.wav');
+  if (!fs.existsSync(whoosh)) execFileSync('python3', [path.join(DIR, 'sfx.py')], { stdio: 'inherit' });
+  const clips = [];
+  if (withVoice) timeline.forEach(e => clips.push({ file: e.audio, at: e.start + LEAD, gain: 1 }));
+  timeline.slice(1).forEach(e => clips.push({ file: whoosh, at: Math.max(0, e.start - WHOOSH_LEAD), gain: WHOOSH_GAIN }));
+  const inputs = [], filters = [];
+  clips.forEach((c, i) => {
+    inputs.push('-i', c.file);
+    const ms = Math.round(c.at * 1000);
+    filters.push(`[${i + 1}:a]aresample=48000,aformat=channel_layouts=stereo,volume=${c.gain},adelay=${ms}|${ms}[a${i}]`);
+  });
+  filters.push(clips.map((_, i) => `[a${i}]`).join('') + `amix=inputs=${clips.length}:normalize=0,loudnorm=I=-16:TP=-1.5,apad[aout]`);
+  await run('ffmpeg', ['-y', '-loglevel', 'error', '-i', silent, ...inputs, '-filter_complex', filters.join(';'),
+    '-map', '0:v', '-map', '[aout]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-shortest', '-movflags', '+faststart', final]);
+  fs.unlinkSync(silent);
   console.log('Wrote', final);
 })().catch(err => { console.error(err); process.exit(1); });
