@@ -1,0 +1,65 @@
+{
+  "output": "paperdispatch-college-admin-short",
+  "voice": "en-IN-NeerjaNeural",
+  "rate": "+0%",
+  "indic": { "speaker": "female" },
+  "kokoro": { "voice": "af_heart", "speed": 1.03 },
+  "scenes": [
+    {
+      "id": "hook",
+      "kicker": "For College Admins",
+      "title": "PaperDispatch",
+      "points": ["Your exam papers, right on time"],
+      "screens": [],
+      "narration": "College admin? Here is how to get your exam papers on Paper Dispatch, in under a minute."
+    },
+    {
+      "id": "login",
+      "kicker": "Step 1",
+      "title": "Sign in",
+      "points": ["Use the login from your university"],
+      "screens": [{ "src": "03-login.jpg" }, { "src": "04-login-filled.jpg" }],
+      "narration": "Step one. Open paper dispatch dot app, and sign in with the email and temporary password from your university."
+    },
+    {
+      "id": "password",
+      "kicker": "Step 2",
+      "title": "Set your password",
+      "points": ["8+ characters, letters and numbers"],
+      "screens": [{ "src": "05-set-password.jpg" }],
+      "narration": "Step two. On your first login, set your own password. At least eight characters, with letters and numbers."
+    },
+    {
+      "id": "papers",
+      "kicker": "Step 3",
+      "title": "Check your schedule",
+      "points": ["Live server time in IST"],
+      "screens": [{ "src": "07-papers.jpg" }],
+      "narration": "Step three. Open Papers to see your exam schedule. The clock shows the official server time."
+    },
+    {
+      "id": "unlock",
+      "kicker": "Step 4",
+      "title": "Wait for the unlock",
+      "points": ["Opens the moment the exam starts"],
+      "screens": [{ "src": "12-preview.jpg", "scrollFrom": 0.0, "scrollTo": 0.0 }],
+      "narration": "Step four. Each paper unlocks automatically when its exam starts. No need to refresh."
+    },
+    {
+      "id": "download",
+      "kicker": "Step 5",
+      "title": "Download & print",
+      "points": ["Every download is logged"],
+      "screens": [{ "src": "08-downloads.jpg" }],
+      "narration": "Step five. Download and print your paper. Every download is logged, and papers are auto deleted after seven days."
+    },
+    {
+      "id": "cta",
+      "kicker": "Need help? Contact your university",
+      "title": "paperdispatch.app",
+      "points": ["Time-locked · Fully logged · Auto-deleted"],
+      "screens": [],
+      "narration": "That's it. Sign in today, at paper dispatch dot app."
+    }
+  ]
+}

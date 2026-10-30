@@ -1,0 +1,27 @@
+1
+00:00:00,500 --> 00:00:05,556
+College admin? Here is how to get your exam papers on Paper Dispatch, in under a minute.
+
+2
+00:00:06,956 --> 00:00:13,932
+Step one. Open paper dispatch dot app, and sign in with the email and temporary password from your university.
+
+3
+00:00:15,332 --> 00:00:21,071
+Step two. On your first login, set your own password. At least eight characters, with letters and numbers.
+
+4
+00:00:22,471 --> 00:00:28,081
+Step three. Open Papers to see your exam schedule. The clock shows the official server time.
+
+5
+00:00:29,481 --> 00:00:34,772
+Step four. Each paper unlocks automatically when its exam starts. No need to refresh.
+
+6
+00:00:36,172 --> 00:00:43,468
+Step five. Download and print your paper. Every download is logged, and papers are auto deleted after seven days.
+
+7
+00:00:44,868 --> 00:00:47,961
+That's it. Sign in today, at paper dispatch dot app.
