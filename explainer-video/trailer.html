@@ -56,6 +56,23 @@
   #vignette { position:absolute; inset:0; background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.65) 100%); }
   .bar { position:absolute; left:0; width:100%; height:100px; background:#000; }
   #fade { position:absolute; inset:0; background:#000; opacity:0; }
+  /* 9:16 layout */
+  .portrait, .portrait body { width:1080px; height:1920px; }
+  .portrait .big { font-size:84px; padding:0 70px; }
+  .portrait .wordmark { font-size:112px; letter-spacing:-4px; }
+  .portrait .sub { font-size:38px; padding:0 70px; }
+  .portrait .phone { width:430px; height:870px; border-radius:60px; padding:14px; }
+  .portrait .glass { border-radius:48px; }
+  .portrait .cut .word { top:330px; left:40px !important; right:40px !important; width:auto; text-align:center !important; }
+  .portrait .cut .sub { top:560px; left:60px !important; right:60px !important; width:auto; text-align:center !important; padding:0; }
+  .portrait .stats-row { flex-direction:column; gap:70px; }
+  .portrait .roles-h { top:190px !important; font-size:66px !important; padding:0 60px; }
+  .portrait .card { left:90px !important; right:auto !important; width:900px; padding:40px 46px; }
+  .portrait .card.u { top:470px; } .portrait .card.c { top:1110px; }
+  .portrait .admin-h { font-size:150px !important; }
+  .portrait .label { top:230px; font-size:58px; }
+  .portrait .clock { font-size:170px; }
+  .portrait .chips { flex-direction:column; align-items:center; }
 </style>
 </head>
 <body>
@@ -73,7 +90,7 @@
 <script>
 const LOCK = (s, c = '#11223f', w = 2) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><rect x="7" y="13" width="7" height="5" rx="1"/><path d="M8.5 13v-1.5a2 2 0 0 1 4 0V13"/></svg>`;
 const CROP_TOP = 118, SHOT_W = 1080;
-let CUES = null;
+let CUES = null, PT = false, W = 1920, H = 1080;
 
 // ---- helpers -------------------------------------------------------------
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
@@ -98,8 +115,11 @@ function kinetic(el, t, a) {  // big word: tracking collapses, blur clears, scal
 
 // ---- scenes --------------------------------------------------------------
 const S = {};
-function build(cues) {
-  CUES = cues;
+function build(cues, portrait) {
+  CUES = cues; PT = !!portrait; W = PT ? 1080 : 1920; H = PT ? 1920 : 1080;
+  document.documentElement.classList.toggle('portrait', PT);
+  const pc = $('#particles'); pc.width = W; pc.height = H;
+  $('#grain').style.width = `${W}px`; $('#grain').style.height = `${H}px`;
   const hook = ['Every exam season,', 'thousands of question papers', 'travel by email, pen drives and couriers.', 'One leak is all it takes.'];
   S.hook = hook.map(txt => layer(`<div class="big" style="max-width:1500px">${txt}</div>`, 'center'));
   S.logo = layer(`<div class="logo">${LOCK(110)}</div><div class="wordmark"><span class="wm-a">Paper</span><span class="wm-b">Dispatch</span></div>
@@ -119,17 +139,17 @@ function build(cues) {
     el.dataset.right = right ? 1 : 0; el.dataset.frac = fr;
     return el;
   });
-  S.stats = layer(`<div style="display:flex;gap:40px">
+  S.stats = layer(`<div class="stats-row" style="display:flex;gap:40px">
       <div class="stat"><b data-n="100" data-s="%">0%</b><span>Downloads logged</span></div>
       <div class="stat"><b data-n="7" data-s=" days">0 days</b><span>Auto-delete after exam</span></div>
       <div class="stat"><b data-n="0" data-s="" data-down="1">0</b><span>Papers opened early</span></div></div>`, 'center');
-  S.roles = layer(`<div class="big" style="position:absolute;top:150px;width:100%;text-align:center;font-size:76px">Two roles. <span class="amber">One secure workflow.</span></div>
+  S.roles = layer(`<div class="big roles-h" style="position:absolute;top:150px;width:100%;text-align:center;font-size:76px">Two roles. <span class="amber">One secure workflow.</span></div>
     <div class="card u"><div class="tag">Runs the exam cycle</div><h3>University / Chairperson</h3><ul>
       <li><i></i>Add colleges & admin logins</li><li><i></i>Upload papers in bulk</li><li><i></i>Schedule many colleges at once</li><li><i></i>Export every download</li></ul></div>
     <div class="card c"><div class="tag">Receives the papers</div><h3>College Admin</h3><ul>
       <li><i></i>Sign in with university details</li><li><i></i>See the exam schedule</li><li><i></i>Download when the window opens</li><li><i></i>Works on any phone or computer</li></ul></div>`);
   S.admin = layer(`<div class="sub" style="margin:0 0 18px;letter-spacing:8px;text-transform:uppercase;font-weight:700;font-size:30px;color:var(--amber)">Introducing the</div>
-    <div class="huge" style="font-size:170px">College Admin</div><div class="sub">Sign in. Unlock. Download.</div>`, 'center');
+    <div class="huge admin-h" style="font-size:170px">College Admin</div><div class="sub">Sign in. Unlock. Download.</div>`, 'center');
   const car = [['Sign in', '04-login-filled.jpg'], ['Set your password', '05-set-password.jpg'], ['Your dashboard', '06-dashboard.jpg'],
                ['Your schedule', '07-papers.jpg'], ['Live status', '12-preview.jpg'], ['Download', '08-downloads.jpg']];
   S.carousel = layer(car.map(([, src]) => phone(src)).join('') + car.map(([l]) => `<div class="label">${l}</div>`).join(''));
@@ -199,11 +219,13 @@ function render(t) {
     $('.ghost', el).style.transform = `translate(${(right ? 1 : -1) * (14 + (1 - gp) * 90)}px, ${10 + (1 - gp) * 20}px)`;
     const s = $('.sub', el), q = ramp(t, a + .35, .5, easeOut); css(s, { opacity: q, transform: `translateY(${(1 - q) * 20}px)` });
     const ph = $('.phone', el), e = ramp(t, a, .6, easeOut), dir = right ? 1 : -1;
-    const baseX = right ? 1240 : 340;
-    css(ph, { left: `${baseX + dir * (1 - e) * 700}px`, top: '195px',
-              transform: `perspective(1600px) rotateY(${dir * -(26 - lt * 7)}deg) rotateX(${6 - lt * 2}deg) rotateZ(${dir * (2 - lt)}deg)` });
+    const baseX = PT ? 325 : right ? 1240 : 340;
+    css(ph, PT ? { left: `${baseX}px`, top: `${760 + (1 - e) * 1000}px`,
+                   transform: `perspective(1800px) rotateY(${dir * -(18 - lt * 6)}deg) rotateX(${10 - lt * 3}deg) rotateZ(${dir * (2 - lt)}deg)` }
+               : { left: `${baseX + dir * (1 - e) * 700}px`, top: '195px',
+                   transform: `perspective(1600px) rotateY(${dir * -(26 - lt * 7)}deg) rotateX(${6 - lt * 2}deg) rotateZ(${dir * (2 - lt)}deg)` });
     scrollPhone(ph, +el.dataset.frac * clamp(lt / 1.8));
-    css($('.glow', el), { left: `${baseX - 280}px`, top: '90px', opacity: e });
+    css($('.glow', el), PT ? { left: '40px', top: '700px', opacity: e } : { left: `${baseX - 280}px`, top: '90px', opacity: e });
   });
 
   // stats (22-24s), one per beat
@@ -234,7 +256,7 @@ function render(t) {
     if (v) { const f = t - 30, k = Math.floor(f), e = ramp(f - k, 0, .45, easeOut), p = k === 0 ? 0 : Math.min(5, k - 1 + e);
       el.querySelectorAll('.phone').forEach((ph, i) => {
         const d = i - p, ad = Math.min(1.6, Math.abs(d));
-        css(ph, { left: `${790 + d * 520}px`, top: '250px', opacity: 1 - .55 * Math.min(1, ad), zIndex: 10 - Math.round(ad * 3),
+        css(ph, { left: `${PT ? 325 + d * 470 : 790 + d * 520}px`, top: PT ? '560px' : '250px', opacity: 1 - .55 * Math.min(1, ad), zIndex: 10 - Math.round(ad * 3),
                   transform: `perspective(1600px) rotateY(${clamp(-d * 32, -50, 50)}deg) scale(${1 - .2 * Math.min(1, ad)})` });
         scrollPhone(ph, 0);
       });
@@ -265,11 +287,11 @@ function render(t) {
 
 // ---- particles & grain ---------------------------------------------------
 function particles(t) {
-  const c = $('#particles').getContext('2d'); c.clearRect(0, 0, 1920, 1080);
+  const c = $('#particles').getContext('2d'); c.clearRect(0, 0, W, H);
   const boost = t > 12 && t < 40 ? 1.8 : 1;
   for (let i = 0; i < 140; i++) {
-    const x = rnd(i) * 1920 + Math.sin(t * .5 + i) * 30, sp = 20 + rnd(i + 7) * 60;
-    const y = ((rnd(i + 3) * 1200 - t * sp * boost) % 1200 + 1200) % 1200 - 60;
+    const x = rnd(i) * W + Math.sin(t * .5 + i) * 30, sp = 20 + rnd(i + 7) * 60;
+    const y = ((rnd(i + 3) * (H + 120) - t * sp * boost) % (H + 120) + H + 120) % (H + 120) - 60;
     const r = .8 + rnd(i + 11) * 2.6, a = .15 + rnd(i + 5) * .45;
     c.fillStyle = i % 4 ? `rgba(160,195,255,${a})` : `rgba(245,179,1,${a})`;
     c.beginPath(); c.arc(x, y, r, 0, 6.283); c.fill();

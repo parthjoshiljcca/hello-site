@@ -1,7 +1,8 @@
-// Renders the cinematic PaperDispatch trailer (1920x1080) from trailer.html + trailer.json,
-// scores it with trailer_music.py and adds the closing voice line (Kokoro, tts_kokoro.py).
+// Renders the cinematic PaperDispatch trailer from trailer.html + trailer.json, scores it
+// with trailer_music.py and adds the closing voice line (Kokoro, tts_kokoro.py).
 //
-//   node make_trailer.js
+//   node make_trailer.js              -> 1920x1080
+//   node make_trailer.js --portrait   -> 1080x1920 (9:16), same score and cues
 //
 // Needs: Node + Playwright (with Chromium), ffmpeg, python3 with numpy + scipy, and the
 // Kokoro packages/models described in tts_kokoro.py.
@@ -14,7 +15,8 @@ const DIR = __dirname;
 const OUT = path.join(DIR, 'out');
 const FPS = 30;
 const cues = JSON.parse(fs.readFileSync(path.join(DIR, 'trailer.json'), 'utf8'));
-const NAME = cues.output;
+const portrait = process.argv.includes('--portrait');
+const NAME = cues.output + (portrait ? '-vertical' : '');
 const WORK = path.join(OUT, 'audio', NAME);
 fs.mkdirSync(WORK, { recursive: true });
 
@@ -41,10 +43,10 @@ function run(cmd, args) {
     '-c:v', 'libx264', '-preset', 'medium', '-crf', '17', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', silent], { stdio: ['pipe', 'inherit', 'inherit'] });
   const ffDone = new Promise((res, rej) => ff.on('exit', c => (c ? rej(new Error('ffmpeg failed')) : res())));
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 } });
+  const page = await browser.newPage({ viewport: portrait ? { width: 1080, height: 1920 } : { width: 1920, height: 1080 } });
   page.on('pageerror', e => { throw e; });
   await page.goto('file://' + path.join(DIR, 'trailer.html'));
-  await page.evaluate(c => build(c), cues);
+  await page.evaluate(([c, p]) => build(c, p), [cues, portrait]);
   const frames = Math.round(cues.duration * FPS);
   for (let f = 0; f < frames; f++) {
     await page.evaluate(t => render(t), f / FPS);
