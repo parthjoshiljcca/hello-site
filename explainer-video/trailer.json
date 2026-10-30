@@ -1,0 +1,19 @@
+{
+  "output": "paperdispatch-trailer",
+  "bpm": 120,
+  "duration": 50,
+  "voice": "af_heart",
+  "vo": [{ "at": 42.8, "text": "Paper Dispatch. Exam papers, delivered right on time." }],
+  "impacts": [
+    { "at": 8, "size": 1.0 },
+    { "at": 12, "size": 0.8 },
+    { "at": 24, "size": 0.45 },
+    { "at": 28, "size": 0.8 },
+    { "at": 40, "size": 1.2 }
+  ],
+  "whooshes": [14, 16, 18, 20, 22, 31, 32, 33, 34, 35, 42],
+  "glitches": [6.0, 6.5, 7.0, 7.25],
+  "risers": [[4, 8], [10.5, 12], [26, 28], [36, 40]],
+  "stabs": [22, 22.5, 23],
+  "ticks": [36, 37, 38, 39]
+}
