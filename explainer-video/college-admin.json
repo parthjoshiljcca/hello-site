@@ -1,0 +1,119 @@
+{
+  "output": "paperdispatch-college-admin",
+  "voice": "en-IN-NeerjaNeural",
+  "rate": "+0%",
+  "indic": { "speaker": "female" },
+  "kokoro": { "voice": "af_heart", "speed": 1.0 },
+  "scenes": [
+    {
+      "id": "intro",
+      "kicker": "Guide for College Admins",
+      "title": "PaperDispatch",
+      "points": ["Receive your exam papers securely", "Exactly when each exam begins"],
+      "screens": [],
+      "narration": "Welcome to Paper Dispatch. This short guide is for college admins. It shows you how to sign in, and how to download your exam papers, securely and on time."
+    },
+    {
+      "id": "role",
+      "kicker": "Your role",
+      "title": "College Admin",
+      "points": ["Sign in with details from the university", "See your college's exam schedule", "Download each paper when its window opens", "Works on any phone or computer"],
+      "screens": [{ "src": "18-college-admin.jpg", "scrollFrom": 0.0, "scrollTo": 0.0 }],
+      "narration": "As a college admin, you receive the question papers for your college. You sign in with details from the university, see your exam schedule, and download each paper when its window opens. It works on any phone or computer."
+    },
+    {
+      "id": "journey",
+      "kicker": "Your journey",
+      "title": "Four simple steps",
+      "points": [],
+      "flow": [
+        ["Get your login", "email and temporary password from the university"],
+        ["Sign in", "at paperdispatch.app"],
+        ["Set a new password", "only on your first login"],
+        ["Download the paper", "when its exam window opens"]
+      ],
+      "screens": [],
+      "narration": "There are just four steps. First, the university gives you your login email and a temporary password. Sign in at paper dispatch dot app. Set your own password on your first login. And download each paper, when its exam window opens."
+    },
+    {
+      "id": "login",
+      "kicker": "Step 1",
+      "title": "Sign in",
+      "points": ["Open paperdispatch.app", "Enter the email and temporary password", "Forgot it? The university can reset it"],
+      "screens": [{ "src": "03-login.jpg" }, { "src": "04-login-filled.jpg" }],
+      "narration": "Open paper dispatch dot app, and tap Sign in. Enter the email address and the temporary password given to you by the university, and tap Sign in. There are no sign ups. If you forget your password, simply ask the university to reset it."
+    },
+    {
+      "id": "password",
+      "kicker": "Step 2",
+      "title": "Set your own password",
+      "points": ["Asked only on the first login", "At least 8 characters", "Letters and numbers, typed twice"],
+      "screens": [{ "src": "05-set-password.jpg" }],
+      "narration": "On your first login, you will be asked to set your own password. It must have at least eight characters, with both letters and numbers. Type it twice. The checklist turns green when it is ready. Then tap Save and continue."
+    },
+    {
+      "id": "dashboard",
+      "kicker": "Step 3",
+      "title": "Your dashboard",
+      "points": ["Exams scheduled today", "Papers available right now", "What's coming up next"],
+      "screens": [{ "src": "06-dashboard.jpg" }],
+      "narration": "You now land on your dashboard. At a glance, you can see today's exams, the papers available right now, and what is coming up next. Tap View my papers, to see the full schedule."
+    },
+    {
+      "id": "papers",
+      "kicker": "Step 4",
+      "title": "Scheduled papers",
+      "points": ["Live server time in IST", "Papers unlock when each exam starts", "No need to refresh"],
+      "screens": [{ "src": "07-papers.jpg" }],
+      "narration": "Open Papers, to see every exam scheduled for your college. The clock shows the official server time, in I S T, so everyone works to the same clock. Papers unlock automatically when each exam starts, so there is no need to refresh the page."
+    },
+    {
+      "id": "status",
+      "kicker": "Reading your schedule",
+      "title": "Open, counting down, or locked",
+      "points": ["Open: ready to download now", "Countdown: unlocks in a few minutes", "Locked: not yet exam day"],
+      "screens": [{ "src": "12-preview.jpg", "scrollFrom": 0.0, "scrollTo": 0.0 }],
+      "narration": "Each paper shows its status. Open, means you can download it now. A countdown, means it unlocks in a few minutes. And Locked, means its exam day has not arrived yet."
+    },
+    {
+      "id": "downloads",
+      "kicker": "Step 5",
+      "title": "Download on time",
+      "points": ["Available only inside the exam window", "Every download is logged", "Papers are auto-deleted after 7 days"],
+      "screens": [{ "src": "08-downloads.jpg" }],
+      "narration": "When the window opens, the paper appears under Downloads, ready to save and print. Every download is logged with your name, college and time. And papers are deleted automatically seven days after the exam."
+    },
+    {
+      "id": "profile",
+      "kicker": "Your account",
+      "title": "Profile & security",
+      "points": ["Check your details and assigned college", "Change your password any time"],
+      "screens": [{ "src": "09-profile.jpg", "scrollFrom": 0.0, "scrollTo": 0.38 }],
+      "narration": "In Profile, you can check your account details and your assigned college, and change your password at any time. Your email and college are managed by the university."
+    },
+    {
+      "id": "menu",
+      "kicker": "Getting around",
+      "title": "Everything one tap away",
+      "points": ["Dashboard", "Scheduled Papers", "Downloads", "Profile"],
+      "screens": [{ "src": "10-menu.jpg" }],
+      "narration": "The menu gives you quick access to every section. Dashboard, Scheduled Papers, Downloads, and Profile."
+    },
+    {
+      "id": "tips",
+      "kicker": "On exam day",
+      "title": "Quick tips",
+      "points": ["Sign in a few minutes before the exam", "Keep the Papers page open – it unlocks itself", "Need help? Contact the university"],
+      "screens": [],
+      "narration": "A few tips for exam day. Sign in a few minutes before the exam starts. Keep the Papers page open, it unlocks by itself. And if anything goes wrong, contact the university."
+    },
+    {
+      "id": "outro",
+      "kicker": "Ready for the next exam session?",
+      "title": "paperdispatch.app",
+      "points": ["Time-locked · Fully logged · Auto-deleted"],
+      "screens": [{ "src": "16-cta.jpg" }],
+      "narration": "That's all it takes. Paper Dispatch. Time locked, fully logged, and auto deleted. Sign in today, at paper dispatch dot app."
+    }
+  ]
+}
