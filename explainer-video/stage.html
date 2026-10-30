@@ -34,6 +34,8 @@
   .card h3 { font:700 34px/1.15 'Inter Display', Inter; margin-bottom:12px; }
   .card p { font:400 26px/1.35 Inter; color:var(--muted); }
   .flowwrap .text { width:1700px; top:290px; }
+  .credit { margin-top:52px; font:500 30px Inter; color:var(--muted); }
+  .credit b { color:var(--amber); font-weight:800; }
   #bar { position:absolute; left:0; bottom:0; height:8px; background:var(--amber); }
   /* 9:16 layout: text on top, phone below */
   .portrait, .portrait body { width:1080px; height:1920px; }
@@ -46,6 +48,7 @@
   .portrait .glass { border-radius:52px; }
   .portrait .center .text { left:0; width:100%; top:720px; }
   .portrait .center .title { font-size:104px; letter-spacing:-3px; }
+  .portrait .credit { font-size:34px; }
 </style>
 </head>
 <body>
@@ -80,6 +83,7 @@ function build(timeline, portrait) {
     let html = `<div class="text"><div class="kicker">${s.kicker}</div><div class="title">${s.title}</div>`;
     if (s.points.length) html += '<ul class="points">' + s.points.map(p => `<li>${centered ? '' : `<span class="tick">${TICK}</span>`}<span>${p}</span></li>`).join('') + '</ul>';
     if (s.flow) html += '<div class="flow">' + s.flow.map((f, k) => `<div class="card"><div class="n">${k + 1}</div><h3>${f[0]}</h3><p>${f[1]}</p></div>`).join('') + '</div>';
+    if (i === timeline.length - 1) html += '<div class="credit">Designed &amp; developed by <b>Parth D. Joshi</b></div>';
     html += '</div>';
     if (s.screens.length) html += '<div class="phone"><div class="glass">' + s.screens.map(sc => `<img src="screens/${sc.src}">`).join('') + '</div></div>';
     el.innerHTML = html;
@@ -101,6 +105,8 @@ function setTime(t) {
     const items = el.querySelectorAll('.points li, .card');
     const spread = Math.min(1.1, (d * 0.45) / Math.max(1, items.length));
     items.forEach((n, k) => { const p = ramp(lt, 0.6 + k * spread, 0.6); n.style.opacity = p; n.style.transform = `translateY(${(1 - p) * 26}px)`; });
+    const credit = el.querySelector('.credit');
+    if (credit) { const p = ramp(lt, 1.2, 0.8); credit.style.opacity = p; credit.style.transform = `translateY(${(1 - p) * 20}px)`; }
     const phone = el.querySelector('.phone');
     if (phone) {
       const p = ramp(lt, 0.1, 0.9);

@@ -52,6 +52,8 @@
   .clock { font:700 230px/1 'JetBrains Mono', monospace; letter-spacing:-6px; }
   .chips { display:flex; gap:20px; margin-top:44px; }
   .chip { padding:14px 28px; border-radius:40px; border:1px solid rgba(255,255,255,.25); font:500 30px Inter; color:#e6edf8; background:rgba(255,255,255,.05); }
+  .credit { margin-top:60px; font:500 32px Inter; color:var(--muted); letter-spacing:.5px; }
+  .credit b { color:var(--amber); font-weight:800; }
   #flash { position:absolute; inset:0; background:#fff; opacity:0; mix-blend-mode:screen; }
   #vignette { position:absolute; inset:0; background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.65) 100%); }
   .bar { position:absolute; left:0; width:100%; height:100px; background:#000; }
@@ -160,7 +162,8 @@ function build(cues, portrait) {
       <div class="huge amber" style="font-size:180px;margin-top:40px">Unlocked</div></div>`, 'center');
   S.final = layer(`<div class="logo sm">${LOCK(70)}</div><div class="wordmark" style="font-size:130px;margin-top:30px"><span class="wm-a">Paper</span><span class="wm-b">Dispatch</span></div>
     <div class="sub" style="font-size:46px;color:#fff;margin-top:30px">paperdispatch.app</div>
-    <div class="chips"><div class="chip">⏱ Time-locked</div><div class="chip">📜 Fully logged</div><div class="chip">🔒 Auto-deleted</div></div>`, 'center');
+    <div class="chips"><div class="chip">⏱ Time-locked</div><div class="chip">📜 Fully logged</div><div class="chip">🔒 Auto-deleted</div></div>
+    <div class="credit">Designed &amp; developed by <b>Parth D. Joshi</b></div>`, 'center');
   return Promise.all([...document.images].map(img => img.complete ? 0 : new Promise(r => { img.onload = img.onerror = r; })));
 }
 
@@ -282,6 +285,7 @@ function render(t) {
       css(wm, { opacity: q, letterSpacing: `${-5 + (1 - q) * 24}px` });
       wm.querySelectorAll('span').forEach(s => s.style.backgroundPosition = `${100 - ramp(t, 43.2, 1.6) * 100}% 0`);
       const url = $('.sub', el), r = ramp(t, 43.4, .6, easeOut); css(url, { opacity: r, transform: `translateY(${(1 - r) * 20}px)` });
+      const cr = $('.credit', el), u = ramp(t, 45.8, .7, easeOut); css(cr, { opacity: u, transform: `translateY(${(1 - u) * 20}px)` });
       el.querySelectorAll('.chip').forEach((c, k) => { const s = ramp(t, 44.2 + k * .5, .4, easeOut); css(c, { opacity: s, transform: `translateY(${(1 - s) * 24}px)` }); }); } }
 }
 

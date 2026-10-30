@@ -6,6 +6,7 @@
 //   node make_video.js --voice --edge  -> Indian-English voice-over, Microsoft en-IN neural voice via edge-tts
 //   --voice-name=<name>                -> override the voice (e.g. af_heart, am_fenrir, bm_george; en-IN-NeerjaNeural with --edge)
 //   --audio-only                       -> keep the rendered video, rebuild only its soundtrack (reuses narration clips)
+//   --tail-only                        -> re-render only the final scene, splice it onto the existing video
 //   --no-music                         -> leave out the background music (music.py)
 //   --script=teaser.json --portrait    -> another script, rendered 1080x1920 (9:16) instead of 1920x1080
 // With --voice, every scene is timed to its narration.
@@ -31,6 +32,8 @@ const MUSIC_GAIN = 0.32;   // background music, before it ducks under the narrat
 const args = process.argv.slice(2);
 const withVoice = args.includes('--voice');
 const audioOnly = args.includes('--audio-only');
+const tailOnly = args.includes('--tail-only');
+const reuseVoice = audioOnly || tailOnly;
 const withMusic = !args.includes('--no-music');
 const voiceArg = args.find(a => a.startsWith('--voice-name='));
 const scriptFile = (args.find(a => a.startsWith('--script=')) || '--script=script.json').split('=')[1];
@@ -49,7 +52,7 @@ function probeDuration(file) {
 }
 
 function synth(scene) {
-  if (audioOnly) {
+  if (reuseVoice) {
     const cached = ['wav', 'mp3'].map(ext => path.join(AUDIO, `${scene.id}.${ext}`)).find(f => fs.existsSync(f));
     if (cached) return cached;
   }
@@ -108,7 +111,17 @@ function run(cmd, cmdArgs) {
   const silent = path.join(OUT, `${NAME}-silent.mp4`);
   const final = path.join(OUT, `${NAME}.mp4`);
   if (audioOnly) fs.copyFileSync(final, silent);
-  else await renderFrames(timeline, total, silent);
+  else if (tailOnly) {
+    // Keep every frame before the last scene's fade-in, re-render the rest, and join them.
+    const cut = Math.floor((timeline[timeline.length - 1].start - 1) * FPS);
+    const head = path.join(OUT, `${NAME}-head.mp4`), tail = path.join(OUT, `${NAME}-tail.mp4`), list = path.join(OUT, `${NAME}-parts.txt`);
+    await run('ffmpeg', ['-y', '-loglevel', 'error', '-i', final, '-an', '-frames:v', String(cut), '-c:v', 'libx264', '-preset', 'medium', '-crf', '18',
+      '-pix_fmt', 'yuv420p', '-r', String(FPS), head]);
+    await renderFrames(timeline, total, tail, cut);
+    fs.writeFileSync(list, `file '${head}'\nfile '${tail}'\n`);
+    await run('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', list, '-c', 'copy', silent]);
+    [head, tail, list].forEach(f => fs.unlinkSync(f));
+  } else await renderFrames(timeline, total, silent);
 
   // 3. Audio: narration at each scene start, a whoosh on every scene change, and background
   //    music that ducks under the narration; then mux.
@@ -146,7 +159,7 @@ function run(cmd, cmdArgs) {
   console.log('Wrote', final);
 })().catch(err => { console.error(err); process.exit(1); });
 
-async function renderFrames(timeline, total, silent) {
+async function renderFrames(timeline, total, silent, startFrame = 0) {
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
     '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', silent], { stdio: ['pipe', 'inherit', 'inherit'] });
   const ffDone = new Promise((res, rej) => ff.on('exit', c => (c ? rej(new Error('ffmpeg failed')) : res())));
@@ -156,7 +169,7 @@ async function renderFrames(timeline, total, silent) {
   await page.goto('file://' + path.join(DIR, 'stage.html'));
   await page.evaluate(([tl, p]) => build(tl, p), [timeline.map(({ start, dur, scene }) => ({ start, dur, scene })), portrait]);
   const frames = Math.ceil(total * FPS);
-  for (let f = 0; f < frames; f++) {
+  for (let f = startFrame; f < frames; f++) {
     await page.evaluate(t => setTime(t), f / FPS);
     const buf = await page.screenshot({ type: 'jpeg', quality: 92 });
     if (!ff.stdin.write(buf)) await new Promise(r => ff.stdin.once('drain', r));
