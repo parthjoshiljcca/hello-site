@@ -1,0 +1,51 @@
+1
+00:00:00,500 --> 00:00:10,463
+Welcome to Paper Dispatch. This short guide is for college admins. It shows you how to sign in, and how to download your exam papers, securely and on time.
+
+2
+00:00:11,863 --> 00:00:25,665
+As a college admin, you receive the question papers for your college. You sign in with details from the university, see your exam schedule, and download each paper when its window opens. It works on any phone or computer.
+
+3
+00:00:27,065 --> 00:00:41,828
+There are just four steps. First, the university gives you your login email and a temporary password. Sign in at paper dispatch dot app. Set your own password on your first login. And download each paper, when its exam window opens.
+
+4
+00:00:43,228 --> 00:00:58,204
+Open paper dispatch dot app, and tap Sign in. Enter the email address and the temporary password given to you by the university, and tap Sign in. There are no sign ups. If you forget your password, simply ask the university to reset it.
+
+5
+00:00:59,604 --> 00:01:12,660
+On your first login, you will be asked to set your own password. It must have at least eight characters, with both letters and numbers. Type it twice. The checklist turns green when it is ready. Then tap Save and continue.
+
+6
+00:01:14,060 --> 00:01:24,577
+You now land on your dashboard. At a glance, you can see today's exams, the papers available right now, and what is coming up next. Tap View my papers, to see the full schedule.
+
+7
+00:01:25,977 --> 00:01:41,508
+Open Papers, to see every exam scheduled for your college. The clock shows the official server time, in I S T, so everyone works to the same clock. Papers unlock automatically when each exam starts, so there is no need to refresh the page.
+
+8
+00:01:42,908 --> 00:01:53,532
+Each paper shows its status. Open, means you can download it now. A countdown, means it unlocks in a few minutes. And Locked, means its exam day has not arrived yet.
+
+9
+00:01:54,932 --> 00:02:07,924
+When the window opens, the paper appears under Downloads, ready to save and print. Every download is logged with your name, college and time. And papers are deleted automatically seven days after the exam.
+
+10
+00:02:09,324 --> 00:02:19,095
+In Profile, you can check your account details and your assigned college, and change your password at any time. Your email and college are managed by the university.
+
+11
+00:02:20,495 --> 00:02:26,916
+The menu gives you quick access to every section. Dashboard, Scheduled Papers, Downloads, and Profile.
+
+12
+00:02:28,316 --> 00:02:39,729
+A few tips for exam day. Sign in a few minutes before the exam starts. Keep the Papers page open, it unlocks by itself. And if anything goes wrong, contact the university.
+
+13
+00:02:41,129 --> 00:02:49,108
+That's all it takes. Paper Dispatch. Time locked, fully logged, and auto deleted. Sign in today, at paper dispatch dot app.
