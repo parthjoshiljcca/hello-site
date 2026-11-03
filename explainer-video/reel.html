@@ -135,7 +135,7 @@ function render(t) {
     el.querySelectorAll('.stat').forEach((st, k) => { const a = 5 + k * .75, p = ramp(t, a, .45, easeOut), b = st.querySelector('b');
       css(st, { opacity: p, transform: `translateX(${(1 - p) * (k % 2 ? 360 : -360)}px) rotate(${(1 - p) * (k % 2 ? 4 : -4)}deg)` });
       const n = +b.dataset.n, c = b.dataset.down ? Math.round(9 * (1 - ramp(t, a, .55))) : Math.round(n * ramp(t, a, .55));
-      b.textContent = c + b.dataset.s; }); }
+      b.textContent = c + (b.dataset.s === ' days' && c === 1 ? ' day' : b.dataset.s); }); }
   // 8-10s: brand end card with light sweep
   { const el = $('#s4'); el.style.opacity = ramp(t, 8, .15);
     const p = ramp(t, 8, .6, easeOut); css($('#s4 .logo'), { transform: `scale(${.4 + .6 * p}) rotate(${(1 - p) * -25}deg)` });
