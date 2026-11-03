@@ -1,3 +1,4 @@
 models
 out/audio/
 out/*-silent.mp4
+__pycache__/
