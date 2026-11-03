@@ -2,7 +2,7 @@
 // a Python music script.
 //
 //   node make_reel.js                       -> 10 s "exam completed" reel (reel.html + reel_music.py)
-//   node make_reel.js --page=praise-reel.html --music=praise_music.py --dur=15 --name=paperdispatch-praise-reel
+//   node make_reel.js --page=praise-reel.html --music=praise_music.py --dur=11.5 --name=paperdispatch-praise-reel
 const { chromium } = require('playwright');
 const { spawn, execFileSync } = require('child_process');
 const fs = require('fs');
