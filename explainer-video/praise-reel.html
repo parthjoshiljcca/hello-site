@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root { --amber:#f5b301; --amber-d:#e79a00; --muted:#a9b8d3; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { width:1080px; height:1920px; overflow:hidden; background:#000; font-family:Inter, sans-serif; color:#fff; }
+  #world { position:absolute; inset:0; transform-origin:50% 45%; }
+  #bg { position:absolute; inset:-60px; background:
+        radial-gradient(800px 700px at 50% var(--gy,40%), rgba(39,88,170,.6), transparent 65%),
+        radial-gradient(700px 600px at 20% 95%, rgba(245,179,1,.12), transparent 60%),
+        linear-gradient(170deg, #06214a 0%, #031431 55%, #010813 100%); }
+  #rays { position:absolute; left:50%; top:900px; width:2400px; height:2400px; margin:-1200px 0 0 -1200px; border-radius:50%; opacity:0;
+          background:repeating-conic-gradient(from 0deg, rgba(245,179,1,.16) 0deg 6deg, transparent 6deg 18deg);
+          -webkit-mask-image:radial-gradient(circle, #000 0%, transparent 60%); }
+  canvas { position:absolute; inset:0; }
+  .layer { position:absolute; inset:0; opacity:0; }
+  .center { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:0 70px; }
+  .hook { font:800 104px/1.08 'Inter Display', Inter; letter-spacing:-3px; min-height:340px; }
+  .hook .a { color:var(--amber); }
+  .caret { display:inline-block; width:8px; height:96px; margin-left:8px; background:var(--amber); vertical-align:-10px; }
+  .note { position:absolute; width:840px; display:flex; gap:26px; align-items:center; padding:28px 32px; border-radius:34px;
+          background:rgba(255,255,255,.97); color:#0a1f44; box-shadow:0 30px 70px rgba(0,0,0,.45); }
+  .note .av { flex:none; width:96px; height:96px; border-radius:50%; background:#fdf0c8; display:grid; place-items:center; font-size:54px; }
+  .note small { display:block; font:600 26px Inter; color:#7a8aa6; margin-bottom:6px; }
+  .note p { font:700 42px/1.15 Inter; }
+  .kicker { font:800 76px 'Inter Display', Inter; letter-spacing:-2px; }
+  .face { position:relative; width:420px; height:420px; margin-top:70px; }
+  .face .e { position:absolute; left:0; top:0; width:100%; text-align:center; font-size:380px; line-height:420px; }
+  .face .g { position:absolute; left:0; width:100%; text-align:center; font-size:300px; line-height:300px; }
+  .cap { font:700 64px 'Inter Display', Inter; margin-top:70px; }
+  .cap span { color:var(--amber); }
+  .label { position:absolute; top:250px; width:100%; text-align:center; font:900 92px/1 'Inter Display', Inter; letter-spacing:-3px; padding:0 60px; }
+  .phone { position:absolute; left:290px; top:520px; width:500px; height:1010px; border-radius:68px; background:#0b0f16; padding:16px;
+           box-shadow:0 60px 120px rgba(0,0,0,.6), 0 0 0 2px rgba(255,255,255,.1) inset; }
+  .glass { position:relative; width:100%; height:100%; border-radius:54px; overflow:hidden; background:#f7f9fc; }
+  .glass img { position:absolute; left:0; width:100%; top:-50px; }
+  .logo { width:190px; height:190px; border-radius:54px; background:linear-gradient(160deg,#ffc21a,var(--amber-d)); display:grid; place-items:center; box-shadow:0 0 140px rgba(245,179,1,.55); }
+  .wordmark { font:800 120px/1 'Inter Display', Inter; letter-spacing:-4px; margin-top:44px; }
+  .wordmark span { background-size:300% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .wm-a { background-image:linear-gradient(100deg, #fff 40%, #fff6c9 48%, #fff 56%); }
+  .wm-b { background-image:linear-gradient(100deg, var(--amber) 40%, #fff3b0 48%, var(--amber) 56%); }
+  .tag { font:500 40px Inter; margin-top:30px; }
+  .credit { font:500 34px Inter; color:var(--muted); margin-top:70px; }
+  .credit b { color:var(--amber); font-weight:800; }
+  #flash { position:absolute; inset:0; background:#fff; opacity:0; }
+  #vignette { position:absolute; inset:0; background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.6) 100%); }
+</style>
+</head>
+<body>
+<div id="world">
+  <div id="bg"></div>
+  <div id="rays"></div>
+  <canvas id="dust" width="1080" height="1920"></canvas>
+  <canvas id="emoji" width="1080" height="1920"></canvas>
+  <div class="layer center" id="s1"><div class="hook"></div></div>
+  <div class="layer" id="s2"></div>
+  <div class="layer center" id="s3">
+    <div class="kicker">Me, the developer:</div>
+    <div class="face"><div class="e">🙂</div><div class="g">🕶️</div></div>
+    <div class="cap">Just doing my job. <span>😌</span></div>
+  </div>
+  <div class="layer" id="s4"></div>
+  <div class="layer center" id="s5">
+    <div class="logo"><svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="#11223f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><rect x="7" y="13" width="7" height="5" rx="1"/><path d="M8.5 13v-1.5a2 2 0 0 1 4 0V13"/></svg></div>
+    <div class="wordmark"><span class="wm-a">Paper</span><span class="wm-b">Dispatch</span></div>
+    <div class="tag">paperdispatch.app</div>
+    <div class="credit">Designed &amp; developed by <b>Parth D. Joshi</b></div>
+  </div>
+</div>
+<div id="flash"></div>
+<canvas id="grain" width="270" height="480" style="width:1080px;height:1920px;opacity:.06;mix-blend-mode:overlay"></canvas>
+<div id="vignette"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const easeOut = x => { x = clamp(x); return x === 1 ? 1 : 1 - Math.pow(2, -10 * x); };
+const easeIO = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const easeBack = x => { x = clamp(x); const c = 1.9; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const ramp = (t, a, d, f = easeIO) => f((t - a) / d);
+const win = (t, a, b, i = .15, o = .2) => Math.min(ramp(t, a, i), 1 - ramp(t, b - o, o));
+const rnd = s => { const x = Math.sin(s * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const $ = s => document.querySelector(s);
+const css = (el, o) => Object.assign(el.style, o);
+
+const HOOK = ['When everyone', 'praises your app…'];
+const NOTES = [['👏', 'Papers opened exactly on time!'], ['🔥', 'Smoothest exam session ever'], ['😍', 'Which app is this??'],
+               ['🙌', 'No more pen drives & emails'], ['💯', 'Downloading was so easy'], ['🌟', 'Brilliant work!']];
+const CUTS = [['Unlocks on time', '12-preview.jpg'], ['Every download logged', '08-downloads.jpg'], ['Works on any phone', '06-dashboard.jpg']];
+const IMPACTS = [{ at: 6.5, size: 1.1 }, { at: 7.0, size: .5 }, { at: 12.5, size: .7 }];
+
+NOTES.forEach(([e, txt], k) => {
+  const d = document.createElement('div'); d.className = 'note';
+  d.innerHTML = `<div class="av">${e}</div><div><small>New message · now</small><p>${txt}</p></div>`;
+  css(d, { left: `${k % 2 ? 170 : 70}px`, top: `${300 + k * 205}px` });
+  $('#s2').appendChild(d);
+});
+CUTS.forEach(([label, src]) => {
+  const d = document.createElement('div'); d.className = 'cut'; css(d, { position: 'absolute', inset: 0, opacity: 0 });
+  d.innerHTML = `<div class="label">${label}</div><div class="phone"><div class="glass"><img src="screens/${src}"></div></div>`;
+  $('#s4').appendChild(d);
+});
+
+function render(t) {
+  let sx = 0, sy = 0, zoom = 1.0 + .025 * (t / 15), flash = 0;
+  for (const im of IMPACTS) { const d = t - im.at; if (d >= 0 && d < 1.2) { const k = im.size * Math.exp(-d * 7);
+    sx += k * 18 * Math.sin(d * 90); sy += k * 14 * Math.cos(d * 70); zoom += k * .05; flash = Math.max(flash, (im.size > .6 ? im.size : 0) * .8 * Math.exp(-d * 10)); } }
+  css($('#world'), { transform: `translate(${sx}px,${sy}px) scale(${zoom})` });
+  $('#flash').style.opacity = clamp(flash);
+  $('#bg').style.setProperty('--gy', `${40 + 5 * Math.sin(t * .6)}%`);
+  css($('#rays'), { opacity: win(t, 6.5, 9.5, .2, .3) * .9 + win(t, 12.5, 15, .3, .01) * .6, transform: `rotate(${t * 16}deg)` });
+  dust(t); emoji(t); grain(t);
+
+  // 0-2.5s: typed hook
+  { const el = $('#s1'); el.style.opacity = win(t, 0, 2.6, .2, .2);
+    const full = HOOK.join('\n'), n = Math.floor(clamp((t - .3) / 1.8) * full.length), shown = full.slice(0, n);
+    const [l1, l2 = ''] = shown.split('\n');
+    const caret = Math.floor(t * 3) % 2 === 0 || n < full.length ? '<span class="caret"></span>' : '<span class="caret" style="opacity:0"></span>';
+    $('#s1 .hook').innerHTML = `${l1}${shown.includes('\n') ? '<br><span class="a">' + l2 + '</span>' : ''}${caret}`; }
+  // 2.5-6s: notifications pop on the beat
+  { const el = $('#s2'); el.style.opacity = win(t, 2.45, 6.3, .05, .25);
+    el.querySelectorAll('.note').forEach((n, k) => { const a = 2.5 + k * .5, p = ramp(t, a, .4, easeBack), o = ramp(t, a, .12);
+      css(n, { opacity: o, transform: `translateY(${(1 - clamp(p)) * 80}px) scale(${.6 + .4 * p}) rotate(${(k % 2 ? 1.6 : -1.6)}deg)` }); }); }
+  // 6.5-9.5s: me, the developer
+  { const el = $('#s3'); el.style.opacity = win(t, 6.5, 9.5, .05, .2);
+    const k = ramp(t, 6.5, .4, easeOut); css($('#s3 .kicker'), { opacity: k, transform: `scale(${1.2 - .2 * k})` });
+    const f = ramp(t, 6.55, .35, easeBack); css($('#s3 .face .e'), { transform: `scale(${.5 + .5 * f})` });
+    const g = clamp((t - 6.6) / .4), drop = g < 1 ? -900 * (1 - g * g) : 0, bounce = t > 7 ? -40 * Math.exp(-(t - 7) * 8) * Math.abs(Math.sin((t - 7) * 18)) : 0;
+    css($('#s3 .face .g'), { top: `${78 + drop + bounce}px`, opacity: t < 6.6 ? 0 : 1, transform: `rotate(${(1 - clamp(g)) * -25}deg)` });
+    const c = ramp(t, 7.35, .45, easeOut); css($('#s3 .cap'), { opacity: c, transform: `translateY(${(1 - c) * 30}px)` }); }
+  // 9.5-12.5s: product cuts, one per second
+  { const el = $('#s4'); el.style.opacity = win(t, 9.45, 12.55, .05, .1);
+    el.querySelectorAll('.cut').forEach((c, k) => { const a = 9.5 + k, v = win(t, a, a + 1, .06, .1); c.style.opacity = v;
+      const p = ramp(t, a, .45, easeOut), dir = k % 2 ? 1 : -1;
+      css(c.querySelector('.phone'), { transform: `perspective(1800px) translateX(${(1 - p) * dir * 600}px) rotateY(${dir * (14 - (t - a) * 8)}deg) rotateZ(${dir * (1 - p) * 8}deg)` });
+      const l = c.querySelector('.label'); css(l, { transform: `scale(${1.25 - .25 * p})`, filter: `blur(${(1 - p) * 10}px)`, color: k === 2 ? 'var(--amber)' : '#fff' }); }); }
+  // 12.5-15s: end card
+  { const el = $('#s5'); el.style.opacity = ramp(t, 12.5, .15);
+    const p = ramp(t, 12.5, .6, easeOut); css($('#s5 .logo'), { transform: `scale(${.4 + .6 * p}) rotate(${(1 - p) * -25}deg)` });
+    const w = ramp(t, 12.65, .6, easeOut), wm = $('#s5 .wordmark'); css(wm, { opacity: w, letterSpacing: `${-4 + (1 - w) * 26}px` });
+    wm.querySelectorAll('span').forEach(s => s.style.backgroundPosition = `${100 - ramp(t, 13.1, 1.1) * 100}% 0`);
+    const u = ramp(t, 13.0, .5, easeOut); css($('#s5 .tag'), { opacity: u, transform: `translateY(${(1 - u) * 20}px)` });
+    const c = ramp(t, 13.4, .5, easeOut); css($('#s5 .credit'), { opacity: c, transform: `translateY(${(1 - c) * 20}px)` }); }
+}
+
+function dust(t) {
+  const c = $('#dust').getContext('2d'); c.clearRect(0, 0, 1080, 1920);
+  for (let i = 0; i < 100; i++) {
+    const x = rnd(i) * 1080 + Math.sin(t * .6 + i) * 20, sp = 30 + rnd(i + 7) * 70;
+    const y = ((rnd(i + 3) * 2040 - t * sp) % 2040 + 2040) % 2040 - 60;
+    c.fillStyle = i % 4 ? `rgba(160,195,255,${.15 + rnd(i + 5) * .4})` : `rgba(245,179,1,${.2 + rnd(i + 5) * .4})`;
+    c.beginPath(); c.arc(x, y, .8 + rnd(i + 11) * 2.4, 0, 6.283); c.fill();
+  }
+}
+
+const REACT = ['👏', '🔥', '😍', '🙌', '💯', '❤️', '👍'];
+function emoji(t) {  // live-stream style reactions floating up
+  const c = $('#emoji').getContext('2d'); c.clearRect(0, 0, 1080, 1920);
+  [[2.5, 6.2, 34], [12.6, 15, 22]].forEach(([a, b, count], w) => {
+    for (let i = 0; i < count; i++) {
+      const s = w * 100 + i, born = a + rnd(s) * (b - a - .8), d = t - born; if (d < 0 || d > 2.2) continue;
+      const x = (i % 2 ? 900 : 30) + rnd(s + 1) * 120 + Math.sin(d * 3 + i) * 40;
+      const y = 1880 - d * (520 + rnd(s + 2) * 300);
+      c.globalAlpha = clamp(d / .15) * clamp((2.2 - d) / .6);
+      c.font = `${54 + rnd(s + 3) * 40}px "Noto Color Emoji"`;
+      c.fillText(REACT[i % REACT.length], x, y);
+    }
+  });
+  c.globalAlpha = 1;
+}
+
+function grain(t) {
+  const c = $('#grain').getContext('2d'), img = c.createImageData(270, 480), d = img.data;
+  let s = Math.floor(t * 30) * 9973 + 1;
+  for (let i = 0; i < d.length; i += 4) { s = (s * 16807) % 2147483647; d[i] = d[i + 1] = d[i + 2] = s & 255; d[i + 3] = 255; }
+  c.putImageData(img, 0, 0);
+}
+</script>
+</body>
+</html>

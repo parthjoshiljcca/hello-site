@@ -1,7 +1,8 @@
-// Renders the 10-second "exam completed" reel (1080x1920) from reel.html and scores it
-// with reel_music.py.
+// Renders a 1080x1920 reel from an HTML page with a render(t) function and scores it with
+// a Python music script.
 //
-//   node make_reel.js
+//   node make_reel.js                       -> 10 s "exam completed" reel (reel.html + reel_music.py)
+//   node make_reel.js --page=praise-reel.html --music=praise_music.py --dur=15 --name=paperdispatch-praise-reel
 const { chromium } = require('playwright');
 const { spawn, execFileSync } = require('child_process');
 const fs = require('fs');
@@ -9,7 +10,9 @@ const path = require('path');
 
 const DIR = __dirname;
 const OUT = path.join(DIR, 'out');
-const FPS = 30, DUR = 10, NAME = 'paperdispatch-exam-completed-reel';
+const opt = (k, d) => (process.argv.find(a => a.startsWith(`--${k}=`)) || `=${d}`).split('=')[1];
+const FPS = 30, DUR = +opt('dur', 10), NAME = opt('name', 'paperdispatch-exam-completed-reel');
+const PAGE = opt('page', 'reel.html'), MUSIC = opt('music', 'reel_music.py');
 
 function run(cmd, args) {
   return new Promise((resolve, reject) => {
@@ -22,7 +25,7 @@ function run(cmd, args) {
   const work = path.join(OUT, 'audio', NAME);
   fs.mkdirSync(work, { recursive: true });
   const music = path.join(work, 'score.wav');
-  execFileSync('python3', [path.join(DIR, 'reel_music.py'), music], { stdio: 'inherit' });
+  execFileSync('python3', [path.join(DIR, MUSIC), music], { stdio: 'inherit', cwd: DIR });
 
   const silent = path.join(OUT, `${NAME}-silent.mp4`);
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
@@ -31,7 +34,7 @@ function run(cmd, args) {
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
   page.on('pageerror', e => { throw e; });
-  await page.goto('file://' + path.join(DIR, 'reel.html'));
+  await page.goto('file://' + path.join(DIR, PAGE));
   for (let f = 0; f < DUR * FPS; f++) {
     await page.evaluate(t => render(t), f / FPS);
     const buf = await page.screenshot({ type: 'jpeg', quality: 93 });
