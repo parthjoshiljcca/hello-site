@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root { --amber:#f5b301; --amber-d:#e79a00; --green:#22c55e; --muted:#a9b8d3; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { width:1080px; height:1920px; overflow:hidden; background:#000; font-family:Inter, sans-serif; color:#fff; }
+  #world { position:absolute; inset:0; transform-origin:50% 45%; }
+  #bg { position:absolute; inset:-60px; background:
+        radial-gradient(800px 700px at 50% var(--gy,38%), rgba(39,88,170,.6), transparent 65%),
+        radial-gradient(700px 600px at 20% 95%, rgba(245,179,1,.12), transparent 60%),
+        linear-gradient(170deg, #06214a 0%, #031431 55%, #010813 100%); }
+  canvas { position:absolute; inset:0; }
+  .layer { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; opacity:0; padding:0 70px; }
+  .kicker { font:700 34px Inter; letter-spacing:8px; text-transform:uppercase; color:var(--amber); }
+  .big { font:800 120px/1.02 'Inter Display', Inter; letter-spacing:-4px; margin-top:26px; }
+  .sub { font:500 44px/1.3 Inter; color:#dfe7f5; margin-top:30px; }
+  .mono { font:700 64px 'JetBrains Mono', monospace; letter-spacing:2px; margin-top:34px; color:#dfe7f5; }
+  .badge { width:330px; height:330px; }
+  .done { font:900 150px/0.95 'Inter Display', Inter; letter-spacing:-5px; text-transform:uppercase; margin-top:56px; }
+  .chip { display:flex; align-items:center; gap:26px; width:900px; padding:34px 40px; border-radius:36px; margin:16px 0;
+          background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.16); font:600 46px Inter; text-align:left; }
+  .chip i { flex:none; width:76px; height:76px; border-radius:22px; background:var(--amber); display:grid; place-items:center; font-style:normal; font-size:40px; }
+  .logo { width:180px; height:180px; border-radius:50px; background:linear-gradient(160deg,#ffc21a,var(--amber-d)); display:grid; place-items:center; box-shadow:0 0 120px rgba(245,179,1,.5); }
+  .wordmark { font:800 116px/1 'Inter Display', Inter; letter-spacing:-4px; margin-top:40px; }
+  .wordmark b { color:var(--amber); }
+  .credit { font:500 34px Inter; color:var(--muted); margin-top:60px; }
+  .credit b { color:var(--amber); font-weight:800; }
+  #flash { position:absolute; inset:0; background:#fff; opacity:0; }
+  #vignette { position:absolute; inset:0; background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.6) 100%); }
+</style>
+</head>
+<body>
+<div id="world">
+  <div id="bg"></div>
+  <canvas id="dust" width="1080" height="1920"></canvas>
+  <div id="stage">
+    <div class="layer" id="s1">
+      <div class="kicker">BCA Semester 5 · NEP 2020</div>
+      <div class="big">Exam day.</div>
+      <div class="mono">02 – 03 Nov 2026</div>
+    </div>
+    <div class="layer" id="s2">
+      <svg class="badge" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="54" fill="rgba(34,197,94,.14)" stroke="#22c55e" stroke-width="6" stroke-linecap="round" id="ring" />
+        <path d="M36 62 L53 78 L86 44" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" id="tick" />
+      </svg>
+      <div class="done">Exam<br>completed</div>
+      <div class="sub">Every paper delivered through <b style="color:var(--amber)">PaperDispatch</b></div>
+    </div>
+    <div class="layer" id="s3">
+      <div class="chip"><i>⏱</i>Unlocked right on time</div>
+      <div class="chip"><i>📜</i>Every download logged</div>
+      <div class="chip"><i>🔒</i>Auto-deleted after 7 days</div>
+    </div>
+    <div class="layer" id="s4">
+      <div class="logo"><svg width="104" height="104" viewBox="0 0 24 24" fill="none" stroke="#11223f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><rect x="7" y="13" width="7" height="5" rx="1"/><path d="M8.5 13v-1.5a2 2 0 0 1 4 0V13"/></svg></div>
+      <div class="wordmark">Paper<b>Dispatch</b></div>
+      <div class="sub" style="color:#fff">paperdispatch.app</div>
+      <div class="credit">Designed &amp; developed by <b>Parth D. Joshi</b></div>
+    </div>
+  </div>
+  <canvas id="confetti" width="1080" height="1920"></canvas>
+</div>
+<div id="flash"></div>
+<div id="vignette"></div>
+<script>
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const easeOut = x => { x = clamp(x); return x === 1 ? 1 : 1 - Math.pow(2, -10 * x); };
+const easeIO = x => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const ramp = (t, a, d, f = easeIO) => f((t - a) / d);
+const win = (t, a, b, i = .15, o = .2) => Math.min(ramp(t, a, i), 1 - ramp(t, b - o, o));
+const rnd = s => { const x = Math.sin(s * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+const $ = s => document.querySelector(s);
+const css = (el, o) => Object.assign(el.style, o);
+const IMPACTS = [{ at: 2, size: 1.1 }, { at: 8, size: .7 }];
+const BURSTS = [2, 8];
+const COLORS = ['#f5b301', '#ffffff', '#22c55e', '#5b9bff', '#ffd75e'];
+
+function render(t) {
+  let sx = 0, sy = 0, zoom = 1.02 + .01 * Math.sin(t), flash = 0;
+  for (const im of IMPACTS) { const d = t - im.at; if (d >= 0 && d < 1.2) { const k = im.size * Math.exp(-d * 7);
+    sx += k * 18 * Math.sin(d * 90); sy += k * 14 * Math.cos(d * 70); zoom += k * .05; flash = Math.max(flash, im.size * .8 * Math.exp(-d * 10)); } }
+  css($('#world'), { transform: `translate(${sx}px,${sy}px) scale(${zoom})` });
+  $('#flash').style.opacity = clamp(flash);
+  $('#bg').style.setProperty('--gy', `${38 + 6 * Math.sin(t * .6)}%`);
+  dust(t); confetti(t);
+
+  // 0-2s: exam day
+  { const el = $('#s1'); el.style.opacity = win(t, 0, 2, .3, .15);
+    [...el.children].forEach((c, k) => { const p = ramp(t, .15 + k * .35, .5, easeOut); css(c, { opacity: p, transform: `translateY(${(1 - p) * 40}px)`, filter: `blur(${(1 - p) * 8}px)` }); }); }
+  // 2-5s: completed
+  { const el = $('#s2'); el.style.opacity = win(t, 2, 5, .05, .2);
+    const ring = $('#ring'), tick = $('#tick'), L = 2 * Math.PI * 54;
+    ring.style.strokeDasharray = L; ring.style.strokeDashoffset = L * (1 - ramp(t, 2, .5, easeOut));
+    tick.style.strokeDasharray = 90; tick.style.strokeDashoffset = 90 * (1 - ramp(t, 2.35, .35, easeOut));
+    const b = ramp(t, 2, .5, easeOut); css($('.badge'), { transform: `scale(${.5 + .5 * b}) rotate(${(1 - b) * -30}deg)` });
+    const d = $('.done'), q = ramp(t, 2.3, .5, easeOut); css(d, { opacity: q, transform: `scale(${1.2 - .2 * q})`, letterSpacing: `${-5 + (1 - q) * 30}px` });
+    const s = $('#s2 .sub'), r = ramp(t, 3, .5, easeOut); css(s, { opacity: r, transform: `translateY(${(1 - r) * 24}px)` }); }
+  // 5-8s: proof points on the beat
+  { const el = $('#s3'); el.style.opacity = win(t, 5, 8, .05, .2);
+    el.querySelectorAll('.chip').forEach((c, k) => { const p = ramp(t, 5 + k * .75, .4, easeOut);
+      css(c, { opacity: p, transform: `translateX(${(1 - p) * (k % 2 ? 300 : -300)}px) scale(${1.08 - .08 * p})` }); }); }
+  // 8-10s: brand + credit
+  { const el = $('#s4'); el.style.opacity = ramp(t, 8, .2);
+    const p = ramp(t, 8, .6, easeOut); css($('#s4 .logo'), { transform: `scale(${.5 + .5 * p}) rotate(${(1 - p) * -20}deg)` });
+    const w = ramp(t, 8.2, .6, easeOut); css($('#s4 .wordmark'), { opacity: w, letterSpacing: `${-4 + (1 - w) * 24}px` });
+    const u = ramp(t, 8.6, .5, easeOut); css($('#s4 .sub'), { opacity: u, transform: `translateY(${(1 - u) * 20}px)` });
+    const c = ramp(t, 9, .5, easeOut); css($('#s4 .credit'), { opacity: c, transform: `translateY(${(1 - c) * 20}px)` }); }
+}
+
+function dust(t) {
+  const c = $('#dust').getContext('2d'); c.clearRect(0, 0, 1080, 1920);
+  for (let i = 0; i < 90; i++) {
+    const x = rnd(i) * 1080 + Math.sin(t * .6 + i) * 20, sp = 30 + rnd(i + 7) * 70;
+    const y = ((rnd(i + 3) * 2040 - t * sp) % 2040 + 2040) % 2040 - 60;
+    c.fillStyle = i % 4 ? `rgba(160,195,255,${.15 + rnd(i + 5) * .4})` : `rgba(245,179,1,${.2 + rnd(i + 5) * .4})`;
+    c.beginPath(); c.arc(x, y, .8 + rnd(i + 11) * 2.4, 0, 6.283); c.fill();
+  }
+}
+
+function confetti(t) {
+  const c = $('#confetti').getContext('2d'); c.clearRect(0, 0, 1080, 1920);
+  BURSTS.forEach((b0, bi) => {
+    const d = t - b0; if (d < 0 || d > 4) return;
+    for (let i = 0; i < 160; i++) {
+      const s = bi * 1000 + i, ang = -Math.PI / 2 + (rnd(s) - .5) * 2.4, v = 900 + rnd(s + 1) * 1300;
+      const x = 540 + Math.cos(ang) * v * d * .8 + Math.sin(d * 3 + i) * 40;
+      const y = 1050 + Math.sin(ang) * v * d + 1500 * d * d;
+      const fade = clamp(1 - (d - 2.4) / 1.6);
+      c.save(); c.translate(x, y); c.rotate(d * (4 + rnd(s + 2) * 8) + i);
+      c.globalAlpha = fade; c.fillStyle = COLORS[i % COLORS.length];
+      const w = 14 + rnd(s + 3) * 14; c.fillRect(-w / 2, -w / 4, w, w / 2 * Math.abs(Math.cos(d * 9 + i)) + 3);
+      c.restore();
+    }
+  });
+}
+</script>
+</body>
+</html>
