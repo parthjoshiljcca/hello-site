@@ -1,10 +1,9 @@
-// Renders the 1080x1920 narrated "Hidden Uttarakhand" preface video: narration.py voices the
-// script and writes timeline.js, preface.html draws each frame with render(t) and
-// preface_music.py scores it and mixes in the voice.
+// Renders the 1080x1920 narrated "Hidden Uttarakhand" preface video: voiceover.py lines the
+// recorded voice-over up with its transcript and writes timeline.js, preface.html draws each
+// frame with render(t) and preface_music.py scores it and mixes in the voice.
 //
-//   KOKORO_DIR=/path/to/kokoro node make_video.js   -> re-voice, then render out/hidden-uttarakhand-preface.mp4
-//   node make_video.js                              -> render with the existing narration
-//   node make_video.js --stills=3,14                -> out/frames/still-3.png, still-14.png (no video)
+//   node make_video.js                  -> out/hidden-uttarakhand-preface.mp4
+//   node make_video.js --stills=3,14    -> out/frames/still-3.png, still-14.png (no video)
 const { chromium } = require('playwright');
 const { spawn, execFileSync } = require('child_process');
 const fs = require('fs');
@@ -32,7 +31,7 @@ async function openPage(browser) {
 }
 
 (async () => {
-  if (process.env.KOKORO_DIR && !STILLS) execFileSync('python3', [path.join(DIR, 'narration.py'), process.env.KOKORO_DIR], { stdio: 'inherit', cwd: DIR });
+  execFileSync('python3', [path.join(DIR, 'voiceover.py'), path.join(DIR, 'voice', 'preface-voiceover.mp3')], { stdio: 'inherit', cwd: DIR });
   const DUR = JSON.parse(fs.readFileSync(path.join(DIR, 'timeline.js'), 'utf8').replace(/^window\.TIMELINE = |;\s*$/g, '')).duration;
   const browser = await chromium.launch();
   const page = await openPage(browser);

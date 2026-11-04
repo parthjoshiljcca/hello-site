@@ -1,48 +1,44 @@
 # Hidden Uttarakhand — narrated preface video (9:16)
 
-`out/hidden-uttarakhand-preface.mp4` is a 58-second, 1080x1920, 30 fps animated preface told
-thriller-style: a male Hindi narration at its natural pitch, Hindi subtitles that appear word by
-word as they are spoken, each line's keyword slammed onto the screen with an impact, a dark grade
-with flicker and push-ins, and a score built on a taiko ostinato and a ticking clock that drop to
-silence before the twist. All of it is drawn and synthesised in code.
+`out/hidden-uttarakhand-preface.mp4` is a 2 min 14 s, 1080x1920, 30 fps animated film of the
+book's preface, told in the voice-over `voice/preface-voiceover.mp3` (ElevenLabs, voice "Viraj").
+The picture, Hindi subtitles, keyword slams and score all follow the recorded voice.
 
-`out/voice-samples/` has the same line in both Kokoro male voices (`omega`, used now, and `psi`);
-switch with `VOICE=hm_psi` and change the pace with `SPEED` (default `.88`) when re-voicing.
-
-| Scene | Narration |
-| --- | --- |
-| Night over the snow peaks | कहते हैं… उत्तराखंड के पहाड़ों में कुछ जगहें ऐसी हैं, जो किसी नक्शे पर नहीं मिलतीं। |
-| A moonlit deodar forest with a lantern | रात के सन्नाटे में, जब हवा देवदार के जंगलों से गुज़रती है… तो अपने साथ कहानियाँ लाती है। |
-| A footpath past the road's last milestone | ये सफ़र वहाँ से शुरू हुआ, जहाँ सड़क ख़त्म होती है… आख़िरी बस-स्टॉप के बाद। |
-| A village and its ringing temple bell | उन गाँवों में, जहाँ मंदिर की घंटी आज भी वक़्त बताती है… |
-| A glacier-fed river and a glowing stone | जहाँ नदियाँ जन्म लेती हैं… और हर पत्थर किसी पुरानी किंवदंती को याद रखता है। |
-| The path lights up ahead of the traveller | लेकिन कुछ रास्ते… आप नहीं चुनते। वो आपको चुनते हैं। |
-| A book opens | ये कोई गाइडबुक नहीं है। ये एक न्योता है। |
-| Title at golden hour | हिडन उत्तराखंड। देवभूमि की वो कहानियाँ, जो अब तक छिपी रहीं। |
+| Time | Scene | Story |
+| --- | --- | --- |
+| 0:00 | Dawn over the peaks | ये सफ़र सोनप्रयाग से शुरू हुआ था… |
+| 0:12 | A village with a temple bell | लोग थे, आवाज़ें थीं, पर फिर भी मैं अकेला था। |
+| 0:18 | The footpath beyond the last milestone | शहर पीछे छूट रहा था… पत्थर, चढ़ाई, थकान… |
+| 0:28 | The climb, in cloud, with a heartbeat | साँस तेज़ होने लगी थी… चलते रहो। |
+| 0:39 | A moonlit deodar forest and a lantern | मैं अकेला नहीं हूँ… जैसे कोई साथ चल रहा हो, बिना दिखे। |
+| 0:52 | A glacier river | थकान बढ़ती गई, लेकिन मन शांत होता गया। |
+| 1:02 | Golden hour over the ranges | मैं यहाँ क्यों हूँ? |
+| 1:12 | The path lights up in the dark | ये सफ़र मेरे अंदर का था… एक झलक दिखी — |
+| 1:20 | A stone temple rises out of the fog | मंदिर। … कोई मुझे ले जा रहा था। |
+| 1:39 | Rows of lamps, falling marigolds | ना आँसू रोके गए… और दिल भर आया। |
+| 1:48 | The bell rings on "बुलाया" and "बुलावा" | मुझे बुलाया गया था। |
+| 2:02 | A book opens | ये सिर्फ़ एक यात्रा नहीं थी, ये एक दर्शन था। |
+| 2:08 | Title: प्रस्तावना · Hidden UTTARAKHAND | देवभूमि की वो कहानियाँ, जो अब तक छिपी रहीं। |
 
 ## How it fits together
 
-1. `narration.py` voices `LINES` with [Kokoro TTS](https://github.com/thewh1teagle/kokoro-onnx)
-   (voice `hm_omega`), lowers and warms the voice with ffmpeg, and writes `timeline.js` with the
-   time of every line and word.
-2. `preface.html` reads `timeline.js`: scene cuts, subtitles, the bell, the glowing stone, the
-   lit path and the title all follow the spoken words.
-3. `preface_music.py` builds the score from the same timeline, ducks it under the voice and mixes
-   them.
+1. `voiceover.py` holds the transcript of the recording, phrase by phrase, with each phrase's
+   start and end in the recording. It writes `timeline.js` (scenes, captions, word times and the
+   cues for the path lighting up, the temple and the bells) and a cleaned-up `voice.wav`.
+2. `preface.html` draws every frame from `timeline.js` with `render(t)`.
+3. `preface_music.py` scores the same timeline, ducks the music under the voice and mixes them.
 
-To change the words, edit `LINES` in `narration.py` (wrap a word in `*` to make it gold) and rebuild
-with `KOKORO_DIR`. To use a human voice-over instead, replace `out/audio/narration/voice.wav` and
-adjust the times in `timeline.js` to match.
+**New recording:** replace `voice/preface-voiceover.mp3`, then update the phrase times and text
+in `SCRIPT` in `voiceover.py` (wrap a word in `*` to make it gold and slam it on screen). Scene
+names in `SCRIPT` pick the picture for each part of the story.
 
 ## Rebuilding
 
-Needs Node with Playwright (Chromium), Python 3 with NumPy, SciPy, soundfile and kokoro-onnx, and
-ffmpeg. Download `kokoro-v1.0.onnx` and `voices-v1.0.bin` from the kokoro-onnx
-`model-files-v1.0` release into one folder.
+Needs Node with Playwright (Chromium), Python 3 with NumPy, SciPy and soundfile, and ffmpeg.
 
 ```sh
-KOKORO_DIR=/path/to/kokoro NODE_PATH=$(npm root -g) node make_video.js   # re-voice and render
-NODE_PATH=$(npm root -g) node make_video.js --stills=6,30                 # preview frames in out/frames/
+NODE_PATH=$(npm root -g) node make_video.js                 # full video (about 9 minutes)
+NODE_PATH=$(npm root -g) node make_video.js --stills=6,86   # preview frames in out/frames/
 ```
 
 Fonts: Cormorant Garamond and Tiro Devanagari Hindi (SIL Open Font License), from Google Fonts.

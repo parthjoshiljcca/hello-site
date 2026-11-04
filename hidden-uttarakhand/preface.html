@@ -60,11 +60,9 @@
 </div>
 
 <script>
-// Every time below comes from the narration (timeline.js, written by narration.py).
-const LN = TIMELINE.lines, DURATION = TIMELINE.duration;
-const sceneStart = i => i === 0 ? 0 : LN[i].start - .5;
-const lineOf = scene => LN.findIndex(l => l.scene === scene);
-const wordTime = (scene, part) => { for (const s of LN[lineOf(scene)].segs) for (const w of s.words) if (w.w.includes(part)) return w.t; };
+// Every time below comes from the voice-over (timeline.js, written by voiceover.py).
+const TL = TIMELINE, LN = TL.lines, DURATION = TL.duration, CUES = TL.cues;
+const sceneAt = name => TL.scenes.find(s => s.name === name).start;
 const W = 1080, H = 1920;
 const main = document.getElementById('c').getContext('2d');
 const mk = () => { const c = document.createElement('canvas'); c.width = W; c.height = H; return c.getContext('2d'); };
@@ -140,9 +138,9 @@ function cloud(c, x, y, s, al) {
 
 const ST = rng(5), STARS = Array.from({ length: 260 }, () => ({ x: ST() * W, y: Math.pow(ST(), 1.4) * 1150, r: .6 + ST() * 1.8, a: .3 + ST() * .7, f: 1 + ST() * 3, p: ST() * 7 }));
 
-// ---------- scene 1: night to dawn over the peaks (0 - 12.6 s) ----------
-function scenePeaks(c, u) {
-  const k = .18 * ease(prog(u, 4, 10));
+// ---------- the peaks, at night or turning to dawn ----------
+function scenePeaks(c, u, dawn = false) {
+  const k = dawn ? .25 + .75 * ease(prog(u, 0, 9)) : .18 * ease(prog(u, 4, 10));
   c.fillStyle = vgrad(c, 0, 1250, [mixc('#02051a', '#1d2d68', k), mixc('#0a1540', '#9a5a86', k), mixc('#1a2a5e', '#ffbd7a', k)]);
   c.fillRect(0, 0, W, H);
   for (const s of STARS) {
@@ -161,7 +159,7 @@ function scenePeaks(c, u) {
   const ma = clamp(1 - k * 1.4);
   glow(c, 800, 330 + u * 10, 260, `rgba(190,210,255,${.25 * ma})`);
   c.fillStyle = `rgba(240,244,255,${ma})`; circle(c, 800, 330 + u * 10, 46);
-  const sy = lerp(1120, 640, ease(prog(u, 6, 12.6)));
+  const sy = dawn ? lerp(1100, 700, ease(prog(u, 0, 11))) : lerp(1120, 640, ease(prog(u, 6, 12.6)));
   glow(c, 600, sy, 700, `rgba(255,190,120,${.6 * k})`);
   c.fillStyle = `rgba(255,236,196,${k})`; circle(c, 600, sy, 64);
 
@@ -290,8 +288,6 @@ const TY = [990, 1060, 1140, 1230, 1330, 1440, 1560, 1690, 1830];
 const terraceY = (i, x) => TY[i] + 22 * Math.sin(x / 260 + i * 1.7);
 const HOUSES = [[0, 640], [0, 820], [1, 470], [2, 760], [3, 300], [3, 610], [4, 900], [5, 180], [6, 700]];
 const SMOKE = [0, 3, 5, 7];
-// scene-local: the bell rings on the spoken word "घंटी" and again three seconds later (preface_music.py matches)
-const BELL_STRIKES = [0, 3].map(d => wordTime('village', 'घंटी') - sceneStart(lineOf('village')) + d);
 function house(c, x, y, s) {
   c.save(); c.translate(x, y); c.scale(s, s);
   c.fillStyle = 'rgba(40,40,20,.25)'; c.fillRect(-90, -4, 190, 8);
@@ -320,15 +316,15 @@ function temple(c, x, y, s, u) {
   c.quadraticCurveTo(35, -320 + 8 * Math.sin(u * 6), 72, -306 + 6 * Math.sin(u * 6 + 1)); c.quadraticCurveTo(35, -298 + 8 * Math.sin(u * 6 + 2), 0, -292); c.fill();
   c.restore();
 }
-function bellAngle(u) {
+function bellAngle(u, strikes) {
   let a = Math.sin(u * 1.3) * .02;
-  for (const s of BELL_STRIKES) if (u > s - .25) {
+  for (const s of strikes) if (u > s - .25) {
     const d = u - s;
     a += d < 0 ? -.28 * Math.sin((d + .25) / .25 * Math.PI / 2) : -.28 * Math.exp(-d * 1.1) * Math.cos(d * 5.2);
   }
   return a;
 }
-function sceneVillage(c, u) {
+function sceneVillage(c, u, strikes = []) {
   c.fillStyle = vgrad(c, 0, 1100, ['#6fa6d6', '#b9d6e8', '#f6dcae']); c.fillRect(0, 0, W, H);
   glow(c, 220, 420, 520, 'rgba(255,236,190,.45)');
   for (let i = 0; i < 3; i++) cloud(c, ((i * 420 + u * 18) % 1500) - 200, 430 + i * 80, .7 + i * .2, .5);
@@ -361,7 +357,7 @@ function sceneVillage(c, u) {
   // foreground temple bell hanging from a carved beam, with a marigold garland
   c.fillStyle = '#4a2c17'; c.fillRect(560, 238, 560, 34); c.fillStyle = '#6b4123'; c.fillRect(560, 238, 560, 10);
   for (let i = 0; i <= 18; i++) { const k = i / 18, x = 590 + k * 480, y = 280 + Math.sin(k * Math.PI) * 70; c.fillStyle = i % 2 ? '#f28c0f' : '#f6b31a'; circle(c, x, y, 13); }
-  c.save(); c.translate(870, 272); c.rotate(bellAngle(u));
+  c.save(); c.translate(870, 272); c.rotate(bellAngle(u, strikes));
   c.strokeStyle = '#8a6a32'; c.lineWidth = 7; c.beginPath(); c.moveTo(0, 0); c.lineTo(0, 92); c.stroke();
   const bg = c.createLinearGradient(-110, 0, 110, 0); bg.addColorStop(0, '#7a5414'); bg.addColorStop(.35, '#f3cd63'); bg.addColorStop(.6, '#c8952c'); bg.addColorStop(1, '#5e3f0e');
   c.fillStyle = bg; c.beginPath(); c.moveTo(-26, 92); c.bezierCurveTo(-60, 100, -62, 170, -78, 230); c.quadraticCurveTo(-104, 246, -110, 258);
@@ -370,7 +366,7 @@ function sceneVillage(c, u) {
   c.fillStyle = 'rgba(60,35,5,.55)'; c.beginPath(); c.ellipse(0, 258, 110, 14, 0, 0, 7); c.fill();
   c.fillStyle = '#5e3f0e'; circle(c, 6, 270, 13);
   c.restore();
-  for (const s of BELL_STRIKES) { const d = u - s; if (d > 0 && d < 1.2) { c.strokeStyle = `rgba(255,230,160,${.5 * (1 - d / 1.2)})`; c.lineWidth = 4; for (const r of [1, 1.5]) { c.beginPath(); c.arc(870, 470, 140 * r + d * 260, .2, Math.PI - .2); c.stroke(); } } }
+  for (const s of strikes) { const d = u - s; if (d > 0 && d < 1.2) { c.strokeStyle = `rgba(255,230,160,${.5 * (1 - d / 1.2)})`; c.lineWidth = 4; for (const r of [1, 1.5]) { c.beginPath(); c.arc(870, 470, 140 * r + d * 260, .2, Math.PI - .2); c.stroke(); } } }
 }
 
 // ---------- scene 4: where rivers are born and stones remember (24.6 - 31.2 s) ----------
@@ -378,7 +374,7 @@ const riverAt = v => [540 + Math.sin(v * 3.4 + .3) * 230 * Math.pow(v, .8), 900 
 const RV = rng(9);
 const PEBBLES = Array.from({ length: 46 }, () => { const v = .08 + RV() * .92, side = RV() < .5 ? -1 : 1; return { v, side, o: RV(), r: RV() }; }).sort((a, b) => a.v - b.v);
 const PETALS = Array.from({ length: 44 }, () => ({ x: RV() * 1200 - 60, y: RV() * 2000, sp: .6 + RV() * .8, rot: RV() * 6, s: .6 + RV() * .9, p: RV() * 7 }));
-const GLOW_AT = wordTime('river', 'पत्थर') - sceneStart(lineOf('river')) - .2; // the stone lights up on "पत्थर"
+const GLOW_AT = 4.5; // scene-local: when the carved stone lights up
 function sceneRiver(c, u) {
   c.fillStyle = vgrad(c, 0, 900, ['#7db6de', '#c3e0ef', '#eef4f2']); c.fillRect(0, 0, W, H);
   range(c, R1, { x0: -320, w: 1720, base: 920, amp: 640, top: '#9fb4cf', bot: '#c7d6e4', snow: 330, snowCol: 'rgba(255,255,255,.97)', snowLine: .25, fade: 40 });
@@ -554,54 +550,151 @@ function sceneChosen(c, u) {
   if (k > .9) glow(c, PATH[last][0], PATH[last][1] - 20, 260, `rgba(255,205,120,${(k - .9) * 7})`);
   c.restore();
 }
-const LIT_AT = wordTime('chosen', 'आपको') - sceneStart(lineOf('chosen')) - .3; // the path lights up on "आपको"
+const LIT_AT = CUES.lit - sceneAt('chosen') - .3; // the path lights up on "झलक"
 
-const FNS = { peaks: scenePeaks, forest: sceneForest, trail: sceneTrail, village: sceneVillage, river: sceneRiver, chosen: sceneChosen, book: sceneBook, title: sceneTitle };
-const GRADE = { trail: '#a9a596', village: '#a8878a', river: '#8f9fb4' }; // a dark, dusk-like grade for the daylight scenes
-const MOOD = '#b4bccb'; // and a cold, darker grade over everything
+// ---------- the climb: the same path, higher, in cloud ----------
+function sceneClimb(c, u) {
+  sceneTrail(c, 5 + u * .18);
+  mist(c, 1150, 300, 'rgba(215,220,230,.32)');
+  mist(c, 700, 220, 'rgba(225,230,238,.3)');
+}
+
+// ---------- the temple appears out of the fog ----------
+const LAMPS = Array.from({ length: 9 }, (_, i) => ({ x: -300 + i * 75, p: i * 1.7 }));
+function flame(c, x, y, s, u, p) {
+  const f = 1 + .12 * Math.sin(u * 17 + p) * Math.sin(u * 7 + p * 2);
+  glow(c, x, y - 14 * s, 70 * s * f, 'rgba(255,170,60,.45)');
+  const g = c.createLinearGradient(0, y - 34 * s * f, 0, y);
+  g.addColorStop(0, 'rgba(255,250,210,0)'); g.addColorStop(.35, '#fff2b0'); g.addColorStop(1, '#ff9a1e');
+  c.fillStyle = g; c.beginPath(); c.moveTo(x, y - 34 * s * f);
+  c.quadraticCurveTo(x + 11 * s + Math.sin(u * 9 + p) * 2 * s, y - 6 * s, x, y); c.quadraticCurveTo(x - 11 * s, y - 6 * s, x, y - 34 * s * f); c.fill();
+}
+function sceneTemple(c, u) {
+  const clear = ease(prog(u, .2, 4));
+  c.fillStyle = vgrad(c, 0, 1400, ['#253050', '#6f7194', '#e0ad86']); c.fillRect(0, 0, W, H);
+  range(c, R1, { x0: -420, w: 1920, base: 1200, amp: 860, top: '#c6cbdb', bot: '#8e95ad', snow: 440, snowCol: 'rgba(255,240,226,.97)', snowLine: .28, rim: 'rgba(255,214,170,.7)', fade: 60 });
+  mist(c, 1180, 160, 'rgba(255,225,200,.45)');
+  glow(c, 540, 1000, 760, `rgba(255,196,120,${.3 + .3 * clear})`);
+  // stone courtyard
+  c.fillStyle = vgrad(c, 1480, H, ['#77716a', '#4e4a45', '#2c2a27']); c.fillRect(0, 1480, W, H - 1480);
+  c.strokeStyle = 'rgba(0,0,0,.18)'; c.lineWidth = 2;
+  for (let i = 0; i < 8; i++) { const y = 1480 + Math.pow(i / 8, 1.6) * 460; c.beginPath(); c.moveTo(0, y); c.lineTo(W, y); c.stroke(); }
+  for (let i = -6; i <= 6; i++) { c.beginPath(); c.moveTo(540 + i * 60, 1480); c.lineTo(540 + i * 260, H); c.stroke(); }
+  c.save(); c.translate(540, 1500);
+  c.fillStyle = '#6f6a62'; c.fillRect(-360, -46, 720, 46); c.fillStyle = 'rgba(255,255,255,.08)'; c.fillRect(-360, -46, 720, 8);
+  // shikhara
+  const sg = c.createLinearGradient(-230, 0, 230, 0); sg.addColorStop(0, '#77726a'); sg.addColorStop(.45, '#b9b2a4'); sg.addColorStop(1, '#5f5a53');
+  c.fillStyle = sg; c.beginPath(); c.moveTo(-230, -300); c.bezierCurveTo(-240, -560, -150, -800, -40, -880); c.lineTo(40, -880); c.bezierCurveTo(150, -800, 240, -560, 230, -300); c.closePath(); c.fill();
+  c.strokeStyle = 'rgba(40,30,20,.28)'; c.lineWidth = 4;
+  for (let i = 1; i < 11; i++) { const y = -300 - i * 54, w = 232 * Math.cos(Math.pow(i / 11, 1.5) * 1.3); c.beginPath(); c.moveTo(-w, y); c.quadraticCurveTo(0, y + 10, w, y); c.stroke(); }
+  c.fillStyle = '#8f897e'; c.beginPath(); c.ellipse(0, -892, 80, 24, 0, 0, 7); c.fill();
+  glow(c, 0, -930, 120, 'rgba(255,210,110,.6)');
+  c.fillStyle = '#e2b443'; circle(c, 0, -930, 24); c.fillRect(-6, -980, 12, 40);
+  c.strokeStyle = '#4a3a2a'; c.lineWidth = 4; c.beginPath(); c.moveTo(0, -980); c.lineTo(0, -1080); c.stroke();
+  c.fillStyle = '#ef7d16'; c.beginPath(); c.moveTo(0, -1080);
+  c.quadraticCurveTo(50, -1080 + 10 * Math.sin(u * 5), 100, -1062 + 8 * Math.sin(u * 5 + 1)); c.quadraticCurveTo(50, -1050 + 10 * Math.sin(u * 5 + 2), 0, -1040); c.fill();
+  // mandapa and its glowing doorway
+  c.fillStyle = '#8a8479'; c.fillRect(-270, -300, 540, 254);
+  c.fillStyle = '#6a655c'; c.beginPath(); c.moveTo(-300, -300); c.lineTo(300, -300); c.lineTo(240, -350); c.lineTo(-240, -350); c.closePath(); c.fill();
+  for (const x of [-210, -130, 130, 210]) { c.fillStyle = '#9b958a'; c.fillRect(x - 16, -290, 32, 244); c.fillStyle = 'rgba(0,0,0,.15)'; c.fillRect(x + 6, -290, 10, 244); }
+  const dg = c.createLinearGradient(0, -250, 0, -46); dg.addColorStop(0, '#ffe3a0'); dg.addColorStop(1, '#c8701a');
+  c.fillStyle = dg; c.beginPath(); c.moveTo(-62, -46); c.lineTo(-62, -190); c.arc(0, -190, 62, Math.PI, 0); c.lineTo(62, -46); c.closePath(); c.fill();
+  glow(c, 0, -140, 260, 'rgba(255,190,90,.5)');
+  for (const l of LAMPS) { c.fillStyle = '#7a3e1c'; c.beginPath(); c.ellipse(l.x, -46, 16, 6, 0, 0, 7); c.fill(); flame(c, l.x, -50, .9, u, l.p); }
+  c.restore();
+  // the traveller walks slowly up to the temple
+  const w = ease(prog(u, 8.5, 15.5));
+  traveller(c, 540, lerp(1960, 1600, w), lerp(2.2, 1.3, w), w > 0 && w < 1 ? u * 6 : 0);
+  // fog that lifts as the narrator says "मंदिर"
+  for (let i = 0; i < 4; i++) mist(c, 500 + i * 330, 360, `rgba(200,205,220,${.85 * (1 - clear)})`);
+  c.fillStyle = `rgba(190,196,212,${.75 * (1 - clear)})`; c.fillRect(0, 0, W, H);
+  mist(c, 1500, 160, 'rgba(230,225,220,.25)');
+}
+
+// ---------- tears and lamplight ----------
+const DIYAS = [];
+[[1150, 1.0, 5], [1420, 1.45, 4], [1760, 2.1, 3]].forEach(([y, s, n], r) => { for (let i = 0; i < n; i++) DIYAS.push({ x: (i + .5) * W / n + (r % 2 ? 50 : -30), y, s, p: r * 3 + i * 1.9 }); });
+const MARIGOLD = Array.from({ length: 30 }, () => ({ x: RV() * W, y: RV() * 2000, sp: .5 + RV() * .6, p: RV() * 7, s: .7 + RV() * .6 }));
+function sceneDiya(c, u) {
+  const g = c.createRadialGradient(540, 1350, 60, 540, 1200, 1400); g.addColorStop(0, '#5a3214'); g.addColorStop(.5, '#22130a'); g.addColorStop(1, '#060302');
+  c.fillStyle = g; c.fillRect(0, 0, W, H);
+  c.save(); c.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 7; i++) {
+    const a = Math.PI / 2 + (i - 3) * .16 + Math.sin(u * .4 + i) * .03;
+    c.fillStyle = 'rgba(255,190,110,.04)';
+    c.beginPath(); c.moveTo(540, -200); c.lineTo(540 + Math.cos(a - .05) * 2400, -200 + Math.sin(a - .05) * 2400); c.lineTo(540 + Math.cos(a + .05) * 2400, -200 + Math.sin(a + .05) * 2400); c.fill();
+  }
+  c.restore();
+  for (const d of DIYAS) {
+    c.fillStyle = '#5a2c12'; c.beginPath(); c.ellipse(d.x, d.y, 46 * d.s, 18 * d.s, 0, 0, Math.PI); c.fill();
+    c.fillStyle = '#8a4a22'; c.beginPath(); c.ellipse(d.x, d.y, 46 * d.s, 12 * d.s, 0, 0, 7); c.fill();
+    c.fillStyle = '#e0a040'; c.beginPath(); c.ellipse(d.x, d.y - 2 * d.s, 30 * d.s, 6 * d.s, 0, 0, 7); c.fill();
+    flame(c, d.x + 14 * d.s, d.y - 4 * d.s, 1.6 * d.s, u, d.p);
+  }
+  // incense smoke curling up on the right
+  c.strokeStyle = '#3a2416'; c.lineWidth = 4; c.beginPath(); c.moveTo(930, 1100); c.lineTo(960, 900); c.stroke();
+  c.fillStyle = '#ff6a20'; circle(c, 960, 898, 4);
+  for (let p = 0; p < 26; p++) { const a = (u * .12 + p / 26) % 1; c.fillStyle = `rgba(220,210,200,${.12 * (1 - a)})`; circle(c, 960 + Math.sin(a * 9 + u) * 40 * a, 890 - a * 760, 10 + a * 40); }
+  for (const m of MARIGOLD) {
+    const y = (m.y + u * 70 * m.sp) % 2050 - 60, x = m.x + Math.sin(u * 1.2 + m.p) * 30;
+    c.save(); c.translate(x, y); c.rotate(u * m.sp + m.p); c.fillStyle = m.p > 3.5 ? '#f28c0f' : '#f6b31a'; c.beginPath(); c.ellipse(0, 0, 12 * m.s, 7 * m.s, 0, 0, 7); c.fill(); c.restore();
+  }
+}
+
+const FNS = {
+  dawn: (c, u) => scenePeaks(c, u, true), village: (c, u) => sceneVillage(c, u), trail: sceneTrail, climb: sceneClimb, forest: sceneForest,
+  river: sceneRiver, golden: sceneTitle, chosen: sceneChosen, temple: sceneTemple, diya: sceneDiya,
+  calling: (c, u) => sceneVillage(c, u, CUES.bells.map(b => b - sceneAt('calling'))), book: sceneBook, title: sceneTitle,
+};
+// multiply grades: cold and dark for the climb, warmer once the temple appears
+const COLD = '#b4bccb', WARM = '#e6dccf';
+const GRADE = { dawn: [COLD], village: ['#a8878a', COLD], trail: ['#a9a596', COLD], climb: ['#a9a596', COLD], forest: [COLD], river: ['#8f9fb4', COLD],
+  golden: [WARM], chosen: [COLD], temple: [WARM], diya: [WARM], calling: ['#c9a89c', WARM], book: [WARM], title: [WARM] };
 const XF = .35;
-const SCENES = LN.map((l, i) => {
-  const fn = FNS[l.scene], g = GRADE[l.scene];
+const SCENES = TL.scenes.map((sc, i) => {
+  const fn = FNS[sc.name];
   const draw = (c, u) => {
     fn(c, u); c.globalCompositeOperation = 'multiply';
-    for (const col of g ? [g, MOOD] : [MOOD]) { c.fillStyle = col; c.fillRect(0, 0, W, H); }
+    for (const col of GRADE[sc.name]) { c.fillStyle = col; c.fillRect(0, 0, W, H); }
     c.globalCompositeOperation = 'source-over';
   };
-  return [draw, sceneStart(i), i < LN.length - 1 ? sceneStart(i + 1) + XF : 1e9];
+  return [draw, sc.start, i < TL.scenes.length - 1 ? TL.scenes[i + 1].start + XF : 1e9, sc.name];
 });
+const sceneNameAt = t => SCENES.filter(s => s[1] <= t).pop()[3];
 
 // ---------- captions: the narration, word by word as it is spoken ----------
-const CAP_Y = { river: 1250, book: 300 };
-const CAPS = LN.filter(l => l.scene !== 'title').map(l => {
-  const i = LN.indexOf(l), el = document.createElement('div'); el.className = 'cap'; el.style.top = (CAP_Y[l.scene] ?? 1340) + 'px';
+const GOLD = /^\*[^*]+\*[।,…?!—]*$/;
+const CAP_Y = { river: 1250, book: 300, temple: 1640, diya: 330 };
+const CAPS = LN.map((l, i) => {
+  const el = document.createElement('div'); el.className = 'cap'; el.style.top = (CAP_Y[l.scene] ?? 1340) + 'px';
   const words = [];
   l.segs.forEach((s, si) => s.words.forEach((w, wi) => {
-    const sp = document.createElement('span'), g = /^\*.*\*[।]?$/.test(w.w);
-    sp.textContent = w.w.replace(/\*/g, '') + (wi === s.words.length - 1 && si < l.segs.length - 1 ? '…' : '');
+    const sp = document.createElement('span'), g = GOLD.test(w.w);
+    sp.textContent = w.w.replace(/\*/g, '');
     if (g) sp.className = 'g';
     if (words.length) el.appendChild(document.createTextNode(' '));
     el.appendChild(sp); words.push({ el: sp, t: w.t });
   }));
   document.getElementById('caps').appendChild(el);
-  return { a: l.start - .15, b: sceneStart(i + 1) + .1, el, words };
+  const next = i < LN.length - 1 ? LN[i + 1].start - .05 : sceneAt('title') + .2;
+  return { a: l.start - .15, b: Math.min(next, l.end + 1.8), el, words };
 });
 
 // ---------- keyword slams: each line's gold words hit the screen big as they are spoken ----------
-const SLAMS = [];
-for (const l of LN) {
-  if (l.scene === 'title') continue;
+const SLAMS = [], SLAM_Y = { temple: 300, diya: 700 };
+for (const l of LN) for (const s of l.segs) {
   let cur = null;
-  for (const s of l.segs) for (const w of s.words) {
-    if (!/^\*.*\*[।]?$/.test(w.w)) { cur = null; continue; }
-    if (!cur) SLAMS.push(cur = { t: w.t, end: w.t, words: [] });
-    cur.words.push(w.w.replace(/[*।]/g, '')); cur.end = w.t;
+  for (const w of s.words) {
+    if (!GOLD.test(w.w)) { cur = null; continue; }
+    if (!cur) SLAMS.push(cur = { t: w.t, end: w.t, words: [], y: SLAM_Y[l.scene] ?? 700 });
+    cur.words.push(w.w.replace(/[*।,…—]/g, '')); cur.end = w.t;
   }
 }
 const slamEl = document.getElementById('slam');
 function slamAt(t) {
-  const s = SLAMS.find(s => t > s.t - .06 && t < s.end + 1.5);
+  const s = SLAMS.filter(s => t > s.t - .06 && t < s.end + 1.5).pop();
   if (!s) { slamEl.style.opacity = 0; return 0; }
-  slamEl.textContent = s.words.join(' ');
+  slamEl.textContent = s.words.join(' '); slamEl.style.top = s.y + 'px';
   const k = eout(prog(t, s.t - .06, s.t + .14)), out = prog(t, s.end + 1.0, s.end + 1.5), d = t - s.t;
   const sh = d > 0 && d < .35 ? 10 * (1 - d / .35) : 0;
   slamEl.style.opacity = k * (1 - out);
@@ -612,9 +705,9 @@ function slamAt(t) {
 
 const utk = document.querySelector('.utk');
 const LETTERS = [...'UTTARAKHAND'].map(ch => { const s = document.createElement('span'); s.textContent = ch; utk.appendChild(s); return s; });
-const T0 = LN[lineOf('title')].start - .3, UTK_AT = wordTime('title', 'उत्तराखंड') - T0, TAG_AT = wordTime('title', 'देवभूमि') - T0;
+const T0 = sceneAt('title') + .5, UTK_AT = .9, TAG_AT = 2.5;
 const titleParts = ['.dev', '.pre', '.hid', '.rule', '.tag', '.cta'].map(q => document.querySelector(q));
-const TITLE_AT = [-.3, 0, .1, TAG_AT - .4, TAG_AT, LN[lineOf('title')].end - T0 + .2];
+const TITLE_AT = [0, .3, .5, TAG_AT - .4, TAG_AT, 3.6];
 
 function reveal(el, k, dy = 24) {
   el.style.opacity = k; el.style.transform = `translateY(${(1 - k) * dy}px)`; el.style.filter = k < 1 ? `blur(${(1 - k) * 10}px)` : '';
