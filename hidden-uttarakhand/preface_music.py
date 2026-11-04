@@ -1,8 +1,8 @@
 # Thriller score for the narrated preface, built on the timeline narration.py wrote: a dark
-# drone on D under a low tanpura, a reverse swell and a hit on every scene cut, wind in the night
-# scenes, the temple bell on "घंटी", the river, a heartbeat under "some paths choose you", page
-# turns in the book and a braam into the title. The music ducks under the voice, then the voice
-# is mixed in on top.
+# drone on D under a low tanpura, a taiko ostinato that builds scene by scene, a ticking clock,
+# an impact on every keyword slam and scene cut, wind, the temple bell on "घंटी", the river, a
+# heartbeat and a dead silence before "आपको चुनते हैं", page turns and a braam into the title.
+# The music ducks under the voice, then the voice is mixed in on top.
 #
 #   python3 preface_music.py <out.wav>
 import json
@@ -21,6 +21,39 @@ LN, DUR = TL['lines'], TL['duration']
 scene = {l['scene']: l for l in LN}
 start = [0] + [l['start'] - .5 for l in LN[1:]]  # scene cuts, as in preface.html's sceneStart()
 cut = dict(zip([l['scene'] for l in LN], start))
+
+
+# the gold keyword groups preface.html slams onto the screen
+SLAMS = []
+for l in LN:
+    if l['scene'] == 'title':
+        continue
+    prev = False
+    for sg in l['segs']:
+        for w in sg['words']:
+            g = w['w'].strip('।').startswith('*') and w['w'].rstrip('।').endswith('*')
+            if g and not prev:
+                SLAMS.append(w['t'])
+            prev = g
+
+
+def taiko(size=1.0):
+    t = tt(.9)
+    body = np.sin(2 * np.pi * np.cumsum(58 + 70 * np.exp(-t * 22)) / SR) * np.exp(-t * 6)
+    skin = lp(rng.standard_normal(len(t)), 1400) * np.exp(-t * 30) * .6
+    return (body + skin) * size
+
+
+def impact():
+    t = tt(1.6)
+    crack = hp(rng.standard_normal(len(t)), 1500) * np.exp(-t * 18) * .8
+    sub = np.sin(2 * np.pi * np.cumsum(40 + 60 * np.exp(-t * 9)) / SR) * np.exp(-t * 2.2)
+    return crack + sub + boom(.6)[: len(t)] * .5
+
+
+def tick(hi):
+    t = tt(.03)
+    return hp(rng.standard_normal(len(t)), 4000 if hi else 2500) * np.exp(-t * 220)
 
 
 def word_time(sc, part):
@@ -104,10 +137,28 @@ for i, at in enumerate(np.arange(.8, DUR - 1.5, 1.1)):
 mus.place(boom(1.0), .05, .9, send=.5)
 mus.place(bell(86), .1, .06, send=.9)
 
-# every cut: a reverse swell into a low hit
+# every cut: a reverse swell into an impact
 for at in start[1:]:
-    mus.place(reverse_swell(), at - .9, .35, send=.3)
-    mus.place(boom(.7), at, .65, send=.4)
+    mus.place(reverse_swell(), at - .9, .45, send=.3)
+    mus.place(impact(), at, .7, send=.4)
+
+# every keyword slam
+for at in SLAMS:
+    mus.place(impact(), at - .02, .75, send=.5)
+
+lit = word_time('chosen', 'आपको')
+
+# taiko ostinato, 80 bpm, growing busier and louder scene by scene until the drop before "आपको"
+BEAT = .75
+for b, at in enumerate(np.arange(LN[0]['start'], lit - 1.0, BEAT / 2)):
+    level = np.interp(at, [0, cut['forest'], cut['trail'], cut['river'], cut['chosen'], lit], [.35, .5, .6, .75, .9, 1])
+    step = b % 8
+    if step in (0, 3, 6) or (at > cut['trail'] and step == 7) or (at > cut['chosen'] and step % 2):
+        mus.place(taiko(1 if step == 0 else .6), at, .55 * level, pan=.45 + .1 * (step % 2), send=.25)
+
+# a ticking clock from the forest until the drop
+for k, at in enumerate(np.arange(cut['forest'] + .2, lit - 1.0, BEAT / 2)):
+    mus.place(tick(k % 2 == 0), at, .18, pan=.65, send=.15)
 
 # night wind under the peaks and the forest
 w = sweep_lp(noise(cut['trail'] + 1), 260, 380)
@@ -134,12 +185,11 @@ for k, n in enumerate([74, 77, 81, 82, 86, 89]):
 
 # chosen: a heartbeat that quickens, then silence and a sting on "आपको"
 at = cut['chosen'] + .3
-lit = word_time('chosen', 'आपको')
-while at < lit - .4:
+while at < lit - 1.0:
     mus.place(heartbeat(), at, .8, send=.1)
     at += max(.62, 1.0 - (at - cut["chosen"]) * .07)
-mus.place(riser(1.2), lit - 1.2, .35, send=.4)
-mus.place(boom(1.0), lit, .8, send=.6)
+mus.place(boom(1.4), lit, 1.0, send=.7)
+mus.place(braam(2.5), lit, .5, send=.5)
 mus.place(pad([62, 63, 69], 2.2, 2400), lit, .15, send=.8)
 
 # book: page turns
@@ -158,6 +208,8 @@ for k, n in enumerate([74, 78, 81, 86]):
 mus.place(temple_bell(4.0), end + .3, .25, pan=.5, send=.7)
 
 music = mus.master(rev_amount=.35, fade_out=1.2)
+mt = np.arange(len(music)) / SR  # dead silence just before the twist
+music *= np.interp(mt, [lit - 1.0, lit - .8, lit - .03, lit], [1, .03, .03, 1])[:, None]
 
 # the voice, with a little room, and the music ducked underneath it
 voice, _ = sf.read(os.path.join(WORK, 'voice.wav'))
@@ -166,7 +218,7 @@ vox.place(voice, 0, 1.0, pan=.5, send=.12)
 vmix = vox.master(rev_amount=.12, fade_out=.1)
 env = lp(lp(np.abs(voice), 6), 6)[: len(music)]
 env = np.clip(env / (np.percentile(env, 95) + 1e-9), 0, 1)
-duck = 1 - .55 * np.pad(env, (0, len(music) - len(env)))[:, None]
+duck = 1 - .4 * np.pad(env, (0, len(music) - len(env)))[:, None]
 music = music / np.abs(music).max()
 vmix = vmix / np.abs(vmix).max()
-Mix.write(vmix[: len(music)] * 1.0 + music * .42 * duck, sys.argv[1])
+Mix.write(vmix[: len(music)] * 1.0 + music * .62 * duck, sys.argv[1])

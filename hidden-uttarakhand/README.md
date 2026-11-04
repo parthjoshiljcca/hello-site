@@ -1,8 +1,13 @@
 # Hidden Uttarakhand — narrated preface video (9:16)
 
-`out/hidden-uttarakhand-preface.mp4` is a 61-second, 1080x1920, 30 fps animated preface told
-thriller-style: a deep male Hindi narration, Hindi subtitles that appear word by word as they are
-spoken, and a dark score with hits on every cut. All of it is drawn and synthesised in code.
+`out/hidden-uttarakhand-preface.mp4` is a 58-second, 1080x1920, 30 fps animated preface told
+thriller-style: a male Hindi narration at its natural pitch, Hindi subtitles that appear word by
+word as they are spoken, each line's keyword slammed onto the screen with an impact, a dark grade
+with flicker and push-ins, and a score built on a taiko ostinato and a ticking clock that drop to
+silence before the twist. All of it is drawn and synthesised in code.
+
+`out/voice-samples/` has the same line in both Kokoro male voices (`omega`, used now, and `psi`);
+switch with `VOICE=hm_psi` and change the pace with `SPEED` (default `.88`) when re-voicing.
 
 | Scene | Narration |
 | --- | --- |

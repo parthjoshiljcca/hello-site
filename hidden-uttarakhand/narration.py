@@ -16,7 +16,7 @@ from kokoro_onnx import Kokoro
 DIR = os.path.dirname(os.path.abspath(__file__))
 WORK = os.path.join(DIR, 'out', 'audio', 'narration')
 SR = 48000
-VOICE, SPEED = 'hm_omega', .84
+VOICE, SPEED = os.environ.get('VOICE', 'hm_omega'), float(os.environ.get('SPEED', '.88'))
 
 # (scene, caption with *gold* words, pause after the line in seconds)
 LINES = [
@@ -30,8 +30,8 @@ LINES = [
     ('title', 'हिडन उत्तराखंड। देवभूमि की वो कहानियाँ, जो अब तक छिपी रहीं।', 2.8),
 ]
 LEAD_IN, SEG_GAP = 1.8, .45
-VOICE_FX = ('asetrate=24000*0.93,aresample=48000,atempo=1.0753,highpass=f=70,'
-            'equalizer=f=140:t=q:w=1:g=3.5,equalizer=f=3500:t=q:w=1.2:g=2,'
+# natural pitch (no pitch shifting), just a fuller low end, presence and compression
+VOICE_FX = ('aresample=48000,highpass=f=70,equalizer=f=160:t=q:w=1:g=2.5,equalizer=f=3200:t=q:w=1.2:g=2.5,'
             'acompressor=threshold=-20dB:ratio=3:attack=8:release=120')
 
 

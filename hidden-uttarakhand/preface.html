@@ -36,6 +36,8 @@
   .tag { margin:40px 90px 0; font:50px/1.45 Tiro; color:#fff6e6; text-shadow:0 4px 30px rgba(40,10,30,.7); }
   .cta { margin-top:56px; display:inline-block; padding:22px 54px; border:2px solid rgba(242,196,109,.8); border-radius:999px;
          font:700 34px Cormorant; letter-spacing:8px; color:var(--gold); background:rgba(20,10,30,.35); }
+  #slam { position:absolute; left:40px; right:40px; top:700px; text-align:center; font:150px/1.25 Tiro; color:var(--gold); opacity:0;
+          text-shadow:0 0 60px rgba(242,196,109,.6), 0 10px 50px rgba(0,0,0,.95); }
   #vignette { position:absolute; inset:0; background:radial-gradient(ellipse 75% 60% at 50% 48%, transparent 55%, rgba(0,0,0,.72) 100%); }
 </style>
 </head>
@@ -44,6 +46,7 @@
 <div id="vignette"></div>
 <div id="top">HIDDEN UTTARAKHAND<i></i>PREFACE</div>
 <div id="caps"></div>
+<div id="slam"></div>
 <div id="title">
   <div class="dev">प्रस्तावना</div>
   <div class="pre">THE LAND OF THE GODS</div>
@@ -554,11 +557,16 @@ function sceneChosen(c, u) {
 const LIT_AT = wordTime('chosen', 'आपको') - sceneStart(lineOf('chosen')) - .3; // the path lights up on "आपको"
 
 const FNS = { peaks: scenePeaks, forest: sceneForest, trail: sceneTrail, village: sceneVillage, river: sceneRiver, chosen: sceneChosen, book: sceneBook, title: sceneTitle };
-const GRADE = { trail: '#d9c9ad', village: '#cfa79c', river: '#b3c1d4' }; // a darker, dusk-like grade for the daylight scenes
+const GRADE = { trail: '#a9a596', village: '#a8878a', river: '#8f9fb4' }; // a dark, dusk-like grade for the daylight scenes
+const MOOD = '#b4bccb'; // and a cold, darker grade over everything
 const XF = .35;
 const SCENES = LN.map((l, i) => {
   const fn = FNS[l.scene], g = GRADE[l.scene];
-  const draw = g ? (c, u) => { fn(c, u); c.globalCompositeOperation = 'multiply'; c.fillStyle = g; c.fillRect(0, 0, W, H); c.globalCompositeOperation = 'source-over'; } : fn;
+  const draw = (c, u) => {
+    fn(c, u); c.globalCompositeOperation = 'multiply';
+    for (const col of g ? [g, MOOD] : [MOOD]) { c.fillStyle = col; c.fillRect(0, 0, W, H); }
+    c.globalCompositeOperation = 'source-over';
+  };
   return [draw, sceneStart(i), i < LN.length - 1 ? sceneStart(i + 1) + XF : 1e9];
 });
 
@@ -578,6 +586,30 @@ const CAPS = LN.filter(l => l.scene !== 'title').map(l => {
   return { a: l.start - .15, b: sceneStart(i + 1) + .1, el, words };
 });
 
+// ---------- keyword slams: each line's gold words hit the screen big as they are spoken ----------
+const SLAMS = [];
+for (const l of LN) {
+  if (l.scene === 'title') continue;
+  let cur = null;
+  for (const s of l.segs) for (const w of s.words) {
+    if (!/^\*.*\*[।]?$/.test(w.w)) { cur = null; continue; }
+    if (!cur) SLAMS.push(cur = { t: w.t, end: w.t, words: [] });
+    cur.words.push(w.w.replace(/[*।]/g, '')); cur.end = w.t;
+  }
+}
+const slamEl = document.getElementById('slam');
+function slamAt(t) {
+  const s = SLAMS.find(s => t > s.t - .06 && t < s.end + 1.5);
+  if (!s) { slamEl.style.opacity = 0; return 0; }
+  slamEl.textContent = s.words.join(' ');
+  const k = eout(prog(t, s.t - .06, s.t + .14)), out = prog(t, s.end + 1.0, s.end + 1.5), d = t - s.t;
+  const sh = d > 0 && d < .35 ? 10 * (1 - d / .35) : 0;
+  slamEl.style.opacity = k * (1 - out);
+  slamEl.style.transform = `translate(${Math.sin(t * 131) * sh}px, ${Math.cos(t * 117) * sh}px) scale(${lerp(1.8, 1, k) + out * .08})`;
+  slamEl.style.filter = out > 0 ? `blur(${out * 12}px)` : '';
+  return d > 0 && d < .25 ? 1 - d / .25 : 0;
+}
+
 const utk = document.querySelector('.utk');
 const LETTERS = [...'UTTARAKHAND'].map(ch => { const s = document.createElement('span'); s.textContent = ch; utk.appendChild(s); return s; });
 const T0 = LN[lineOf('title')].start - .3, UTK_AT = wordTime('title', 'उत्तराखंड') - T0, TAG_AT = wordTime('title', 'देवभूमि') - T0;
@@ -596,12 +628,18 @@ function render(t) {
   for (const [fn, a, b] of SCENES) {
     if (t < a || t > b) continue;
     const buf = BUF[slot++ % 2]; buf.save(); fn(buf, t - a); buf.restore();
-    const d = t - a, sh = a > 0 && d < .5 ? 12 * Math.pow(1 - d / .5, 2) : 0; // a jolt on every cut
-    main.globalAlpha = a === 0 ? 1 : ease(prog(t, a, a + XF));
-    main.drawImage(buf.canvas, Math.sin(t * 97) * sh, Math.cos(t * 83) * sh);
+    const d = t - a, sh = a > 0 && d < .5 ? 18 * Math.pow(1 - d / .5, 2) : 0; // a jolt on every cut
+    const z = 1 + .07 * ease(prog(t, a, Math.min(b, a + 12))); // a steady push-in through every scene
+    main.globalAlpha = a === 0 ? 1 : ease(prog(t, a + .08, a + .08 + XF));
+    main.drawImage(buf.canvas, W * (1 - z) / 2 + Math.sin(t * 97) * sh, H * (1 - z) / 2 + Math.cos(t * 83) * sh, W * z, H * z);
   }
-  const cut = Math.max(...SCENES.map(s => s[1]).filter(a => a > 0 && a <= t), -9);
-  if (t - cut < .4) { main.fillStyle = `rgba(255,240,225,${.28 * Math.pow(1 - (t - cut) / .4, 2)})`; main.fillRect(0, 0, W, H); }
+  const cut = Math.max(...SCENES.map(s => s[1]).filter(a => a > 0 && a <= t), -9), dc = t - cut;
+  if (dc < .08) { main.fillStyle = '#000'; main.fillRect(0, 0, W, H); } // a couple of black frames, then a flash
+  else if (dc < .5) { main.fillStyle = `rgba(255,240,225,${.45 * Math.pow(1 - (dc - .08) / .42, 2)})`; main.fillRect(0, 0, W, H); }
+  const hit = slamAt(t);
+  if (hit) { main.fillStyle = `rgba(255,225,170,${.18 * hit})`; main.fillRect(0, 0, W, H); }
+  const fr = Math.floor(t * 14), hsh = Math.abs(Math.sin(fr * 12.9898) * 43758.5453) % 1; // projector flicker
+  main.fillStyle = `rgba(0,0,0,${hsh < .04 ? .3 : .07 * hsh})`; main.fillRect(0, 0, W, H);
   main.globalAlpha = .05; main.globalCompositeOperation = 'overlay';
   const ox = (t * 977 % 1) * 200 - 100, oy = (t * 613 % 1) * 200 - 100; main.drawImage(grain.canvas, ox, oy); main.drawImage(grain.canvas, ox - W, oy);
   main.globalCompositeOperation = 'source-over'; main.globalAlpha = 1;
