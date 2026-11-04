@@ -1,8 +1,10 @@
-// Renders the 1080x1920 "Hidden Uttarakhand" preface video from preface.html (which exposes
-// render(t)) and scores it with preface_music.py.
+// Renders the 1080x1920 narrated "Hidden Uttarakhand" preface video: narration.py voices the
+// script and writes timeline.js, preface.html draws each frame with render(t) and
+// preface_music.py scores it and mixes in the voice.
 //
-//   node make_video.js                 -> out/hidden-uttarakhand-preface.mp4
-//   node make_video.js --stills=3,14   -> out/frames/still-3.png, still-14.png (no video)
+//   KOKORO_DIR=/path/to/kokoro node make_video.js   -> re-voice, then render out/hidden-uttarakhand-preface.mp4
+//   node make_video.js                              -> render with the existing narration
+//   node make_video.js --stills=3,14                -> out/frames/still-3.png, still-14.png (no video)
 const { chromium } = require('playwright');
 const { spawn, execFileSync } = require('child_process');
 const fs = require('fs');
@@ -11,7 +13,7 @@ const path = require('path');
 const DIR = __dirname;
 const OUT = path.join(DIR, 'out');
 const opt = (k, d) => (process.argv.find(a => a.startsWith(`--${k}=`)) || `=${d}`).split('=')[1];
-const FPS = 30, DUR = +opt('dur', 40), NAME = opt('name', 'hidden-uttarakhand-preface');
+const FPS = 30, NAME = opt('name', 'hidden-uttarakhand-preface');
 const STILLS = opt('stills', '');
 
 function run(cmd, args) {
@@ -30,6 +32,8 @@ async function openPage(browser) {
 }
 
 (async () => {
+  if (process.env.KOKORO_DIR && !STILLS) execFileSync('python3', [path.join(DIR, 'narration.py'), process.env.KOKORO_DIR], { stdio: 'inherit', cwd: DIR });
+  const DUR = JSON.parse(fs.readFileSync(path.join(DIR, 'timeline.js'), 'utf8').replace(/^window\.TIMELINE = |;\s*$/g, '')).duration;
   const browser = await chromium.launch();
   const page = await openPage(browser);
 
@@ -46,17 +50,17 @@ async function openPage(browser) {
   const work = path.join(OUT, 'audio', NAME);
   fs.mkdirSync(work, { recursive: true });
   const music = path.join(work, 'score.wav');
-  execFileSync('python3', [path.join(DIR, 'preface_music.py'), music, String(DUR)], { stdio: 'inherit', cwd: DIR });
+  execFileSync('python3', [path.join(DIR, 'preface_music.py'), music], { stdio: 'inherit', cwd: DIR });
 
   const silent = path.join(OUT, `${NAME}-silent.mp4`);
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
     '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', silent], { stdio: ['pipe', 'inherit', 'inherit'] });
   const ffDone = new Promise((res, rej) => ff.on('exit', c => (c ? rej(new Error('ffmpeg failed')) : res())));
-  for (let f = 0; f < DUR * FPS; f++) {
+  for (let f = 0; f < Math.round(DUR * FPS); f++) {
     await page.evaluate(t => render(t), f / FPS);
     const buf = await page.screenshot({ type: 'jpeg', quality: 93 });
     if (!ff.stdin.write(buf)) await new Promise(r => ff.stdin.once('drain', r));
-    if (f % 150 === 0) console.log(`frame ${f}/${DUR * FPS}`);
+    if (f % 300 === 0) console.log(`frame ${f}/${Math.round(DUR * FPS)}`);
   }
   ff.stdin.end();
   await browser.close();

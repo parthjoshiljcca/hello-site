@@ -1,17 +1,30 @@
-# Original 40-second score for preface.html: a tanpura drone on D with a bansuri-style
-# flute singing phrases in raag Bhupali (D E F# A B), mountain wind under the night sky, soft
-# hand-drum footsteps on the trail, the temple bell on the village's two strikes, the river,
-# page turns in the book scene and a warm resolve under the title.
+# Thriller score for the narrated preface, built on the timeline narration.py wrote: a dark
+# drone on D under a low tanpura, a reverse swell and a hit on every scene cut, wind in the night
+# scenes, the temple bell on "घंटी", the river, a heartbeat under "some paths choose you", page
+# turns in the book and a braam into the title. The music ducks under the voice, then the voice
+# is mixed in on top.
 #
-#   python3 preface_music.py <out.wav> [duration]
+#   python3 preface_music.py <out.wav>
+import json
+import os
 import sys
 
 import numpy as np
+import soundfile as sf
 
-from sfxlib import SR, Mix, bell, boom, hp, hz, lp, pad, rng, sweep_lp, tt
+from sfxlib import SR, Mix, bell, boom, hp, hz, lp, pad, riser, rng, saw, sweep_lp, tt
 
-DUR = float(sys.argv[2]) if len(sys.argv) > 2 else 40
-m = Mix(DUR)
+DIR = os.path.dirname(os.path.abspath(__file__))
+WORK = os.path.join(DIR, 'out', 'audio', 'narration')
+TL = json.load(open(os.path.join(WORK, 'timeline.json')))
+LN, DUR = TL['lines'], TL['duration']
+scene = {l['scene']: l for l in LN}
+start = [0] + [l['start'] - .5 for l in LN[1:]]  # scene cuts, as in preface.html's sceneStart()
+cut = dict(zip([l['scene'] for l in LN], start))
+
+
+def word_time(sc, part):
+    return next(w['t'] for s in scene[sc]['segs'] for w in s['words'] if part in w['w'])
 
 
 def noise(sec):
@@ -19,39 +32,40 @@ def noise(sec):
 
 
 def tanpura(midi, length=3.2):
-    """One plucked tanpura string: many harmonics, slow decay and the jawari's shimmer."""
     t = tt(length)
     f, out = hz(midi), np.zeros(len(t))
-    for k in range(1, 28):
-        if f * k > 9000:
+    for k in range(1, 24):
+        if f * k > 8000:
             break
-        swell = 1 + .6 * np.sin(2 * np.pi * (.35 + k * .05) * t + k)
-        out += np.sin(2 * np.pi * f * k * t + k) / k ** .8 * swell * np.exp(-t * (1.1 + k * .06))
+        out += np.sin(2 * np.pi * f * k * t + k) / k ** .8 * (1 + .6 * np.sin(2 * np.pi * (.35 + k * .05) * t + k)) * np.exp(-t * (1.1 + k * .06))
     return out * np.minimum(1, t / .01) * .25
 
 
-def flute(phrase, at, gain=.32, pan=.45):
-    """Bansuri: a glide (meend) between notes, delayed vibrato and a breathy edge."""
-    f = np.concatenate([np.full(int(SR * d), hz(n)) for n, d in phrase])
-    f = lp(lp(f - f[0], 14), 14) + f[0]  # smooth the note changes into slides
-    t = np.arange(len(f)) / SR
-    starts = np.cumsum([0] + [d for _, d in phrase[:-1]])
-    since = t - starts[np.searchsorted(starts, t, side='right') - 1]
-    f = f * (1 + .006 * np.minimum(1, since / .5) * np.sin(2 * np.pi * 5.2 * t))
-    ph = 2 * np.pi * np.cumsum(f) / SR
-    tone = np.sin(ph) + .28 * np.sin(2 * ph) + .08 * np.sin(3 * ph)
-    breath = sweep_lp(hp(noise(len(t) / SR), 1500), 3000, 3000) * .35
-    env = np.minimum(1, t / .15) * np.minimum(1, (t[-1] - t) / .6)
-    env *= 1 + .15 * np.sin(2 * np.pi * .7 * t)
-    m.place((tone + breath * (.6 + .4 * np.sin(ph * .01))) * env, at, gain, pan=pan, send=.75)
+def drone(length, notes, bright=320):
+    t = tt(length)
+    sig = sum(saw(hz(n) * (1 + d), t, 16) for n in notes for d in (-.003, .003)) / (2 * len(notes))
+    return lp(lp(sig, bright), bright) * (1 + .35 * np.sin(2 * np.pi * .11 * t)) * np.minimum(1, np.minimum(t, length - t) / 1.5)
+
+
+def heartbeat():
+    out = np.zeros(int(SR * .6))
+    for o, g in ((0, 1), (.2, .7)):
+        t = tt(.35)
+        s = np.sin(2 * np.pi * np.cumsum(48 + 40 * np.exp(-t * 25)) / SR) * np.exp(-t * 11) * g
+        i = int(o * SR)
+        out[i:i + len(s)] += s
+    return out
+
+
+def reverse_swell(length=.9):
+    t = tt(length)
+    return sweep_lp(noise(length), 300, 7000) * (t / length) ** 3 + np.sin(2 * np.pi * hz(74) * t) * (t / length) ** 4 * .3
 
 
 def temple_bell(length=5.0):
     t = tt(length)
     parts = [(1, 1, .6), (2.0, .55, .9), (2.76, .45, 1.4), (5.4, .25, 2.2), (8.9, .12, 3.0)]
-    f0 = hz(57)
-    return sum(a * np.sin(2 * np.pi * f0 * r * t * (1 + .0015 * np.sin(2 * np.pi * 3 * t))) * np.exp(-t * d)
-               for r, a, d in parts) * (1 - np.exp(-t * 400))
+    return sum(a * np.sin(2 * np.pi * hz(57) * r * t) * np.exp(-t * d) for r, a, d in parts) * (1 - np.exp(-t * 400))
 
 
 def page_turn():
@@ -60,65 +74,99 @@ def page_turn():
     return sweep_lp(hp(noise(.55), 900), 1800, 6000) * env * .6
 
 
-def drum(low):
-    t = tt(.5)
-    f = (95 if low else 190) * (1 + .5 * np.exp(-t * 30))
-    return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * (9 if low else 18)) + hp(noise(.5), 2500) * np.exp(-t * 60) * .25
+def braam(length=3.5):
+    t = tt(length)
+    sig = sum(saw(hz(n), t, 30) for n in (26, 38, 45, 50)) / 4
+    return sweep_lp(sig, 2200, 250) * np.exp(-t * .9) * np.minimum(1, t / .02)
 
 
-D = 50  # Sa = D3
+def flute(phrase, at, gain=.2):
+    f = np.concatenate([np.full(int(SR * d), hz(n)) for n, d in phrase])
+    f = lp(lp(f - f[0], 14), 14) + f[0]
+    t = np.arange(len(f)) / SR
+    f = f * (1 + .006 * np.minimum(1, t / .6) * np.sin(2 * np.pi * 5 * t))
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    tone = np.sin(ph) + .25 * np.sin(2 * ph) + sweep_lp(hp(noise(t[-1] + 1 / SR), 1500), 3000, 3000) * .25
+    mus.place(tone * np.minimum(1, t / .2) * np.minimum(1, (t[-1] - t) / .7), at, gain, pan=.45, send=.85)
 
-# wind across the whole piece, strongest under the night sky
-w = sweep_lp(noise(DUR), 300, 300)
+
+mus = Mix(DUR)
+
+# bed: drone and tanpura for the whole piece, the drone growing darker towards "chosen"
+mus.place(drone(cut['chosen'] + 1, [38, 45]), 0, .5, send=.3)
+mus.place(drone(cut['book'] - cut['chosen'] + 1, [38, 39, 45], 420), cut['chosen'], .55, send=.4)  # D-Eb rub for the twist
+mus.place(drone(DUR - cut['book'], [38, 45, 50]), cut['book'], .45, send=.4)
+for i, at in enumerate(np.arange(.8, DUR - 1.5, 1.1)):
+    if not cut['chosen'] <= at < cut['book']:
+        mus.place(tanpura([45, 50, 50, 38][i % 4]), at, .16, pan=.35 + .1 * (i % 4), send=.35)
+
+# opening: a hit out of black
+mus.place(boom(1.0), .05, .9, send=.5)
+mus.place(bell(86), .1, .06, send=.9)
+
+# every cut: a reverse swell into a low hit
+for at in start[1:]:
+    mus.place(reverse_swell(), at - .9, .35, send=.3)
+    mus.place(boom(.7), at, .65, send=.4)
+
+# night wind under the peaks and the forest
+w = sweep_lp(noise(cut['trail'] + 1), 260, 380)
 wt = np.arange(len(w)) / SR
-m.place(w * (.5 + .5 * np.sin(2 * np.pi * .13 * wt) ** 2) * np.interp(wt, [0, 3, 12, 14, 30, 35, DUR], [.2, 1, .7, .35, .3, .1, .1]), 0, .5, pan=.5, send=.2)
+mus.place(w * (.5 + .5 * np.sin(2 * np.pi * .13 * wt) ** 2) * np.minimum(1, (cut['trail'] + 1 - wt) / 1.5), 0, .9, send=.2)
+for k, n in enumerate([86, 90, 93, 98]):  # shooting star
+    mus.place(bell(n), 2.65 + k * .07, .04, pan=.7 - .1 * k, send=.8)
 
-# tanpura cycle Pa - Sa' - Sa' - Sa, from the first second to the end
-cycle = [D - 5 + 12, D + 12, D + 12, D]
-for i, at in enumerate(np.arange(.6, DUR - 1, 1.05)):
-    m.place(tanpura(cycle[i % 4] - 12), at, .22 if at < 35 else .28, pan=.35 + .1 * (i % 4), send=.4)
+# trail: footsteps on gravel
+for at in np.arange(cut['trail'] + .4, cut['village'], .55):
+    s = hp(noise(.08), 1800) * np.exp(-tt(.08) * 50)
+    mus.place(s, at + rng.uniform(-.02, .02), .12, pan=.45, send=.1)
 
-S, R, G, P, Dh = 62, 64, 66, 69, 71  # Bhupali on D4
-flute([(P, 1.0), (Dh, .5), (P, .5), (G, 1.0), (R, .5), (S, 2.2)], 1.3)
-flute([(S, .5), (R, .5), (G, .5), (P, 1.0), (Dh, .5), (S + 12, 1.5), (Dh, .5), (P, 1.8)], 6.9)
-flute([(G, .5), (P, .5), (Dh, 1.0), (P, .5), (G, .5), (R, 1.0), (S, .5), (R, .5), (G, 1.6)], 13.2, .28)
-flute([(Dh, 1.0), (P, .5), (Dh, .5), (S + 12, 1.5), (R + 12, 1.0), (S + 12, .5), (Dh, 1.6)], 19.9, .26)
-flute([(P, .75), (Dh, .75), (S + 12, 1.0), (R + 12, .5), (G + 12, 1.4), (R + 12, .5), (S + 12, 1.9)], 25.6, .27)
-flute([(G + 12, 1.0), (R + 12, .5), (S + 12, .6), (Dh, .6), (S + 12, 2.6)], 31.0, .22, pan=.55)
-flute([(P, .6), (Dh, .6), (S + 12, 3.2)], 36.0, .3)
+# village: the temple bell on "घंटी" and three seconds later
+for at in (word_time('village', 'घंटी'), word_time('village', 'घंटी') + 3):
+    mus.place(temple_bell(), at, .5, pan=.62, send=.6)
 
-# a shooting star (2.6 s) gets a small sparkle
-for k, n in enumerate([86, 90, 93, 98]):
-    m.place(bell(n), 2.65 + k * .07, .05, pan=.7 - .1 * k, send=.8)
-
-# trail: soft dholak footsteps, 12.6 - 19 s
-for i, at in enumerate(np.arange(12.6, 19.0, .3)):
-    if i % 4 in (0, 3):
-        m.place(drum(i % 4 == 0), at, .22 if i % 4 == 0 else .1, pan=.45, send=.2)
-
-# village: the temple bell on the two strikes the picture shows, plus small ghanti tinkles
-for at in (19.7, 22.7):
-    m.place(temple_bell(), at, .55, pan=.62, send=.6)
-for k in range(5):
-    m.place(bell(93 + (k % 2) * 4), 20.6 + k * .21, .035, pan=.3, send=.7)
-
-# river, 24.6 - 31.2 s
-rv = sweep_lp(hp(noise(6.6), 400), 2500, 2500)
+# river and the glowing stone
+rv = sweep_lp(hp(noise(cut['chosen'] - cut['river']), 400), 2500, 2500)
 rt = np.arange(len(rv)) / SR
-m.place(rv * (.7 + .3 * np.sin(2 * np.pi * 1.7 * rt) * np.sin(2 * np.pi * .6 * rt)) * np.minimum(1, np.minimum(rt, 6.6 - rt) / 1.0), 24.6, .2, pan=.5, send=.3)
-for k, n in enumerate([S, G, P, Dh, S + 12, G + 12, P + 12]):  # santoor-like rising run as the stone glows
-    m.place(bell(n + 12), 27.2 + k * .14, .07, pan=.25 + .08 * k, send=.6)
+mus.place(rv * (.7 + .3 * np.sin(2 * np.pi * 1.7 * rt)) * np.minimum(1, np.minimum(rt, rt[-1] - rt)), cut['river'], .25, send=.3)
+for k, n in enumerate([74, 77, 81, 82, 86, 89]):
+    mus.place(bell(n), word_time('river', 'पत्थर') - .2 + k * .13, .06, pan=.25 + .1 * k, send=.7)
 
-# book: page turns and a warm pad
-for at in (31.3, 32.5, 33.7):
-    m.place(page_turn(), at, .45, pan=.55, send=.25)
-m.place(pad([D, D + 7, D + 12, D + 16], 4.4, 1400), 30.8, .14, send=.7)
+# chosen: a heartbeat that quickens, then silence and a sting on "आपको"
+at = cut['chosen'] + .3
+lit = word_time('chosen', 'आपको')
+while at < lit - .4:
+    mus.place(heartbeat(), at, .8, send=.1)
+    at += max(.62, 1.0 - (at - cut["chosen"]) * .07)
+mus.place(riser(1.2), lit - 1.2, .35, send=.4)
+mus.place(boom(1.0), lit, .8, send=.6)
+mus.place(pad([62, 63, 69], 2.2, 2400), lit, .15, send=.8)
 
-# title: a soft hit, the full chord and a chime as UTTARAKHAND writes itself
-m.place(boom(.5), 35.3, .4, send=.5)
-m.place(pad([D - 12, D, D + 7, D + 12, D + 16], 4.2, 1800), 35.3, .2, send=.8)
-for k, n in enumerate([S + 12, G + 12, P + 12, S + 24]):
-    m.place(bell(n), 36.5 + k * .16, .08, pan=.3 + .12 * k, send=.8)
-m.place(temple_bell(4.0), 38.6, .2, pan=.5, send=.7)
+# book: page turns
+for d in (.7, 1.9, 3.1):
+    mus.place(page_turn(), cut['book'] + d, .45, pan=.55, send=.25)
+mus.place(pad([50, 57, 62, 66], cut['title'] - cut['book'], 1300), cut['book'], .12, send=.7)
 
-Mix.write(m.master(rev_amount=.35, fade_out=1.4), sys.argv[1])
+# title: braam, then a warm D major resolve, a flute and the bell
+mus.place(braam(), cut['title'], .7, send=.5)
+mus.place(boom(1.0), cut['title'], .7, send=.5)
+mus.place(pad([38, 50, 57, 62, 66], DUR - cut['title'] - 1, 1600), cut['title'] + .5, .22, send=.8)
+end = scene['title']['end']
+flute([(69, .7), (71, .7), (74, 2.6)], end - .4, .22)
+for k, n in enumerate([74, 78, 81, 86]):
+    mus.place(bell(n), word_time('title', 'उत्तराखंड') + k * .12, .06, pan=.3 + .12 * k, send=.8)
+mus.place(temple_bell(4.0), end + .3, .25, pan=.5, send=.7)
+
+music = mus.master(rev_amount=.35, fade_out=1.2)
+
+# the voice, with a little room, and the music ducked underneath it
+voice, _ = sf.read(os.path.join(WORK, 'voice.wav'))
+vox = Mix(DUR)
+vox.place(voice, 0, 1.0, pan=.5, send=.12)
+vmix = vox.master(rev_amount=.12, fade_out=.1)
+env = lp(lp(np.abs(voice), 6), 6)[: len(music)]
+env = np.clip(env / (np.percentile(env, 95) + 1e-9), 0, 1)
+duck = 1 - .55 * np.pad(env, (0, len(music) - len(env)))[:, None]
+music = music / np.abs(music).max()
+vmix = vmix / np.abs(vmix).max()
+Mix.write(vmix[: len(music)] * 1.0 + music * .42 * duck, sys.argv[1])

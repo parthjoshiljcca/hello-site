@@ -1,33 +1,43 @@
-# Hidden Uttarakhand — preface video (9:16)
+# Hidden Uttarakhand — narrated preface video (9:16)
 
-`out/hidden-uttarakhand-preface.mp4` is a 40-second, 1080x1920, 30 fps animated retelling of the
-book's preface with an original score. Everything is drawn in code: no stock footage or samples.
+`out/hidden-uttarakhand-preface.mp4` is a 61-second, 1080x1920, 30 fps animated preface told
+thriller-style: a deep male Hindi narration, Hindi subtitles that appear word by word as they are
+spoken, and a dark score with hits on every cut. All of it is drawn and synthesised in code.
 
-| Time | Scene | Line on screen |
-| --- | --- | --- |
-| 0–12.6 s | Night turns to dawn over the snow peaks | Some places never make it onto a map. / They live on in the stories of the people who call them home. |
-| 12–19 s | A traveller climbs a footpath past a road milestone | This journey began where the road ends — on footpaths beyond the last bus stop. |
-| 18.6–25 s | A terraced village, a stone temple and a ringing brass bell | In villages where the temple bell still keeps time, |
-| 24.6–31 s | A river born at a glacier, buransh petals and a glowing carved stone | where rivers are born, and every stone remembers a legend. |
-| 30.6–35.8 s | A book opens and its pages turn | This is not a guidebook. It is an invitation. |
-| 35.2–40 s | Title at golden hour | देवभूमि · Hidden UTTARAKHAND · Walk the paths the maps forgot. · Begin the journey |
+| Scene | Narration |
+| --- | --- |
+| Night over the snow peaks | कहते हैं… उत्तराखंड के पहाड़ों में कुछ जगहें ऐसी हैं, जो किसी नक्शे पर नहीं मिलतीं। |
+| A moonlit deodar forest with a lantern | रात के सन्नाटे में, जब हवा देवदार के जंगलों से गुज़रती है… तो अपने साथ कहानियाँ लाती है। |
+| A footpath past the road's last milestone | ये सफ़र वहाँ से शुरू हुआ, जहाँ सड़क ख़त्म होती है… आख़िरी बस-स्टॉप के बाद। |
+| A village and its ringing temple bell | उन गाँवों में, जहाँ मंदिर की घंटी आज भी वक़्त बताती है… |
+| A glacier-fed river and a glowing stone | जहाँ नदियाँ जन्म लेती हैं… और हर पत्थर किसी पुरानी किंवदंती को याद रखता है। |
+| The path lights up ahead of the traveller | लेकिन कुछ रास्ते… आप नहीं चुनते। वो आपको चुनते हैं। |
+| A book opens | ये कोई गाइडबुक नहीं है। ये एक न्योता है। |
+| Title at golden hour | हिडन उत्तराखंड। देवभूमि की वो कहानियाँ, जो अब तक छिपी रहीं। |
 
-The score is a tanpura drone on D with a bansuri-style flute in raag Bhupali, plus wind, hand-drum
-footsteps, the temple bell, the river and page turns, all timed to the picture.
+## How it fits together
 
-## Editing
+1. `narration.py` voices `LINES` with [Kokoro TTS](https://github.com/thewh1teagle/kokoro-onnx)
+   (voice `hm_omega`), lowers and warms the voice with ffmpeg, and writes `timeline.js` with the
+   time of every line and word.
+2. `preface.html` reads `timeline.js`: scene cuts, subtitles, the bell, the glowing stone, the
+   lit path and the title all follow the spoken words.
+3. `preface_music.py` builds the score from the same timeline, ducks it under the voice and mixes
+   them.
 
-- Lines of the preface: `CAPS` in `preface.html` (start, end, y-position, text; wrap a word in `*` to make it gold).
-- Title card: the `#title` block in `preface.html`.
-- Music and sound: `preface_music.py`. Event times are noted next to `BELL_STRIKES` and `FLIPS` in the page.
+To change the words, edit `LINES` in `narration.py` (wrap a word in `*` to make it gold) and rebuild
+with `KOKORO_DIR`. To use a human voice-over instead, replace `out/audio/narration/voice.wav` and
+adjust the times in `timeline.js` to match.
 
 ## Rebuilding
 
-Needs Node with Playwright (Chromium), Python 3 with NumPy and SciPy, and ffmpeg.
+Needs Node with Playwright (Chromium), Python 3 with NumPy, SciPy, soundfile and kokoro-onnx, and
+ffmpeg. Download `kokoro-v1.0.onnx` and `voices-v1.0.bin` from the kokoro-onnx
+`model-files-v1.0` release into one folder.
 
 ```sh
-NODE_PATH=$(npm root -g) node make_video.js                 # full video
-NODE_PATH=$(npm root -g) node make_video.js --stills=4,21   # preview frames in out/frames/
+KOKORO_DIR=/path/to/kokoro NODE_PATH=$(npm root -g) node make_video.js   # re-voice and render
+NODE_PATH=$(npm root -g) node make_video.js --stills=6,30                 # preview frames in out/frames/
 ```
 
 Fonts: Cormorant Garamond and Tiro Devanagari Hindi (SIL Open Font License), from Google Fonts.
