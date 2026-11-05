@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>NutriPulse – Diet, Calories, Sugar &amp; BP Tracker</title>
+  <meta name="description" content="Free health app: snap a food photo for instant calories and nutrients, personalised diet plans, and blood sugar and blood pressure tracking.">
+  <meta name="theme-color" content="#0f9d74">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="NutriPulse">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/home" aria-label="NutriPulse home">
+      <img src="/icons/icon.svg" alt="" width="28" height="28"><span>NutriPulse</span>
+    </a>
+    <div class="top-actions">
+      <button id="install" class="btn sm" hidden>⬇ Install app</button>
+      <a class="icon-btn" href="#/profile" aria-label="Profile" data-nav="profile">👤</a>
+    </div>
+  </header>
+
+  <nav class="nav" aria-label="Main">
+    <a href="#/home" data-nav="home"><span>🏠</span>Home</a>
+    <a href="#/diary" data-nav="diary"><span>📒</span>Diary</a>
+    <a href="#/scan" data-nav="scan" class="scan-tab"><span>📸</span>Scan</a>
+    <a href="#/plan" data-nav="plan"><span>🥗</span>Plan</a>
+    <a href="#/vitals" data-nav="vitals"><span>🩺</span>Vitals</a>
+  </nav>
+
+  <main id="view" class="view">
+    <noscript>NutriPulse needs JavaScript to run.</noscript>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

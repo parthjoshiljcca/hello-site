@@ -1,0 +1,16 @@
+{
+  "name": "nutripulse-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Static host + AI food photo analysis API for the NutriPulse PWA",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.5.0"
+  }
+}
