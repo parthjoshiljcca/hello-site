@@ -1,0 +1,156 @@
+[
+ {
+  "id": 1,
+  "scene": "hook",
+  "tts": "अगर तुम्हें एक लाख students के marks store करने हों...",
+  "cap": "Agar tumhe 1 lakh students ke marks store karne hon...",
+  "dur": 2.863
+ },
+ {
+  "id": 2,
+  "scene": "hook",
+  "tts": "तो क्या तुम एक लाख अलग-अलग variables बनाओगे?",
+  "cap": "Toh kya tum 1 lakh alag-alag variables banaoge?",
+  "dur": 2.609
+ },
+ {
+  "id": 3,
+  "scene": "intro",
+  "tts": "नहीं! इसके लिए है... Array.",
+  "cap": "Nahi! Iske liye hai... Array.",
+  "dur": 2.0
+ },
+ {
+  "id": 4,
+  "scene": "train",
+  "tts": "Array को समझो एक train की तरह।",
+  "cap": "Array ko samjho ek train ki tarah.",
+  "dur": 1.525
+ },
+ {
+  "id": 5,
+  "scene": "train",
+  "tts": "सारे coaches एक के बाद एक, line में जुड़े होते हैं।",
+  "cap": "Saare coaches ek ke baad ek, line mein jude hote hain.",
+  "dur": 3.061
+ },
+ {
+  "id": 6,
+  "scene": "train",
+  "tts": "Array में भी सारा data memory में एक साथ, continuous blocks में store होता है।",
+  "cap": "Array mein bhi saara data memory mein ek saath, continuous blocks mein store hota hai.",
+  "dur": 4.53
+ },
+ {
+  "id": 7,
+  "scene": "index",
+  "tts": "हर coach का एक number होता है। Array में इसे कहते हैं, index.",
+  "cap": "Har coach ka ek number hota hai. Array mein ise kehte hain index.",
+  "dur": 3.634
+ },
+ {
+  "id": 8,
+  "scene": "index",
+  "tts": "और याद रखना, ज़्यादातर languages में index zero से शुरू होता है, एक से नहीं।",
+  "cap": "Aur yaad rakhna, zyadatar languages mein index 0 se shuru hota hai, 1 se nahi.",
+  "dur": 4.835
+ },
+ {
+  "id": 9,
+  "scene": "access",
+  "tts": "अब magic देखो।",
+  "cap": "Ab magic dekho.",
+  "dur": 1.237
+ },
+ {
+  "id": 10,
+  "scene": "access",
+  "tts": "तुम्हें पाँचवाँ element चाहिए? Computer को शुरू से ढूँढना नहीं पड़ता।",
+  "cap": "Tumhe 5th element chahiye? Computer ko shuru se dhoondhna nahi padta.",
+  "dur": 3.5
+ },
+ {
+  "id": 11,
+  "scene": "access",
+  "tts": "वो सीधा calculate करता है: base address, plus index into element size।",
+  "cap": "Woh seedha calculate karta hai: base address + index × element size.",
+  "dur": 3.895
+ },
+ {
+  "id": 12,
+  "scene": "access",
+  "tts": "इसलिए array में किसी भी element को access करना, O of one है। यानी instant।",
+  "cap": "Isliye array mein kisi bhi element ko access karna O(1) hai. Yaani instant.",
+  "dur": 6.031
+ },
+ {
+  "id": 13,
+  "scene": "insert",
+  "tts": "लेकिन एक twist है!",
+  "cap": "Lekin ek twist hai!",
+  "dur": 0.808
+ },
+ {
+  "id": 14,
+  "scene": "insert",
+  "tts": "अगर बीच में नया element डालना हो, तो उसके बाद के सारे elements को एक-एक जगह खिसकाना पड़ता है।",
+  "cap": "Agar beech mein naya element daalna ho, toh uske baad ke saare elements ko ek-ek jagah khiskaana padta hai.",
+  "dur": 5.52
+ },
+ {
+  "id": 15,
+  "scene": "insert",
+  "tts": "इसलिए insertion और deletion, worst case में O of n time लेते हैं।",
+  "cap": "Isliye insertion aur deletion, worst case mein O(n) time lete hain.",
+  "dur": 4.284
+ },
+ {
+  "id": 16,
+  "scene": "size",
+  "tts": "और C या Java जैसी languages में, normal array का size fixed होता है।",
+  "cap": "Aur C ya Java jaisi languages mein, normal array ka size fixed hota hai.",
+  "dur": 3.575
+ },
+ {
+  "id": 17,
+  "scene": "size",
+  "tts": "इसीलिए Python की list और Java की ArrayList, जगह भरने पर नया बड़ा array बनाकर, data copy कर लेती हैं।",
+  "cap": "Isiliye Python ki list aur Java ki ArrayList, jagah bharne par naya bada array banakar, data copy kar leti hain.",
+  "dur": 6.816
+ },
+ {
+  "id": 18,
+  "scene": "uses",
+  "tts": "Photo के pixels, game के boards, तुम्हारी playlist... हर जगह arrays हैं।",
+  "cap": "Photo ke pixels, game ke boards, tumhari playlist... har jagah arrays hain.",
+  "dur": 4.071
+ },
+ {
+  "id": 19,
+  "scene": "ending",
+  "tts": "तो अगली बार जब तुम कोई list बनाओ...",
+  "cap": "Toh agli baar jab tum koi list banao...",
+  "dur": 1.867
+ },
+ {
+  "id": 20,
+  "scene": "ending",
+  "tts": "याद रखना, उसके पीछे एक simple पर powerful idea है। Array.",
+  "cap": "Yaad rakhna, uske peeche ek simple par powerful idea hai. Array.",
+  "dur": 3.711
+ },
+ {
+  "id": 21,
+  "scene": "end",
+  "tts": "This is The Why Spaces.",
+  "cap": "This is THE WHY SPACES.",
+  "dur": 1.656
+ },
+ {
+  "id": 22,
+  "scene": "end",
+  "tts": "Because every why, deserves a story.",
+  "cap": "Because every WHY deserves a story.",
+  "dur": 2.482
+ }
+]
