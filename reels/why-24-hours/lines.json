@@ -1,0 +1,184 @@
+[
+ {
+  "id": 1,
+  "scene": "watch",
+  "tts": "एक इंटरेस्टिंग सवाल है...",
+  "cap": "Ek interesting sawaal hai...",
+  "dur": 1.326
+ },
+ {
+  "id": 2,
+  "scene": "earth",
+  "tts": "अगर Earth को अपनी axis पर एक rotation complete करने में लगभग twenty-four hours लगते हैं...",
+  "cap": "Agar Earth ko apni axis par ek rotation complete karne mein lagbhag 24 hours lagte hain...",
+  "dur": 4.734
+ },
+ {
+  "id": 3,
+  "scene": "nums",
+  "tts": "तो हमने decide कैसे किया, कि एक दिन में twenty-four hours ही होंगे?",
+  "cap": "Toh humne decide kaise kiya ki ek din mein 24 hours hi honge?",
+  "dur": 3.174
+ },
+ {
+  "id": 4,
+  "scene": "nums",
+  "tts": "बारह, बीस, या तीस क्यों नहीं?",
+  "cap": "12, 20 ya 30 kyun nahi?",
+  "dur": 2.272
+ },
+ {
+  "id": 5,
+  "scene": "desert",
+  "tts": "इसका जवाब छुपा है, हज़ारों साल पुरानी civilizations में।",
+  "cap": "Iska jawab chhupa hai hazaaron saal purani civilizations mein.",
+  "dur": 2.854
+ },
+ {
+  "id": 6,
+  "scene": "sundial",
+  "tts": "Ancient Egypt में लोग दिन और रात को measure करने के लिए stars और sundials का use करते थे।",
+  "cap": "Ancient Egypt mein log din aur raat ko measure karne ke liye stars aur sundials ka use karte the.",
+  "dur": 4.707
+ },
+ {
+  "id": 7,
+  "scene": "dial",
+  "tts": "उन्होंने daytime को बारह parts, और nighttime को भी बारह parts में divide किया।",
+  "cap": "Unhone daytime ko 12 parts aur nighttime ko bhi 12 parts mein divide kiya.",
+  "dur": 3.738
+ },
+ {
+  "id": 8,
+  "scene": "dial",
+  "tts": "और यहीं से शुरू हुई, twenty-four hour day की कहानी।",
+  "cap": "Aur yahin se shuru hui 24-hour day ki kahaani.",
+  "dur": 2.577
+ },
+ {
+  "id": 9,
+  "scene": "babylon",
+  "tts": "लेकिन कहानी में एक और interesting civilization आती है...",
+  "cap": "Lekin kahaani mein ek aur interesting civilization aati hai...",
+  "dur": 2.574
+ },
+ {
+  "id": 10,
+  "scene": "babylon",
+  "tts": "Ancient Babylon.",
+  "cap": "Ancient Babylon.",
+  "dur": 1.188
+ },
+ {
+  "id": 11,
+  "scene": "tablet",
+  "tts": "Babylonians mathematics में base sixty number system use करते थे।",
+  "cap": "Babylonians mathematics mein base-60 number system use karte the.",
+  "dur": 3.277
+ },
+ {
+  "id": 12,
+  "scene": "clock",
+  "tts": "इसी mathematical tradition का influence आज भी हमारी timekeeping में दिखता है।",
+  "cap": "Isi mathematical tradition ka influence aaj bhi hamari timekeeping mein dikhta hai.",
+  "dur": 4.248
+ },
+ {
+  "id": 13,
+  "scene": "clock",
+  "tts": "Sixty seconds in a minute.",
+  "cap": "60 seconds in a minute.",
+  "dur": 1.071
+ },
+ {
+  "id": 14,
+  "scene": "clock",
+  "tts": "Sixty minutes in an hour.",
+  "cap": "60 minutes in an hour.",
+  "dur": 1.089
+ },
+ {
+  "id": 15,
+  "scene": "seasons",
+  "tts": "लेकिन एक twist और है!",
+  "cap": "Lekin ek twist aur hai!",
+  "dur": 0.981
+ },
+ {
+  "id": 16,
+  "scene": "seasons",
+  "tts": "Initially, hours हमेशा equal duration के नहीं होते थे।",
+  "cap": "Initially, hours hamesha equal duration ke nahi hote the.",
+  "dur": 2.798
+ },
+ {
+  "id": 17,
+  "scene": "bars",
+  "tts": "Ancient systems में daylight और nighttime को अलग-अलग बारह parts में divide किया जाता था।",
+  "cap": "Ancient systems mein daylight aur nighttime ko alag-alag 12 parts mein divide kiya jaata tha.",
+  "dur": 4.89
+ },
+ {
+  "id": 18,
+  "scene": "bars",
+  "tts": "इसलिए seasons के according, एक hour की actual length भी बदल सकती थी।",
+  "cap": "Isliye seasons ke according ek hour ki actual length bhi badal sakti thi.",
+  "dur": 3.57
+ },
+ {
+  "id": 19,
+  "scene": "tower",
+  "tts": "बाद में astronomy और mechanical clocks के development के साथ, equal-length hours standard बन गए।",
+  "cap": "Baad mein astronomy aur mechanical clocks ke development ke saath equal-length hours standard ban gaye.",
+  "dur": 5.828
+ },
+ {
+  "id": 20,
+  "scene": "watch2",
+  "tts": "तो अगली बार जब तुम अपनी watch में time देखोगे...",
+  "cap": "Toh agli baar jab tum apni watch mein time dekhoge...",
+  "dur": 2.128
+ },
+ {
+  "id": 21,
+  "scene": "watch2",
+  "tts": "याद रखना, तुम सिर्फ़ घड़ी नहीं देख रहे।",
+  "cap": "Yaad rakhna, tum sirf ghadi nahi dekh rahe.",
+  "dur": 1.96
+ },
+ {
+  "id": 22,
+  "scene": "legacy",
+  "tts": "तुम ancient Egypt, Babylon, और thousands of years of human discoveries का legacy देख रहे हो।",
+  "cap": "Tum ancient Egypt, Babylon aur thousands of years of human discoveries ka legacy dekh rahe ho.",
+  "dur": 5.693
+ },
+ {
+  "id": 23,
+  "scene": "sky",
+  "tts": "और दुनिया में ऐसे कितने ही सवाल हैं...",
+  "cap": "Aur duniya mein aise kitne hi sawaal hain...",
+  "dur": 1.642
+ },
+ {
+  "id": 24,
+  "scene": "sky",
+  "tts": "जिनके पीछे छुपी हैं fascinating stories.",
+  "cap": "Jinke peeche chhupi hain fascinating stories.",
+  "dur": 1.92
+ },
+ {
+  "id": 25,
+  "scene": "end",
+  "tts": "This is The Why Spaces.",
+  "cap": "This is THE WHY SPACES.",
+  "dur": 1.552
+ },
+ {
+  "id": 26,
+  "scene": "end",
+  "tts": "Because every why, deserves a story.",
+  "cap": "Because every WHY deserves a story.",
+  "dur": 2.472
+ }
+]
