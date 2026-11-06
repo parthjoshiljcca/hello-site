@@ -1,0 +1,5 @@
+out/narration.wav
+out/*.mp3
+out/film-*
+frames/
+node_modules

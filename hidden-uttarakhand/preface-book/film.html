@@ -1,0 +1,368 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Hidden Uttarakhand — प्रस्तावना</title>
+<script src="timeline.js"></script>
+<style>
+  @font-face { font-family:Tiro; src:url(../fonts/TiroDevanagariHindi.ttf); }
+  @font-face { font-family:Mukta; font-weight:500; src:url(../fonts/Mukta-Medium.ttf); }
+  @font-face { font-family:Mukta; font-weight:800; src:url(../fonts/Mukta-ExtraBold.ttf); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { width:1080px; height:1920px; overflow:hidden; background:#05070f; color:#fff; }
+  canvas#cv { position:absolute; inset:0; }
+  #hdr { position:absolute; top:80px; left:0; right:0; text-align:center; font:700 24px 'JetBrains Mono', monospace; letter-spacing:6px; color:rgba(242,196,109,.85); }
+  #hdr b { font:34px Tiro; letter-spacing:0; color:#f2c46d; margin-left:14px; vertical-align:-2px; }
+  #cap { position:absolute; left:70px; right:70px; bottom:230px; text-align:center; font:500 50px/1.45 Mukta; color:#f3eee2; text-shadow:0 3px 18px rgba(0,0,0,.9), 0 0 2px rgba(0,0,0,.9); }
+  #cap .w { opacity:0; display:inline-block; }
+  #key { position:absolute; left:60px; right:60px; top:230px; text-align:center; font:64px/1.25 Tiro; color:#f2c46d; opacity:0; text-shadow:0 0 40px rgba(242,196,109,.35), 0 6px 26px rgba(0,0,0,.9); }
+  #key.red { color:#ff5a64; text-shadow:0 0 40px rgba(255,80,90,.45), 0 6px 26px rgba(0,0,0,.9); }
+  #bookwrap { position:absolute; left:0; right:0; top:330px; height:900px; perspective:1600px; opacity:0; }
+  #cover { position:absolute; left:290px; top:60px; width:500px; border-radius:6px; box-shadow:0 40px 90px rgba(0,0,0,.8), 0 0 120px rgba(242,196,109,.15); }
+  #logo { position:absolute; left:110px; top:150px; width:860px; opacity:0; }
+  #author { position:absolute; left:190px; top:1330px; width:700px; opacity:0; mix-blend-mode:screen; }
+  #sign { position:absolute; left:0; right:0; top:760px; text-align:center; opacity:0; }
+  #sign .n { font:150px Tiro; color:#f3eee2; }
+  #sign .p { font:48px Tiro; color:#c9c2b0; margin-top:6px; }
+  #sign .soon { display:inline-block; margin-top:70px; font:700 32px 'JetBrains Mono', monospace; letter-spacing:5px; color:#f2c46d; border:2px solid #f2c46d; padding:16px 34px; border-radius:999px; }
+  #grain { position:absolute; inset:0; width:1080px; height:1920px; opacity:.08; mix-blend-mode:overlay; }
+  #vig { position:absolute; inset:0; background:radial-gradient(ellipse 80% 65% at 50% 47%, transparent 45%, rgba(0,0,0,.78) 100%); }
+  #fade { position:absolute; inset:0; background:#000; }
+</style>
+</head>
+<body>
+<canvas id="cv" width="1080" height="1920"></canvas>
+<div id="bookwrap"><img id="cover" src="../roopkund/assets/book-cover.jpg"></div>
+<img id="logo" src="../roopkund/assets/title-logo.png">
+<img id="author" src="../roopkund/assets/author-logo.png">
+<div id="sign"><div class="n">पार्थ</div><div class="p">अहमदाबाद, 2026</div><div class="soon">COMING SOON · जल्द आ रही है</div></div>
+<div id="vig"></div>
+<canvas id="grain" width="540" height="960"></canvas>
+<div id="hdr">HIDDEN UTTARAKHAND<b>प्रस्तावना</b></div>
+<div id="key"></div>
+<div id="cap"></div>
+<div id="fade"></div>
+<script>
+const W = 1080, H = 1920;
+const B = {}; TIMELINE.beats.forEach(b => B[b.beat] = b);
+const S = n => B[n].start, E = n => B[n].end, DURATION = TIMELINE.duration;
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const eout = x => 1 - Math.pow(1 - x, 3);
+const lerp = (a, b, k) => a + (b - a) * k;
+function rng(s) { return () => (s = (s * 16807) % 2147483647) / 2147483647; }
+const c = document.getElementById('cv').getContext('2d');
+const beatAt = t => (TIMELINE.beats.filter(b => t >= b.start - .35).pop() || TIMELINE.beats[0]).beat;
+
+// ---------- helpers ----------
+function grad(stops, y0 = 0, y1 = H) { const g = c.createLinearGradient(0, y0, 0, y1); stops.forEach((s, i) => g.addColorStop(i / (stops.length - 1), s)); return g; }
+function sky(stops) { c.fillStyle = grad(stops); c.fillRect(0, 0, W, H); }
+function dot(x, y, r, col) { if (!(r > 0)) return; c.fillStyle = col; c.beginPath(); c.arc(x, y, r, 0, 7); c.fill(); }
+function glow(x, y, r, col) { if (!(r > 0)) return; const g = c.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, col); g.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = g; c.fillRect(x - r, y - r, 2 * r, 2 * r); }
+const STARS = (() => { const R = rng(3); return Array.from({ length: 220 }, () => [R() * W, R() * H * .55, R() * 1.8 + .4, R() * 6]); })();
+function stars(t, a = 1) { for (const [x, y, r, p] of STARS) dot(x, y, r, `rgba(255,255,255,${a * (.35 + .35 * Math.sin(t * 1.5 + p))})`); }
+function ridge(base, amp, col, seed, f = .006, x0 = 0) {
+  c.fillStyle = col; c.beginPath(); c.moveTo(-10, H + 10);
+  for (let x = -10; x <= W + 10; x += 12) { const X = x + x0; c.lineTo(x, base - amp * (.55 * Math.abs(Math.sin(X * f + seed)) + .3 * Math.abs(Math.sin(X * f * 2.7 + seed * 3)) + .15 * Math.sin(X * f * 7 + seed))); }
+  c.lineTo(W + 10, H + 10); c.fill();
+}
+function peak(x, y, w, h, col, snow) {
+  c.fillStyle = col; c.beginPath(); c.moveTo(x - w, y + h); c.lineTo(x - w * .25, y + h * .25); c.lineTo(x, y); c.lineTo(x + w * .3, y + h * .3); c.lineTo(x + w, y + h); c.fill();
+  if (snow) { c.fillStyle = snow; c.beginPath(); c.moveTo(x - w * .25, y + h * .25); c.lineTo(x, y); c.lineTo(x + w * .3, y + h * .3); c.lineTo(x + w * .12, y + h * .22); c.lineTo(x, y + h * .32); c.lineTo(x - w * .1, y + h * .2); c.fill(); }
+}
+function fog(t, y, h, a = .25, col = '200,210,235') {
+  // soft drifting banks: wide radial blobs squashed vertically
+  for (let i = 0; i < 7; i++) {
+    const x = ((i * 330 + t * (16 + i * 5)) % 1900) - 400, yy = y + Math.sin(i * 2.3) * h * .3;
+    c.save(); c.translate(x, yy); c.scale(1, h / 1100);
+    const g = c.createRadialGradient(0, 0, 0, 0, 0, 560); g.addColorStop(0, `rgba(${col},${a * .55})`); g.addColorStop(1, `rgba(${col},0)`);
+    c.fillStyle = g; c.fillRect(-560, -560, 1120, 1120); c.restore();
+  }
+}
+function label(x, y, text, col = '#f2c46d', size = 30) {
+  c.font = `700 ${size}px 'JetBrains Mono', monospace`; const w = c.measureText(text).width + 40;
+  c.fillStyle = 'rgba(5,8,20,.75)'; c.strokeStyle = col; c.lineWidth = 2; c.beginPath(); c.roundRect(x - w / 2, y - 28, w, 56, 8); c.fill(); c.stroke();
+  c.fillStyle = col; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(text, x, y + 1);
+}
+function hiText(x, y, text, size, col, a = 1, font = 'Tiro') { c.globalAlpha = a; c.font = `${font === 'Mukta' ? '800 ' : ''}${size}px ${font}`; c.fillStyle = col; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(text, x, y); c.globalAlpha = 1; }
+function person(x, y, s, col = '#05070f') { c.save(); c.translate(x, y); c.scale(s, s); c.fillStyle = col; dot(0, -150, 22, col); c.beginPath(); c.moveTo(-30, -120); c.lineTo(30, -120); c.lineTo(24, -40); c.lineTo(16, 0); c.lineTo(4, 0); c.lineTo(0, -40); c.lineTo(-4, 0); c.lineTo(-16, 0); c.lineTo(-24, -40); c.fill(); c.restore(); }
+function bell(x, y, s, a, col = '#c9952c') {
+  c.save(); c.translate(x, y); c.rotate(a); c.scale(s, s);
+  c.strokeStyle = '#6a5228'; c.lineWidth = 3; c.beginPath(); c.moveTo(0, -80); c.lineTo(0, 0); c.stroke();
+  const g = c.createLinearGradient(-30, 0, 30, 0); g.addColorStop(0, '#5e3f0e'); g.addColorStop(.4, '#f3cd63'); g.addColorStop(1, '#5e3f0e');
+  c.fillStyle = g; c.beginPath(); c.moveTo(-10, 0); c.bezierCurveTo(-26, 4, -24, 34, -34, 52); c.lineTo(34, 52); c.bezierCurveTo(24, 34, 26, 4, 10, 0); c.fill(); c.restore();
+}
+
+// ---------- scenes ----------
+const R = rng(11);
+const SHOES = Array.from({ length: 90 }, () => ({ x: (R() - .5) * (R() * 2) * 260, h: R(), col: ['#7a3b2e', '#2f4a6b', '#c9a24a', '#3a3a3a', '#9b2f4a', '#e0dccf', '#4f6b3a'][Math.floor(R() * 7)], r: R() * 3 }));
+const BELLS = Array.from({ length: 70 }, () => ({ x: R() * W, row: Math.floor(R() * 5), p: R() * 7, s: .6 + R() * .5 }));
+const WINDOWS = Array.from({ length: 26 }, () => ({ x: 80 + R() * 920, y: 1180 + R() * 300, off: R() }));
+const SCENES = {
+  1: (u, t) => { // Ahmedabad: flat city, the flyover the tallest thing
+    sky(['#1c1430', '#6b3550', '#e0844a', '#f5b56a']); glow(760, 1050, 500, 'rgba(255,170,90,.5)'); dot(760, 1050, 80, '#ffd39a');
+    const R2 = rng(5); c.fillStyle = '#2a1a2c'; for (let x = -20; x < W; x += 40 + R2() * 40) { const h = 60 + R2() * 90; c.fillRect(x, 1250 - h, 34 + R2() * 30, h + 700); }
+    c.fillStyle = '#1a0f1c'; c.fillRect(-20, 1110, W + 40, 36); for (let x = 40; x < W; x += 170) c.fillRect(x, 1146, 26, 120);
+    for (let i = 0; i < 9; i++) { const x = ((i * 140 + t * 120) % 1300) - 100; dot(x, 1104, 5, i % 2 ? '#ffd27a' : '#ff5a50'); }
+    c.fillStyle = '#120a14'; c.fillRect(0, 1260, W, 700);
+    if (u > .3) { c.globalAlpha = prog(u, .3, .45); label(540, 1020, 'सबसे ऊँची चीज़ ↓', '#f2c46d', 30); c.globalAlpha = 1; }
+  },
+  2: (u, t) => { // the shoe heap outside the mandir
+    sky(['#120914', '#2a1424', '#3b1d24']); glow(540, 900, 600, 'rgba(255,150,60,.35)');
+    c.fillStyle = '#5a2e22'; c.fillRect(260, 640, 560, 560); c.fillStyle = '#7a3e24'; c.beginPath(); c.moveTo(220, 650); c.lineTo(540, 470); c.lineTo(860, 650); c.fill();
+    c.fillStyle = '#ffcf7a'; c.beginPath(); c.moveTo(470, 1200); c.lineTo(470, 900); c.arc(540, 900, 70, Math.PI, 0); c.lineTo(610, 1200); c.fill(); glow(540, 1000, 300, 'rgba(255,190,90,.45)');
+    for (let i = 0; i <= 16; i++) { const k = i / 16, x = 280 + k * 520, y = 690 + Math.sin(k * Math.PI) * 60; dot(x, y, 12, i % 2 ? '#f28c0f' : '#f6b31a'); }
+    c.fillStyle = '#2a1712'; c.fillRect(0, 1200, W, 720);
+    const n = Math.floor(SHOES.length * eout(prog(u, .2, .8)));
+    for (let i = 0; i < n; i++) { const s = SHOES[i], y = 1330 - s.h * 230 * (1 - Math.abs(s.x) / 300); c.save(); c.translate(540 + s.x, y); c.rotate(s.r); c.fillStyle = s.col; c.beginPath(); c.roundRect(-30, -10, 60, 22, 10); c.fill(); c.restore(); }
+    if (u > .7) { c.globalAlpha = prog(u, .7, .85); label(540, 1060, 'इकलौता "पहाड़"', '#f2c46d', 30); c.globalAlpha = 1; }
+  },
+  3: (u, t) => { // a tourist bus up a bright hill road
+    sky(['#5f9fd3', '#a9cde6', '#f4dfb6']); glow(860, 360, 400, 'rgba(255,240,200,.6)');
+    peak(380, 520, 360, 420, '#a8bcd8', '#fff'); peak(780, 600, 320, 360, '#9cb2d0', '#fff');
+    ridge(1150, 260, '#7fa36a', 1.3); ridge(1400, 200, '#5d8a4d', 2.1);
+    c.strokeStyle = '#d9c49a'; c.lineWidth = 26; c.lineCap = 'round'; c.beginPath(); c.moveTo(120, 1900); c.bezierCurveTo(900, 1700, 200, 1500, 760, 1300); c.stroke();
+    const k = eout(prog(u, 0, 1)), bx = lerp(260, 700, k), by = lerp(1820, 1340, k);
+    c.fillStyle = '#e8b83a'; c.beginPath(); c.roundRect(bx - 60, by - 40, 120, 52, 10); c.fill(); c.fillStyle = '#334'; c.fillRect(bx - 50, by - 32, 100, 18);
+    if (u > .55 && u < .62) { c.fillStyle = 'rgba(255,255,255,.6)'; c.fillRect(0, 0, W, H); }
+  },
+  4: (u, t) => { // the postcard
+    sky(['#20232e', '#2b2f3c']);
+    postcard(u, 0, t);
+  },
+  5: (u, t) => { // it turns over: the back side
+    const k = ease(prog(u, .05, .55)); sky([`rgba(32,35,46,${1 - k})`, '#05070f']); c.fillStyle = `rgba(5,7,15,${k})`; c.fillRect(0, 0, W, H);
+    postcard(1, k, t);
+  },
+  6: (u, t) => { // the god of justice: bells and petitions
+    sky(['#07060c', '#120c10', '#1d120c']); glow(540, 1100, 700, 'rgba(255,170,80,.22)');
+    for (let row = 4; row >= 0; row--) {
+      const y = 380 + row * 200, s = .5 + row * .22;
+      c.strokeStyle = `rgba(120,90,50,${.4 + row * .1})`; c.lineWidth = 4 + row * 2; c.beginPath(); c.moveTo(0, y - 90 * s); c.lineTo(W, y - 90 * s); c.stroke();
+      for (const b of BELLS.filter(b => b.row === row)) {
+        const a = Math.sin(t * 2 + b.p) * .12 * (u > .7 ? 2 : 1);
+        bell(b.x, y, s * b.s, a);
+        c.save(); c.translate(b.x + 26 * s, y - 40 * s); c.rotate(a * 1.5 + .2); c.fillStyle = 'rgba(240,232,210,.9)'; c.fillRect(0, 0, 24 * s, 34 * s);
+        c.strokeStyle = 'rgba(80,60,40,.6)'; c.lineWidth = 1; for (let l = 1; l < 4; l++) { c.beginPath(); c.moveTo(3 * s, l * 8 * s); c.lineTo(20 * s, l * 8 * s); c.stroke(); } c.restore();
+      }
+    }
+    for (let i = 0; i < 5; i++) { const x = 160 + i * 190; dot(x, 1560, 8, '#ffcf7a'); glow(x, 1550, 90, 'rgba(255,170,70,.4)'); }
+  },
+  7: (u, t) => { // a village that won't forgive Hanuman: the mountain with a piece missing
+    sky(['#04060f', '#0b1430', '#162048']); stars(t); dot(830, 330, 40, '#e8eeff'); glow(830, 330, 200, 'rgba(180,200,255,.2)');
+    c.fillStyle = '#1b2547'; c.beginPath(); c.moveTo(-20, 1300); c.lineTo(300, 640); c.lineTo(420, 700); c.lineTo(470, 560); c.lineTo(560, 700); c.lineTo(640, 600); c.lineTo(1100, 1300); c.fill();
+    c.fillStyle = '#04060f'; c.beginPath(); c.moveTo(470, 560); c.lineTo(520, 640); c.lineTo(600, 650); c.lineTo(640, 600); c.lineTo(560, 540); c.closePath(); c.fill();
+    c.setLineDash([12, 10]); c.strokeStyle = 'rgba(255,90,100,.8)'; c.lineWidth = 4; c.beginPath(); c.moveTo(470, 560); c.lineTo(520, 450); c.lineTo(620, 440); c.lineTo(660, 520); c.lineTo(640, 600); c.stroke(); c.setLineDash([]);
+    ridge(1400, 160, '#0e1430', 4); for (const w of WINDOWS.slice(0, 12)) dot(w.x, w.y + 80, 5, '#ffcf7a');
+    fog(t, 1300, 200, .2);
+  },
+  8: (u, t) => { // the devi's walk behind a four-horned ram; two calendars
+    if (u < .62) {
+      sky(['#04060f', '#0b1430', '#1b2450']); stars(t, .8);
+      ridge(1250, 240, '#141c3c', 2.4); ridge(1450, 160, '#0b1028', 5);
+      const k = prog(u, 0, .62);
+      for (let i = 0; i < 14; i++) { const x = lerp(-200, 900, k) - i * 70, y = 1180 - Math.sin((x + 200) * .004) * 80; if (x < -40) continue; dot(x, y, 6, '#ffcf7a'); glow(x, y, 50, 'rgba(255,170,70,.45)'); person(x - 10, y + 60, .5, '#0a0e22'); }
+      const rx = lerp(-60, 1000, k) + 90, ry = 1150 - Math.sin((rx + 200) * .004) * 80;
+      c.save(); c.translate(rx, ry); c.fillStyle = '#d8d0bc'; c.beginPath(); c.ellipse(0, 0, 48, 28, 0, 0, 7); c.fill(); c.beginPath(); c.ellipse(46, -16, 18, 14, 0, 0, 7); c.fill();
+      c.strokeStyle = '#b8945a'; c.lineWidth = 6; for (const [dx, r] of [[38, 12], [50, 10], [42, 16], [54, 14]]) { c.beginPath(); c.arc(dx, -30, r, Math.PI, Math.PI * 2.3); c.stroke(); }
+      c.fillStyle = '#d8d0bc'; for (const lx of [-30, -14, 14, 30]) c.fillRect(lx, 20, 7, 30); c.restore();
+      if (k > .4) { c.globalAlpha = prog(k, .4, .6); label(540, 920, 'चार सींगों वाला मेढ़ा', '#f2c46d', 30); c.globalAlpha = 1; }
+    } else {
+      sky(['#05070f', '#0c1022']); const k = eout(prog(u, .62, .8));
+      for (const [x, d, col] of [[300, 'अगस्त?', '#f2c46d'], [780, 'सितंबर?', '#ff5a64']]) {
+        c.save(); c.translate(x, 900); c.rotate(x < 540 ? -.06 : .06); c.scale(k, k);
+        c.fillStyle = '#efe6d2'; c.beginPath(); c.roundRect(-170, -200, 340, 400, 18); c.fill(); c.fillStyle = col; c.fillRect(-170, -200, 340, 90);
+        c.fillStyle = '#1a1a1a'; c.font = '60px Tiro'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(d, 0, 40); c.restore();
+      }
+      hiText(540, 1270, 'दो कमेटियाँ', 70, '#f3eee2', prog(u, .75, .85));
+    }
+  },
+  9: (u, t) => { // a lake holding strangers' bones
+    sky(['#03050d', '#0a1330', '#1c2a58']); stars(t);
+    peak(560, 420, 520, 640, '#25335f', '#9aaedb'); ridge(1180, 200, '#1a2648', 1.7);
+    c.fillStyle = '#2b3b68'; c.fillRect(0, 1180, W, 800);
+    c.fillStyle = '#163f66'; c.beginPath(); c.ellipse(540, 1380, 380, 120, 0, 0, 7); c.fill();
+    const R3 = rng(9); for (let i = 0; i < 26; i++) { const k = prog(u, .1 + i * .015, .3 + i * .015); if (!k) continue; const a = R3() * 7, r = Math.sqrt(R3()); const x = 540 + Math.cos(a) * 330 * r, y = 1380 + Math.sin(a) * 100 * r; c.globalAlpha = k; c.fillStyle = '#e9e0c8';
+      if (i % 4 === 0) { dot(x, y, 14, '#e9e0c8'); dot(x - 5, y - 1, 3, '#3a3226'); dot(x + 5, y - 1, 3, '#3a3226'); } else { c.save(); c.translate(x, y); c.rotate(a); c.fillRect(-20, -3, 40, 6); dot(-20, 0, 6, '#e9e0c8'); dot(20, 0, 6, '#e9e0c8'); c.restore(); } c.globalAlpha = 1; }
+    const k = eout(prog(u, .45, .85)); c.strokeStyle = '#3fe0d0'; c.lineWidth = 6; c.setLineDash([16, 12]); c.beginPath();
+    for (let i = 0; i <= 50 * k; i++) { const v = i / 50, x = lerp(-40, 540, v), y = lerp(500, 1340, v) - Math.sin(v * Math.PI) * 380; i ? c.lineTo(x, y) : c.moveTo(x, y); } c.stroke(); c.setLineDash([]);
+    if (k > .3) { c.globalAlpha = prog(k, .3, .5); label(300, 560, 'दुनिया के उस पार से', '#3fe0d0', 28); c.globalAlpha = 1; }
+    fog(t, 1250, 160, .18);
+  },
+  10: (u, t) => { // a mountain hiding a nuclear device
+    sky(['#02030a', '#070d22', '#0f1838']); stars(t, .7);
+    c.fillStyle = '#1c2850'; c.beginPath(); c.moveTo(-40, 1500); c.lineTo(540, 380); c.lineTo(1120, 1500); c.fill();
+    c.fillStyle = '#c9d4f0'; c.beginPath(); c.moveTo(430, 600); c.lineTo(540, 380); c.lineTo(650, 600); c.lineTo(590, 560); c.lineTo(540, 620); c.lineTo(490, 560); c.fill();
+    const cut = eout(prog(u, .1, .4)); c.save(); c.beginPath(); c.arc(540, 1020, 230 * cut, 0, 7); c.clip(); c.fillStyle = '#05070f'; c.fillRect(0, 0, W, H);
+    c.strokeStyle = 'rgba(90,120,200,.4)'; c.lineWidth = 2; for (let i = 0; i < 8; i++) { c.beginPath(); c.arc(540, 1020, 30 + i * 28, 0, 7); c.stroke(); }
+    const pulse = .6 + .4 * Math.sin(t * 6); glow(540, 1020, 200, `rgba(150,255,120,${.35 * pulse})`);
+    c.fillStyle = '#8a9a7a'; c.beginPath(); c.roundRect(490, 960, 100, 120, 14); c.fill(); c.fillStyle = '#3a4a2a'; c.fillRect(490, 990, 100, 14); c.fillRect(490, 1040, 100, 14);
+    c.fillStyle = `rgba(200,255,150,${pulse})`; c.font = '700 54px "JetBrains Mono"'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('☢', 540, 1022); c.restore();
+    c.strokeStyle = 'rgba(150,255,120,.6)'; c.lineWidth = 4; c.beginPath(); c.arc(540, 1020, 230 * cut, 0, 7); c.stroke();
+    if (u > .5) { const k = eout(prog(u, .5, .65)); c.save(); c.translate(540, 1500); c.rotate(-.05); c.globalAlpha = k;
+      c.fillStyle = '#d9c9a0'; c.beginPath(); c.roundRect(-300, -120, 600, 240, 10); c.fill(); c.fillStyle = '#b3202c'; c.font = '700 44px "JetBrains Mono"'; c.textAlign = 'center'; c.fillText('CLASSIFIED', 0, -60);
+      c.fillStyle = '#111'; for (let i = 0; i < 3; i++) c.fillRect(-250, -10 + i * 42, 500 * eout(prog(u, .62 + i * .06, .72 + i * .06)), 26); c.restore(); }
+  },
+  11: (u, t) => { // the meadow at night: don't answer
+    sky(['#010208', '#060b1c', '#0d1530']); stars(t, .6); dot(250, 380, 34, '#dfe6ff'); glow(250, 380, 220, 'rgba(180,200,255,.18)');
+    ridge(1150, 120, '#0c142c', 1.1, .003); ridge(1350, 90, '#0a1024', 2.4, .003);
+    c.fillStyle = '#070b18'; c.fillRect(0, 1350, W, 600);
+    fog(t, 1150, 300, .35); person(540, 1500, 1.6, '#020308');
+    const wk = prog(u, .2, .75); if (wk > 0 && wk < 1) { c.save(); c.globalAlpha = Math.sin(wk * Math.PI) * .55; c.font = '52px Tiro'; c.fillStyle = '#bcd0ff'; c.textAlign = 'center';
+      c.fillText('…सुनो…', lerp(1100, 200, wk), 1050 + Math.sin(wk * 9) * 30); c.restore(); }
+    for (const [x, y] of [[180, 1240], [900, 1200]]) { const a = prog(u, .55, .7) * (.6 + .4 * Math.sin(t * 3 + x)); dot(x - 10, y, 4, `rgba(255,80,80,${a})`); dot(x + 10, y, 4, `rgba(255,80,80,${a})`); }
+    fog(t * 1.3, 1450, 260, .3);
+  },
+  12: (u, t) => { // not hidden, only unheard
+    sky(['#020309', '#05070f']); const amp = 1 - eout(prog(u, .2, .9));
+    c.strokeStyle = 'rgba(242,196,109,.9)'; c.lineWidth = 4; c.beginPath();
+    for (let x = 0; x <= W; x += 6) { const y = 960 + Math.sin(x * .03 + t * 6) * 120 * amp * Math.sin(Math.PI * x / W) * (.6 + .4 * Math.sin(x * .007 + t)); x ? c.lineTo(x, y) : c.moveTo(x, y); } c.stroke();
+    hiText(540, 760, 'छिपा नहीं', 80, '#c9c2b0', prog(u, .05, .25) * .9); hiText(540, 1180, 'अनसुना', 110, '#f2c46d', prog(u, .5, .7));
+  },
+  13: (u, t) => { // jagariya songs; grandmothers' warnings
+    sky(['#060305', '#140a08', '#22100a']); const fx = 540, fy = 1350;
+    glow(fx, fy, 520, 'rgba(255,130,40,.35)');
+    for (let i = 0; i < 40; i++) { const a = ((t * .6 + i / 40) % 1); dot(fx + Math.sin(i * 7 + t) * 60 * a, fy - a * 600, 3 * (1 - a), `rgba(255,190,90,${1 - a})`); }
+    for (let i = 0; i < 6; i++) { const h = 120 + 40 * Math.sin(t * 9 + i * 2); c.fillStyle = i % 2 ? '#ff9a2a' : '#ffd36a'; c.beginPath(); c.moveTo(fx - 70 + i * 28, fy); c.quadraticCurveTo(fx - 60 + i * 28, fy - h * .6, fx - 56 + i * 28 + Math.sin(t * 7 + i) * 8, fy - h); c.quadraticCurveTo(fx - 40 + i * 28, fy - h * .5, fx - 44 + i * 28, fy); c.fill(); }
+    c.fillStyle = '#0a0503'; c.fillRect(0, fy, W, 600);
+    if (u < .55) { const hit = Math.abs(Math.sin(t * 5)) ; person(280, fy + 10, 1.4, '#0a0503'); c.fillStyle = '#0a0503'; c.beginPath(); c.ellipse(330, fy - 120, 50, 36, .3, 0, 7); c.fill(); dot(380, fy - 150 - hit * 20, 8, '#0a0503'); label(540, 760, 'जगरिया के गीत', '#f2c46d', 30); }
+    else { c.fillStyle = '#0a0503'; c.beginPath(); c.moveTo(760, fy); c.quadraticCurveTo(700, fy - 200, 780, fy - 260); c.quadraticCurveTo(860, fy - 300, 900, fy - 220); c.quadraticCurveTo(930, fy - 100, 880, fy); c.fill(); dot(800, fy - 280, 34, '#0a0503'); label(540, 760, 'दादी-नानियों की चेतावनियाँ', '#f2c46d', 30); }
+  },
+  14: (u, t) => { // a driver at a hairpin bend at midnight
+    sky(['#010207', '#050a1a', '#0a1228']); stars(t, .8); ridge(900, 300, '#0c1430', 3.3, .004);
+    const P = [[120, 1880], [900, 1720], [180, 1520], [880, 1330], [220, 1150], [820, 980]];
+    c.strokeStyle = '#1a2240'; c.lineWidth = 40; c.lineJoin = 'round'; c.beginPath(); P.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y))); c.stroke();
+    const k = (u * 1.05) % 1, seg = Math.min(P.length - 2, Math.floor(k * (P.length - 1))), f = k * (P.length - 1) - seg;
+    const [x0, y0] = P[seg], [x1, y1] = P[seg + 1], x = lerp(x0, x1, f), y = lerp(y0, y1, f), dir = Math.atan2(y1 - y0, x1 - x0);
+    c.save(); c.translate(x, y); c.rotate(dir); const g = c.createLinearGradient(0, 0, 520, 0); g.addColorStop(0, 'rgba(255,240,190,.55)'); g.addColorStop(1, 'rgba(255,240,190,0)');
+    c.fillStyle = g; c.beginPath(); c.moveTo(20, -10); c.lineTo(520, -140); c.lineTo(520, 140); c.lineTo(20, 10); c.fill(); c.fillStyle = '#0c0c10'; c.fillRect(-30, -16, 60, 32); dot(26, -10, 5, '#fff6d0'); dot(26, 10, 5, '#fff6d0'); c.restore();
+    label(540, 760, '00:00 · हेयरपिन मोड़', '#f2c46d', 30);
+  },
+  15: (u, t) => { // never written down: blank pages turning
+    sky(['#030409', '#0a0b12']); glow(540, 1000, 600, 'rgba(255,220,160,.12)');
+    c.fillStyle = '#d9cfb6'; c.beginPath(); c.moveTo(540, 1180); c.lineTo(160, 1120); c.lineTo(160, 760); c.lineTo(540, 820); c.fill(); c.fillStyle = '#e8dfc7'; c.beginPath(); c.moveTo(540, 1180); c.lineTo(920, 1120); c.lineTo(920, 760); c.lineTo(540, 820); c.fill();
+    for (let i = 0; i < 3; i++) { const k = ease(prog(u, .1 + i * .25, .35 + i * .25)); if (k <= 0 || k >= 1) continue; const cs = Math.cos(k * Math.PI);
+      c.fillStyle = `rgb(${200 + 30 * Math.abs(cs)},${190 + 30 * Math.abs(cs)},${165 + 30 * Math.abs(cs)})`; c.beginPath(); c.moveTo(540, 1180); c.lineTo(540 + 380 * cs, 1120 - Math.sin(k * Math.PI) * 60); c.lineTo(540 + 380 * cs, 760 - Math.sin(k * Math.PI) * 60); c.lineTo(540, 820); c.fill(); }
+    for (let i = 0; i < 30; i++) { const a = (t * .05 + i / 30) % 1; dot(200 + (i * 97) % 700, 1200 - a * 700, 2.5, `rgba(255,230,180,${(1 - a) * .6})`); }
+  },
+  16: (u, t) => { // the young leave; the drums fall silent
+    sky(['#02030a', '#08102a', '#121c44']); stars(t, .6); ridge(1050, 220, '#121a3a', 1.9); ridge(1250, 150, '#0b1128', 3.7);
+    for (const w of WINDOWS) { const off = prog(u, w.off * .7 + .1, w.off * .7 + .15); if (off >= 1) continue; c.fillStyle = '#20263c'; c.fillRect(w.x - 26, w.y - 10, 52, 46); c.fillStyle = `rgba(255,200,110,${1 - off})`; c.fillRect(w.x - 10, w.y + 2, 20, 18); }
+    const bk = prog(u, 0, .6), bx = lerp(640, 1150, bk), by = lerp(1420, 1520, bk); c.fillStyle = '#0c0c12'; c.fillRect(bx - 60, by - 30, 120, 50); dot(bx - 56, by, 6, '#ff3a30'); dot(bx - 56, by + 12, 6, '#ff3a30');
+    c.save(); c.translate(330, 1460); c.rotate(-.3); c.fillStyle = '#5a3a20'; c.beginPath(); c.ellipse(0, 0, 90, 60, 0, 0, 7); c.fill(); c.fillStyle = '#c9b089'; c.beginPath(); c.ellipse(-88, 0, 18, 60, 0, 0, 7); c.fill(); c.restore();
+    if (u > .7) { c.globalAlpha = prog(u, .7, .85); label(330, 1330, 'ढोल चुप', '#ff5a64', 30); c.globalAlpha = 1; }
+  },
+  17: (u, t) => { // the book: an attempt to listen first
+    sky(['#04050c', '#0b0d1a']); glow(540, 1000, 600, 'rgba(242,196,109,.2)');
+    for (let i = 0; i < 5; i++) { const r = ((t * 90 + i * 140) % 700); c.strokeStyle = `rgba(242,196,109,${.5 * (1 - r / 700)})`; c.lineWidth = 3; c.beginPath(); c.arc(540, 1000, 700 - r, -2.4, -.7); c.stroke(); }
+    c.fillStyle = '#3a1a14'; c.beginPath(); c.roundRect(360, 820, 360, 360, 10); c.fill(); c.fillStyle = '#f2c46d'; c.font = '44px Tiro'; c.textAlign = 'center'; c.fillText('हिडन', 540, 960); c.fillText('उत्तराखंड', 540, 1030);
+  },
+  18: (u, t) => { // not a historian... a professor, a developer, a storyteller
+    sky(['#05060d', '#0b0e1c']);
+    const x3 = ['इतिहासकार', 'विद्वान', 'पुजारी'];
+    if (u < .3) { x3.forEach((w, i) => { const k = prog(u, i * .07, i * .07 + .05); hiText(540, 760 + i * 170, w, 80, '#c9c2b0', k); const s = prog(u, i * .07 + .04, i * .07 + .08); c.strokeStyle = '#ff5a64'; c.lineWidth = 8; c.beginPath(); c.moveTo(330, 770 + i * 170); c.lineTo(330 + 420 * s, 770 + i * 170); c.stroke(); }); }
+    else {
+      const roles = [['प्रोफ़ेसर', .3, (x, y) => { c.strokeStyle = '#8fb4ff'; c.lineWidth = 3; const N = [[-70, -40], [-70, 0], [-70, 40], [0, -60], [0, -20], [0, 20], [0, 60], [70, -20], [70, 20]]; for (const a of N.slice(0, 3)) for (const b of N.slice(3, 7)) { c.beginPath(); c.moveTo(x + a[0], y + a[1]); c.lineTo(x + b[0], y + b[1]); c.stroke(); } for (const a of N.slice(3, 7)) for (const b of N.slice(7)) { c.beginPath(); c.moveTo(x + a[0], y + a[1]); c.lineTo(x + b[0], y + b[1]); c.stroke(); } N.forEach(([a, b]) => dot(x + a, y + b, 10, '#f2c46d')); }],
+        ['डेवलपर', .53, (x, y) => { c.fillStyle = '#1c2340'; c.beginPath(); c.roundRect(x - 110, y - 70, 220, 140, 10); c.fill(); c.fillStyle = '#3fe0d0'; for (let l = 0; l < 6; l++) c.fillRect(x - 90 + (l % 3) * 14, y - 54 + l * 20, 80 + (l * 37) % 90, 8); dot(x + 120, y - 110, 22, '#e8eeff'); dot(x + 130, y - 116, 20, '#0b0e1c'); }],
+        ['क़िस्सागो', .78, (x, y) => { dot(x, y - 30, 14, '#ffcf7a'); glow(x, y - 30, 110, 'rgba(255,180,80,.45)'); c.fillStyle = '#e8dfc7'; c.beginPath(); c.moveTo(x, y + 70); c.lineTo(x - 110, y + 50); c.lineTo(x - 110, y + 10); c.lineTo(x, y + 30); c.lineTo(x + 110, y + 10); c.lineTo(x + 110, y + 50); c.fill(); }]];
+      roles.forEach(([name, at, draw], i) => { const k = eout(prog(u, at, at + .06)); if (!k) return; const y = 640 + i * 330; c.globalAlpha = k; draw(380, y); hiText(720, y, name, 68, '#f2c46d'); c.globalAlpha = 1; });
+    }
+  },
+  19: (u, t) => { // a believer with a diya, asking "why?"
+    sky(['#040205', '#0c0605', '#1a0c06']); const tire = 1 - .5 * prog(u, .75, 1);
+    glow(540, 1150, 520 * tire, 'rgba(255,150,50,.35)');
+    c.fillStyle = '#7a3e1c'; c.beginPath(); c.ellipse(540, 1260, 120, 40, 0, 0, Math.PI); c.fill(); c.fillStyle = '#9a5a2a'; c.beginPath(); c.ellipse(540, 1260, 120, 26, 0, 0, 7); c.fill();
+    const f = (1 + .12 * Math.sin(t * 17) * Math.sin(t * 7)) * tire, g = c.createLinearGradient(0, 1250 - 160 * f, 0, 1250);
+    g.addColorStop(0, 'rgba(255,250,210,0)'); g.addColorStop(.35, '#fff2b0'); g.addColorStop(1, '#ff8a1e'); c.fillStyle = g;
+    c.beginPath(); c.moveTo(540, 1250 - 160 * f); c.quadraticCurveTo(590 + Math.sin(t * 9) * 8, 1210, 540, 1250); c.quadraticCurveTo(490, 1210, 540, 1250 - 160 * f); c.fill();
+    for (let i = 0; i < 6; i++) { const a = ((u * 2.2 + i / 6) % 1); if (u < .25) continue; hiText(540 + Math.sin(i * 2.3) * 220, 1100 - a * 600, 'क्यों?', 50 + a * 30, '#f2c46d', Math.sin(a * Math.PI) * .8); }
+  },
+  20: (u, t) => { // I took my questions to the mountains
+    sky(['#02030a', '#0a1230', '#1c2a5c']); stars(t);
+    peak(300, 560, 420, 700, '#16204a', '#7f93c4'); peak(760, 480, 480, 780, '#1b2756', '#9aaedb'); ridge(1400, 200, '#0a1028', 2.2);
+    c.fillStyle = '#060a18'; c.fillRect(0, 1500, W, 500);
+    const k = prog(u, 0, 1); person(540, lerp(1760, 1660, k), lerp(1.2, .9, k), '#020308');
+    for (let i = 0; i < 6; i++) { const a = ((u * 1.6 + i / 6) % 1); hiText(540 + Math.sin(i * 3.1 + a * 2) * 90, 1500 - a * 500, '?', 50 + a * 20, '#f2c46d', Math.sin(a * Math.PI) * .9, 'Mukta'); }
+    fog(t, 1350, 200, .25);
+  },
+  21: (u, t) => { // the mountains ask better questions
+    sky(['#010208', '#060b1e', '#0e1838']); stars(t, .8);
+    const k = eout(prog(u, .1, .7)); c.save(); c.globalAlpha = k; c.font = '800 760px Mukta'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.fillStyle = 'rgba(242,196,109,.12)'; c.fillText('?', 540, 900); c.strokeStyle = 'rgba(242,196,109,.9)'; c.lineWidth = 4; c.strokeText('?', 540, 900); c.restore();
+    glow(540, 900, 600 * k, 'rgba(242,196,109,.12)');
+    ridge(1400, 260, '#0c1330', 1.4); ridge(1550, 180, '#070b1e', 3.1); c.fillStyle = '#05070f'; c.fillRect(0, 1600, W, 400);
+  },
+  22: (u, t) => { sky(['#03040a', '#0b0d18']); glow(540, 900, 700, 'rgba(242,196,109,.16)'); },
+  23: (u, t) => { sky(['#03040a', '#07080f']); },
+};
+function postcard(u, flip, t) {
+  const cx = 540, cy = 930, w = 860, h = 600, sx = Math.cos(flip * Math.PI);
+  c.save(); c.translate(cx, cy); c.rotate(-.04 + flip * .08); c.scale(Math.abs(sx) * (1 + .03 * Math.sin(t)), 1);
+  c.fillStyle = 'rgba(0,0,0,.45)'; c.fillRect(-w / 2 + 20, -h / 2 + 30, w, h);
+  if (sx > 0) {
+    c.fillStyle = '#f4ecdb'; c.fillRect(-w / 2, -h / 2, w, h);
+    const g = c.createLinearGradient(0, -h / 2 + 30, 0, h / 2 - 30); g.addColorStop(0, '#5a6fb0'); g.addColorStop(.5, '#f08a5a'); g.addColorStop(1, '#ffcf8a');
+    c.fillStyle = g; c.fillRect(-w / 2 + 30, -h / 2 + 30, w - 60, h - 60);
+    dot(80, 40, 60, '#fff1c8'); peak(-160, -60, 260, 300, '#3d3f78', '#fff'); peak(170, -10, 240, 260, '#4a4a86', '#fff');
+    c.fillStyle = '#2c2c58'; c.fillRect(-w / 2 + 30, 170, w - 60, 100);
+    const items = [['चार धाम', .22], ['बर्फ़ीली चोटियाँ', .38], ['3,000 m पर मैगी', .52]];
+    items.forEach(([txt, at], i) => { const k = eout(prog(u, at, at + .06)); if (!k) return; c.save(); c.translate(-250 + i * 260, -200); c.rotate(-.12 + i * .1); c.scale(k, k);
+      c.strokeStyle = '#b3202c'; c.lineWidth = 4; c.beginPath(); c.arc(0, 0, 92, 0, 7); c.stroke(); c.fillStyle = '#b3202c'; c.font = '30px Tiro'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(txt, 0, 4); c.restore(); });
+    c.fillStyle = '#1a1a2a'; c.font = '700 26px "JetBrains Mono"'; c.textAlign = 'left'; c.fillText('GREETINGS FROM UTTARAKHAND', -w / 2 + 50, h / 2 - 54);
+    const snap = prog(u, .72, .9); if (snap > 0) { c.strokeStyle = '#fff'; c.lineWidth = 6; const m = 60; for (const [a, b] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) { c.beginPath(); c.moveTo(a * (w / 2 - m), b * (h / 2 - m - 40)); c.lineTo(a * (w / 2 - m), b * (h / 2 - m)); c.lineTo(a * (w / 2 - m - 40), b * (h / 2 - m)); c.stroke(); }
+      if (u > .8 && u < .84) { c.fillStyle = 'rgba(255,255,255,.85)'; c.fillRect(-w / 2, -h / 2, w, h); } }
+  } else {
+    c.scale(-1, 1);
+    c.fillStyle = '#1b1712'; c.fillRect(-w / 2, -h / 2, w, h); c.strokeStyle = '#3a3022'; c.lineWidth = 3; c.strokeRect(-w / 2 + 20, -h / 2 + 20, w - 40, h - 40);
+    c.strokeStyle = 'rgba(200,180,140,.55)'; c.lineWidth = 3; const R4 = rng(2);
+    for (let l = 0; l < 8; l++) { c.beginPath(); let x = -w / 2 + 70; const y = -h / 2 + 90 + l * 56; c.moveTo(x, y); while (x < 120) { x += 10 + R4() * 20; c.lineTo(x, y + (R4() - .5) * 12); } c.stroke(); }
+    c.strokeStyle = 'rgba(200,180,140,.4)'; c.beginPath(); c.moveTo(170, -h / 2 + 60); c.lineTo(170, h / 2 - 60); c.stroke();
+    dot(300, -150, 56, '#7a1018'); c.fillStyle = '#c23a3a'; c.font = '60px Tiro'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('ॐ', 300, -146);
+    c.fillStyle = 'rgba(242,196,109,.9)'; c.font = '44px Tiro'; c.fillText('पिछला हिस्सा', 300, 120);
+  }
+  c.restore();
+}
+
+// ---------- on-screen words ----------
+const KEY = { 5: ['पोस्टकार्ड का पिछला हिस्सा', 0], 6: ['न्याय के देवता', 0], 7: ['हनुमान को माफ़ नहीं', 0], 9: ['5,000 मीटर पर एक झील', 0], 10: ['परमाणु उपकरण', 1], 11: ['जवाब मत देना', 1],
+  16: ['ढोल चुप होते जा रहे हैं', 1], 17: ['सुन लेने की कोशिश', 0], 20: ['मैं सवाल लेकर गया…', 0], 21: ['…पहाड़ बेहतर सवाल पूछते हैं', 0] };
+const keyEl = document.getElementById('key'), capEl = document.getElementById('cap');
+function words(t) {
+  const n = beatAt(t), k = KEY[n];
+  if (k) { if (keyEl.dataset.n !== String(n)) { keyEl.textContent = k[0]; keyEl.className = k[1] ? 'red' : ''; keyEl.dataset.n = n; }
+    const a = n === 11 ? S(n) + (E(n) - S(n)) * .78 : S(n) + .3; const kk = prog(t, a, a + .5); keyEl.style.opacity = eout(kk) * (1 - prog(t, E(n), E(n) + .3)); keyEl.style.transform = `scale(${lerp(1.15, 1, eout(kk))})`; }
+  else keyEl.style.opacity = 0;
+  const cap = TIMELINE.captions.find(s => t >= s.start - .1 && t < s.end + .35);
+  if (!cap || n >= 22) { capEl.innerHTML = ''; capEl.dataset.k = ''; return; }
+  if (capEl.dataset.k !== String(cap.start)) { capEl.innerHTML = cap.text.split(' ').map(w => `<span class="w">${w}</span>`).join(' '); capEl.dataset.k = cap.start; }
+  const ws = [...capEl.children], N = ws.length;
+  ws.forEach((w, i) => { const at = cap.start + (cap.end - cap.start) * i / N; w.style.opacity = .25 + .75 * eout(prog(t, at - .05, at + .2)); });
+  capEl.style.opacity = eout(prog(t, cap.start - .1, cap.start + .15)) * (1 - prog(t, cap.end + .1, cap.end + .35));
+}
+
+const gctx = document.getElementById('grain').getContext('2d'), gimg = gctx.createImageData(540, 960);
+function render(t) {
+  const n = beatAt(t), st = n === 1 ? 0 : S(n) - .35, u = prog(t, st, E(n) + .3);
+  c.save(); const z = 1 + .05 * prog(t, st, E(n) + .3); c.translate(W / 2, H / 2); c.scale(z, z); c.translate(-W / 2, -H / 2);
+  SCENES[n](u, t); c.restore();
+  // a soft dip to black between shots
+  const nb = TIMELINE.beats.find(b => b.beat === n + 1), dip = Math.max(1 - prog(t, st, st + .35), nb ? prog(t, nb.start - .6, nb.start - .35) : 0);
+  if (n > 1) { c.fillStyle = `rgba(0,0,0,${dip * .85})`; c.fillRect(0, 0, W, H); }
+  // the book, the logos and the signature
+  const bk = prog(t, S(22) - .3, S(22) + 1.2), bw = document.getElementById('bookwrap');
+  bw.style.opacity = n === 22 ? eout(bk) : 0; document.getElementById('cover').style.transform = `rotateY(${lerp(-35, -8, eout(bk)) + Math.sin(t * .6) * 3}deg) translateY(${(1 - eout(bk)) * 60}px)`;
+  document.getElementById('logo').style.opacity = n === 22 ? eout(prog(t, S(22) + .8, S(22) + 1.6)) : 0;
+  document.getElementById('author').style.opacity = n === 22 ? eout(prog(t, S(22) + 1.8, S(22) + 2.6)) : 0;
+  const sg = prog(t, S(23) - .2, S(23) + .8); document.getElementById('sign').style.opacity = n === 23 ? eout(sg) : 0;
+  document.getElementById('sign').style.transform = `translateY(${(1 - eout(sg)) * 30}px)`;
+  words(t);
+  let sd = Math.floor(t * 24) * 7919 + 1;
+  for (let i = 0; i < gimg.data.length; i += 4) { sd = (sd * 16807) % 2147483647; const v = sd % 256; gimg.data[i] = gimg.data[i + 1] = gimg.data[i + 2] = v; gimg.data[i + 3] = 255; }
+  gctx.putImageData(gimg, 0, 0);
+  document.getElementById('fade').style.opacity = Math.max(1 - prog(t, 0, 1.2), prog(t, DURATION - 1.5, DURATION));
+}
+window.ready = Promise.all([document.fonts.ready, ...[...document.images].map(i => i.complete ? 0 : new Promise(r => (i.onload = r)))]);
+</script>
+</body>
+</html>

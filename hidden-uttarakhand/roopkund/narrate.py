@@ -30,6 +30,8 @@ if os.path.exists(CONFIG):
     PACE, SPEAKER, TEMPERATURE = cfg.get('pace', PACE), cfg.get('speaker', SPEAKER), cfg.get('temperature', TEMPERATURE)
 # spellings that make the voice say a word right; the subtitles keep the script's spelling
 SAY = {'रूपकुंड': 'रूपकूंड'}
+if os.path.exists(CONFIG):
+    SAY.update(json.load(open(CONFIG)).get('say', {}))
 
 ENV = os.path.join(HERE, '..', '..', '.env')
 if 'SARVAM_API_KEY' not in os.environ and os.path.exists(ENV):
