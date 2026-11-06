@@ -78,8 +78,8 @@ for l in L:
     for gi, g in enumerate(gs):
         s = l['start'] + l['dur'] * acc / tot
         acc += len(' '.join(g)) + 1
-        e = l['start'] + l['dur'] * acc / tot + (0.25 if gi < len(gs) - 1 else 0.45 + l['pause'] * 0.6)
-        s = round(max(0.15, s - 0.06), 3); e = round(e, 3)
+        e = l['start'] + l['dur'] * acc / tot + (-0.02 if gi < len(gs) - 1 else 0.45 + l['pause'] * 0.6)
+        s = round(max(0.15, s - (0.06 if gi == 0 else -0.02)), 3); e = round(e, 3)
         top = TOP.get(l['scene'], 300)
         spans = ''.join(f'<span class="w{" k" if x.lower().strip("…") in KEY else ""}">{html.escape(x)}</span> ' for x in g)
         cap_html.append(f'    <div id="cg{gid}" class="cg" style="top:{top}px">{spans.strip()}</div>')
