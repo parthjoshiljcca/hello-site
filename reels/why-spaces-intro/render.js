@@ -3,7 +3,7 @@ const {chromium}=require('playwright');const fs=require('fs');const {spawn}=requ
 (async()=>{
   const [mode,arg]=process.argv.slice(2);const tl=JSON.parse(fs.readFileSync(path.join(__dirname,'timeline.json')));
   const b=await chromium.launch({args:['--allow-file-access-from-files']});const pg=await b.newPage({viewport:{width:1080,height:1920}});
-  await pg.goto('file://'+path.join(__dirname,'index.html'));await pg.evaluate(tl=>init(tl),tl);
+  await pg.goto('file://'+path.join(__dirname,process.env.PAGE||'index.html'));await pg.evaluate(tl=>init(tl),tl);
   const grab=async(t,f)=>{const d=await pg.evaluate(([t,f])=>{render(t,f);return document.getElementById('c').toDataURL('image/jpeg',.93)},[t,f]);return Buffer.from(d.split(',')[1],'base64')};
   if(mode==='preview'){fs.mkdirSync('preview',{recursive:true});for(const t of arg.split(',').map(Number)){fs.writeFileSync(`preview/t${t.toFixed(1).padStart(5,'0')}.jpg`,await grab(t,0))}}
   else{const fps=30,n=Math.round(tl.total*fps);

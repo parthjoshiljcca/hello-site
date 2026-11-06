@@ -9,3 +9,7 @@ Final file: `out/the-why-spaces-intro.mp4`.
 3. `node render.js preview 1.5,8.8,36.5`: still frames in `preview/`
 4. `node render.js video out/video_noaudio.mp4`: renders frames from `index.html` (canvas, deterministic `render(t)`)
 5. `python3 mix.py`: voice + generated ambient drone, whooshes, riser/impact → `out/mix_raw.wav`, then loudnorm and mux with ffmpeg (see commit message).
+
+## Illustrated-story version
+`story.html` draws flat vector scenes (orange-hoodie character, one scene per line, chunked ALL-CAPS captions).
+Render with `PAGE=story.html node render.js video out/video_story.mp4`; final file: `out/the-why-spaces-intro-story.mp4`.
