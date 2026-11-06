@@ -258,7 +258,7 @@ function render(t) {
   document.getElementById('handle').style.opacity = n === 12 ? 0 : 1;
   document.getElementById('follow').style.opacity = eout(prog(t, S(12) + 3.2, S(12) + 3.6));
   narration(t);
-  const cut = n === 1 ? -9 : S(n) - .2, fl = t - cut; document.getElementById('flash').style.opacity = fl >= 0 && fl < .25 ? .22 * (1 - fl / .25) : 0;
+  const cut = n === 1 ? -9 : S(n) - .2, fl = t - cut; document.getElementById('flash').style.opacity = fl >= 0 && fl < .2 ? .1 * (1 - fl / .2) : 0;
   const gc = document.getElementById('grain').getContext('2d'), gi = gc.createImageData(540, 960); let sd = Math.floor(t * 30) * 7919 + 1;
   for (let i = 0; i < gi.data.length; i += 4) { sd = (sd * 16807) % 2147483647; const v = sd % 256; gi.data[i] = gi.data[i + 1] = gi.data[i + 2] = v; gi.data[i + 3] = 255; }
   gc.putImageData(gi, 0, 0);
