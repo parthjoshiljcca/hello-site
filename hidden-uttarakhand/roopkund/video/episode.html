@@ -1,0 +1,571 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Roopkund — Hidden Uttarakhand EP 01</title>
+<script src="node_modules/three/build/three.min.js"></script>
+<script src="geo-data.js"></script>
+<script src="timeline.js"></script>
+<style>
+  @font-face { font-family:Tiro; src:url(../../fonts/TiroDevanagariHindi.ttf); }
+  :root { --gold:#f2c46d; --teal:#3fe0d0; --red:#ff4d5e; --violet:#b48cff; --ink:#0a1030; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { width:1080px; height:1920px; overflow:hidden; background:#060a1c; color:#fff; }
+  canvas { position:absolute; inset:0; }
+  .chip { position:absolute; font:700 28px 'JetBrains Mono', monospace; letter-spacing:3px; text-transform:uppercase; color:var(--gold);
+          border:2px solid currentColor; background:rgba(8,12,36,.78); padding:10px 18px; border-radius:6px; opacity:0; white-space:nowrap;
+          box-shadow:0 8px 30px rgba(0,0,0,.45); }
+  .chip.hi { font:34px/1.2 Tiro; letter-spacing:0; text-transform:none; padding:12px 22px 8px; }
+  .chip small { display:block; font:500 20px 'JetBrains Mono', monospace; letter-spacing:4px; opacity:.75; margin-top:4px; }
+  .teal { color:var(--teal); } .red { color:var(--red); } .violet { color:var(--violet); } .white { color:#fff; }
+  #hdr { position:absolute; top:70px; left:60px; right:60px; display:flex; justify-content:space-between; font:700 22px 'JetBrains Mono', monospace;
+         letter-spacing:4px; color:rgba(242,196,109,.9); text-shadow:0 2px 10px rgba(0,0,0,.6); }
+  #title { position:absolute; left:0; right:0; top:560px; text-align:center; opacity:0; }
+  #title .big { font:150px/1.1 Tiro; color:#fff; text-shadow:0 10px 50px rgba(0,0,0,.7), 0 0 60px rgba(120,180,255,.35); }
+  #title .sub { font:54px/1.3 Tiro; color:var(--gold); margin-top:6px; text-shadow:0 6px 30px rgba(0,0,0,.8); }
+  .huge { position:absolute; left:0; right:0; text-align:center; font:800 300px/1 'JetBrains Mono', monospace; color:var(--gold); opacity:0;
+          text-shadow:0 0 80px rgba(242,196,109,.5); }
+  #stamp { position:absolute; left:250px; top:700px; font:68px/1.1 Tiro; color:var(--red); border:8px solid var(--red); padding:18px 36px 8px;
+           border-radius:14px; transform:rotate(-12deg); opacity:0; background:rgba(40,0,10,.35); }
+  #cap { position:absolute; left:70px; right:70px; bottom:250px; text-align:center; font:50px/1.42 Tiro; color:#fff; }
+  #cap span { background:rgba(4,8,26,.72); padding:4px 18px 0; border-radius:10px; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+  .x { text-decoration:line-through; text-decoration-thickness:5px; text-decoration-color:var(--red); }
+  #count { position:absolute; left:0; right:0; top:330px; text-align:center; font:800 120px 'JetBrains Mono', monospace; color:var(--teal); opacity:0;
+           text-shadow:0 0 40px rgba(63,224,208,.5); }
+  #count small { display:block; font:44px Tiro; color:#fff; margin-top:4px; }
+  #logo, #author { position:absolute; left:90px; width:900px; opacity:0; }
+  #logo { top:170px; } #author { top:1350px; left:160px; width:760px; mix-blend-mode:screen; }
+  #soon { position:absolute; left:0; right:0; top:1630px; text-align:center; opacity:0; }
+  #soon .chip { position:relative; display:inline-block; opacity:1; font-size:34px; }
+  #soon .follow { display:block; margin-top:26px; font:44px Tiro; color:#fff; text-shadow:0 4px 20px rgba(0,0,0,.8); }
+  #fade { position:absolute; inset:0; background:#000; pointer-events:none; }
+  #vig { position:absolute; inset:0; background:radial-gradient(ellipse 80% 65% at 50% 45%, transparent 55%, rgba(0,0,0,.6) 100%); }
+</style>
+</head>
+<body>
+<div id="vig"></div>
+<div id="hdr"><span>HIDDEN UTTARAKHAND · EP 01</span><span>रूपकुंड</span></div>
+
+<div class="chip" id="c-alt">5,029 m · 16,500 ft</div>
+<div id="title"><div class="big">रूपकुंड</div><div class="sub">कंकालों वाली झील</div></div>
+<div class="chip" id="c-place">Chamoli · Uttarakhand</div>
+<div class="chip" id="c-1942">1942<small>Nanda Devi Reserve</small></div>
+<div class="chip red" id="c-japan">जापानी सेना?</div>
+<div id="stamp">बहुत पुरानी</div>
+<div class="huge" id="q1">?</div>
+<div class="chip hi" id="c-legend">लोककथा</div>
+<div class="chip" id="c-2004">2004<small>फ़ॉरेंसिक जाँच</small></div>
+<div class="chip hi red" id="c-weapon"><span class="x">हथियार</span></div>
+<div class="chip hi red" id="c-aval"><span class="x">हिमस्खलन</span></div>
+<div class="chip hi" id="c-ball">≈ क्रिकेट बॉल</div>
+<div class="chip teal" id="c-2019">2019<small>Ancient DNA</small></div>
+<div id="count"><span id="count-n">0</span><small>कंकाल</small></div>
+<div class="chip hi" id="g-sa">23 · दक्षिण एशिया</div>
+<div class="chip hi teal" id="g-med">14 · पूर्वी भूमध्य सागर</div>
+<div class="chip hi violet" id="g-sea">1 · दक्षिण-पूर्व एशिया</div>
+<div class="chip" id="t-800">~800 CE</div>
+<div class="chip teal" id="t-1800">~1800 CE</div>
+<div class="chip hi white" id="t-gap">1,000 साल</div>
+<div class="chip hi" id="c-rajjat">नंदा देवी राजजात</div>
+<div class="huge" id="q2">?</div>
+<img id="logo" src="../assets/title-logo.png">
+<img id="author" src="../assets/author-logo.png">
+<div id="soon"><span class="chip">Coming soon · जल्द आ रही है</span><span class="follow">फ़ॉलो करें — अगली अनकही कहानी के लिए</span></div>
+<div id="cap"></div>
+<div id="fade"></div>
+
+<script>
+// ---------- time ----------
+const B = {}; TIMELINE.beats.forEach(b => B[b.beat] = b);
+const S = n => B[n].start, E = n => B[n].end, DURATION = TIMELINE.duration;
+const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const eout = x => 1 - Math.pow(1 - x, 3);
+const lerp = (a, b, k) => a + (b - a) * k;
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const vlerp = (a, b, k) => a.clone().lerp(b, k);
+function rng(s) { return () => (s = (s * 16807) % 2147483647) / 2147483647; }
+const beatU = (n, t) => prog(t, S(n), E(n));
+
+// ---------- renderer ----------
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(1080, 1920); renderer.setPixelRatio(1);
+renderer.outputEncoding = THREE.sRGBEncoding; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .82;
+document.body.prepend(renderer.domElement);
+const camera = new THREE.PerspectiveCamera(42, 1080 / 1920, .1, 500);
+function gradientTex(stops) {
+  const c = document.createElement('canvas'); c.width = 4; c.height = 512; const x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, 0, 512); stops.forEach(([o, col]) => g.addColorStop(o, col)); x.fillStyle = g; x.fillRect(0, 0, 4, 512);
+  const tex = new THREE.CanvasTexture(c); tex.encoding = THREE.sRGBEncoding; return tex;
+}
+function dotTex() {
+  const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
+  const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.45, 'rgba(255,255,255,.9)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c);
+}
+const DOT = dotTex();
+const std = (color, o = {}) => new THREE.MeshStandardMaterial(Object.assign({ color, roughness: .85, metalness: 0, flatShading: true }, o));
+
+// ================= SET 1: the lake valley =================
+const lake = new THREE.Scene();
+const skyNight = gradientTex([[0, '#050a22'], [.55, '#13204f'], [1, '#2b3c74']]);
+const skyStorm = gradientTex([[0, '#020308'], [.6, '#0a0f24'], [1, '#1a2140']]);
+lake.background = skyNight; lake.fog = new THREE.Fog(0x0f1a40, 28, 110);
+function hash(x, y) { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); }
+function noise(x, y) {
+  const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+  return lerp(lerp(hash(xi, yi), hash(xi + 1, yi), u), lerp(hash(xi, yi + 1), hash(xi + 1, yi + 1), u), v);
+}
+function ridged(x, y) { let a = 0, f = 1, amp = 1; for (let i = 0; i < 5; i++) { a += (1 - Math.abs(noise(x * f, y * f) * 2 - 1)) * amp; f *= 2.05; amp *= .5; } return a; }
+const LAKE_R = 3.6, WATER = -.42;
+function heightAt(x, z) {
+  const r = Math.hypot(x, z * 1.15);
+  let h = ridged(x * .07 + 3, z * .07 + 7) * 3.4 - 1.2;
+  const k = THREE.MathUtils.smoothstep(r, LAKE_R - .2, 12);
+  h = lerp(-.9, h + 1.2, k);
+  h += Math.max(0, -z - 6) * .28 * (.55 + .45 * ridged(x * .05, z * .05));
+  h += 22 * Math.exp(-((x - 4) ** 2 + (z + 58) ** 2) / 160) + 13 * Math.exp(-((x + 16) ** 2 + (z + 52) ** 2) / 100); // Trishul and its shoulder
+  return h;
+}
+{
+  const g = new THREE.PlaneGeometry(120, 120, 240, 240); g.rotateX(-Math.PI / 2);
+  const p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) p.setY(i, heightAt(p.getX(i), p.getZ(i)));
+  const ng = g.toNonIndexed(); ng.computeVertexNormals();
+  const n = ng.attributes.normal, q = ng.attributes.position, col = new Float32Array(q.count * 3);
+  const snow = new THREE.Color('#5a6c9c'), rock = new THREE.Color('#1f263c'), bed = new THREE.Color('#1c2740'), c = new THREE.Color();
+  for (let i = 0; i < q.count; i += 3) {
+    const ny = (n.getY(i) + n.getY(i + 1) + n.getY(i + 2)) / 3, x = q.getX(i), z = q.getZ(i);
+    if (Math.hypot(x, z * 1.15) < LAKE_R + .3) c.copy(bed); else c.copy(ny > .8 ? snow : ny > .62 ? rock.clone().lerp(snow, .5) : rock);
+    for (let k = 0; k < 3; k++) col.set([c.r, c.g, c.b], (i + k) * 3);
+  }
+  ng.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  lake.add(new THREE.Mesh(ng, std(0xffffff, { vertexColors: true })));
+}
+const water = new THREE.Mesh(new THREE.CircleGeometry(LAKE_R + .15, 64), new THREE.MeshStandardMaterial({ color: 0x1d4e7a, roughness: .15, metalness: .3, transparent: true, opacity: .78 }));
+water.rotation.x = -Math.PI / 2; water.position.y = WATER; lake.add(water);
+const ice = new THREE.Mesh(new THREE.CircleGeometry(LAKE_R + .2, 64), new THREE.MeshStandardMaterial({ color: 0x8fb4e0, roughness: .35, transparent: true, opacity: .95 }));
+ice.rotation.x = -Math.PI / 2; ice.position.y = WATER + .03; lake.add(ice);
+const cracks = new THREE.Group(); lake.add(cracks);
+{
+  const R = rng(4);
+  for (let i = 0; i < 14; i++) {
+    const pts = []; let a = R() * Math.PI * 2, r = R() * .8;
+    for (let k = 0; k < 8; k++) { pts.push(V(Math.cos(a) * r, WATER + .05, Math.sin(a) * r)); r += .3 + R() * .35; a += (R() - .5) * .5; if (r > LAKE_R) break; }
+    const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0x7fb8ff, transparent: true, opacity: 0 }));
+    line.userData.at = i / 14; cracks.add(line);
+  }
+}
+const stars = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: .9, map: DOT, transparent: true, depthWrite: false, color: 0xffffff, fog: false }));
+{
+  const R = rng(8), a = [];
+  for (let i = 0; i < 700; i++) { const th = R() * Math.PI * 2, ph = R() * Math.PI * .42; a.push(Math.cos(th) * Math.sin(ph) * 200, Math.cos(ph) * 200 - 20, Math.sin(th) * Math.sin(ph) * 200); }
+  stars.geometry.setAttribute('position', new THREE.Float32BufferAttribute(a, 3)); lake.add(stars);
+}
+const moonLight = new THREE.DirectionalLight(0xbcd0ff, .95); moonLight.position.set(-20, 30, 15); lake.add(moonLight);
+const hemi = new THREE.HemisphereLight(0x5a70b8, 0x0a0f22, .45); lake.add(hemi);
+const flash = new THREE.AmbientLight(0xdde6ff, 0); lake.add(flash);
+const moon = new THREE.Mesh(new THREE.SphereGeometry(3.4, 32, 16), new THREE.MeshBasicMaterial({ color: 0xf2f5ff, fog: false })); moon.position.set(-38, 46, -120); lake.add(moon);
+
+// bones and skulls in the shallow water; group 0 ~800 CE (South Asian), group 1 ~1800 CE (Mediterranean)
+const boneMat = std(0xd9ceb4, { roughness: .7 });
+function skull(mat = boneMat) {
+  const g = new THREE.Group();
+  const cr = new THREE.Mesh(new THREE.IcosahedronGeometry(.24, 1), mat); cr.scale.set(1, .9, 1.15); g.add(cr);
+  const jaw = new THREE.Mesh(new THREE.BoxGeometry(.26, .1, .18), mat); jaw.position.set(0, -.18, .12); g.add(jaw);
+  const eye = std(0x14100c);
+  for (const s of [-1, 1]) { const e = new THREE.Mesh(new THREE.IcosahedronGeometry(.055, 0), eye); e.position.set(s * .09, -.02, .24); g.add(e); }
+  return g;
+}
+function bone(mat = boneMat) {
+  const g = new THREE.Group(), L = .5;
+  const shaft = new THREE.Mesh(new THREE.CylinderGeometry(.04, .04, L, 6), mat); shaft.rotation.z = Math.PI / 2; g.add(shaft);
+  for (const s of [-1, 1]) { const k = new THREE.Mesh(new THREE.IcosahedronGeometry(.07, 0), mat); k.position.x = s * L / 2; g.add(k); }
+  return g;
+}
+const remains = new THREE.Group(); lake.add(remains);
+{
+  const R = rng(21);
+  for (let i = 0; i < 70; i++) {
+    const m = i % 5 === 0 ? skull() : bone();
+    const a = R() * Math.PI * 2, r = Math.sqrt(R()) * (LAKE_R - .4);
+    m.userData = { home: V(Math.cos(a) * r, WATER - .05 + R() * .04, Math.sin(a) * r * .87), rot: V(R() * .6, R() * 6.3, R() * .6), group: R() < 23 / 37 ? 0 : 1, delay: R() };
+    m.scale.setScalar((m.children.length > 3 ? 1 : .8 + R() * .4) * .72);
+    remains.add(m);
+  }
+}
+const goldMat = std(0xf2c46d, { emissive: 0x6a4a10, emissiveIntensity: .6 }), tealMat = std(0x3fe0d0, { emissive: 0x0d5a54, emissiveIntensity: .6 });
+// the ranger of 1942, with a lantern
+const ranger = new THREE.Group(); lake.add(ranger);
+{
+  const coat = std(0x4b3d2c), skin = std(0xb08060);
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(.16, .22, .8, 8), coat); body.position.y = .4; ranger.add(body);
+  const head = new THREE.Mesh(new THREE.IcosahedronGeometry(.13, 1), skin); head.position.y = .93; ranger.add(head);
+  const hat = new THREE.Mesh(new THREE.CylinderGeometry(.11, .2, .1, 10), std(0x3a2e20)); hat.position.y = 1.05; ranger.add(hat);
+  const lamp = new THREE.Mesh(new THREE.IcosahedronGeometry(.07, 1), new THREE.MeshBasicMaterial({ color: 0xffc56a })); lamp.position.set(.28, .5, .1); ranger.add(lamp);
+  const pl = new THREE.PointLight(0xffb050, 0, 7, 1.6); pl.position.copy(lamp.position); ranger.add(pl); ranger.userData.light = pl;
+  const rx = 2.4, rz = 3.9; ranger.position.set(rx, heightAt(rx, rz), rz); ranger.rotation.y = -2.5;
+}
+// the legend's procession on the ridge, and the hail
+const procession = new THREE.Group(); lake.add(procession);
+const RIDGE = new THREE.CatmullRomCurve3([V(-14, 0, -7), V(-7, 0, -5.5), V(0, 0, -6.5), V(7, 0, -5.2), V(14, 0, -6.8)].map(p => (p.y = heightAt(p.x, p.z) + .05, p)));
+for (let i = 0; i < 16; i++) {
+  const g = new THREE.Group();
+  const b = new THREE.Mesh(new THREE.ConeGeometry(.16, .6, 6), std(i % 4 ? 0x7a2e2e : 0xb08a3a)); b.position.y = .3; g.add(b);
+  const l = new THREE.Mesh(new THREE.IcosahedronGeometry(.06, 0), new THREE.MeshBasicMaterial({ color: 0xffc56a })); l.position.set(.15, .5, 0); g.add(l);
+  g.userData.k = i / 16; procession.add(g);
+}
+const hail = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: .16, map: DOT, transparent: true, depthWrite: false, color: 0xe8f0ff }));
+const HAIL0 = []; { const R = rng(31); for (let i = 0; i < 2600; i++) HAIL0.push(R() * 40 - 20, R() * 26, R() * 30 - 22); }
+hail.geometry.setAttribute('position', new THREE.Float32BufferAttribute(HAIL0.slice(), 3)); lake.add(hail);
+// the Nanda Devi Raj Jat path, past the lake toward Trishul
+const TRAIL = new THREE.CatmullRomCurve3([V(9, 0, 12), V(5.5, 0, 7), V(4.6, 0, 1), V(2, 0, -5), V(3, 0, -14), V(4, 0, -26)].map(p => (p.y = heightAt(p.x, p.z) + .12, p)));
+const trail = new THREE.Mesh(new THREE.TubeGeometry(TRAIL, 300, .09, 6), new THREE.MeshBasicMaterial({ color: 0xffc56a }));
+lake.add(trail);
+
+// ================= SET 2: the dotted globe =================
+const globeScene = new THREE.Scene(); globeScene.background = gradientTex([[0, '#03061a'], [1, '#0c1640']]);
+const globe = new THREE.Group(); globeScene.add(globe);
+const GR = 5;
+const ll = (lon, lat, r = GR) => { const a = lon * Math.PI / 180, b = lat * Math.PI / 180; return V(Math.cos(b) * Math.sin(a) * r, Math.sin(b) * r, Math.cos(b) * Math.cos(a) * r); };
+globe.add(new THREE.Mesh(new THREE.SphereGeometry(GR * .985, 64, 32), new THREE.MeshBasicMaterial({ color: 0x07102e })));
+{
+  const grid = [];
+  for (let lat = -60; lat <= 60; lat += 30) for (let lon = 0; lon < 360; lon += 3) grid.push(ll(lon, lat, GR * .99), ll(lon + 3, lat, GR * .99));
+  for (let lon = 0; lon < 360; lon += 30) for (let lat = -84; lat < 84; lat += 3) grid.push(ll(lon, lat, GR * .99), ll(lon, lat + 3, GR * .99));
+  globe.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(grid), new THREE.LineBasicMaterial({ color: 0x1d3a7a, transparent: true, opacity: .55 })));
+  const pos = []; GEO.globe.forEach(([lo, la]) => { const v = ll(lo, la, GR * 1.002); pos.push(v.x, v.y, v.z); });
+  const dots = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: .1, map: DOT, transparent: true, depthWrite: false, color: 0x7fe3ff }));
+  dots.geometry.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); globe.add(dots);
+  const halo = new THREE.Mesh(new THREE.SphereGeometry(GR * 1.18, 48, 24), new THREE.ShaderMaterial({
+    transparent: true, side: THREE.BackSide, depthWrite: false, blending: THREE.AdditiveBlending,
+    vertexShader: 'varying vec3 n; void main(){ n = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }',
+    fragmentShader: 'varying vec3 n; void main(){ float i = pow(0.75 - dot(n, vec3(0,0,1.)), 3.); gl_FragColor = vec4(0.25,0.7,1.,1.) * i; }' }));
+  globeScene.add(halo);
+}
+const roopMark = new THREE.Mesh(new THREE.SphereGeometry(.12, 16, 8), new THREE.MeshBasicMaterial({ color: 0xf2c46d }));
+roopMark.position.copy(ll(...GEO.places.roopkund, GR * 1.01)); globe.add(roopMark);
+const ring = new THREE.Mesh(new THREE.RingGeometry(.16, .22, 32), new THREE.MeshBasicMaterial({ color: 0xf2c46d, transparent: true, side: THREE.DoubleSide }));
+ring.position.copy(roopMark.position); ring.lookAt(0, 0, 0); globe.add(ring);
+function arc(from, to, color, lift = .35, offset = 0) {
+  const a = ll(...from).normalize(), b = ll(...to).normalize(), pts = [];
+  for (let i = 0; i <= 80; i++) {
+    const k = i / 80, v = a.clone().lerp(b, k).normalize();
+    pts.push(v.multiplyScalar(GR * (1.01 + lift * Math.sin(Math.PI * k) + offset * Math.sin(Math.PI * k))));
+  }
+  const m = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 120, .035, 6), new THREE.MeshBasicMaterial({ color, transparent: true }));
+  const head = new THREE.Mesh(new THREE.SphereGeometry(.09, 12, 6), new THREE.MeshBasicMaterial({ color })); m.add(head);
+  m.userData = { pts, head, total: m.geometry.index.count }; globe.add(m); return m;
+}
+function drawArc(m, k, alpha = 1) {
+  m.visible = k > 0 && alpha > 0; m.geometry.setDrawRange(0, Math.floor(m.userData.total * k / 6) * 6); m.material.opacity = alpha;
+  const p = m.userData.pts[Math.min(80, Math.round(k * 80))]; m.userData.head.position.copy(p); m.userData.head.visible = k < 1;
+}
+const P = GEO.places;
+const japanArcs = [0, .12, -.1].map(o => arc([P.japan[0], P.japan[1] + o * 10], P.roopkund, 0xff4d5e, .32 + o));
+const sAsiaArc = arc(P.delhi, P.roopkund, 0xf2c46d, .12), medArc = arc(P.crete, P.roopkund, 0x3fe0d0, .3), seaArc = arc(P.seAsia, P.roopkund, 0xb48cff, .22);
+globeScene.add(new THREE.AmbientLight(0xffffff, 1));
+
+// ================= SET 3: the lab =================
+const lab = new THREE.Scene(); lab.background = gradientTex([[0, '#050818'], [.6, '#0b1236'], [1, '#141f52']]);
+lab.add(new THREE.HemisphereLight(0x8fa6ff, 0x0a0f24, .7));
+const key = new THREE.SpotLight(0xffffff, 2.2, 60, .5, .5); key.position.set(4, 12, 8); lab.add(key, key.target);
+const rim = new THREE.DirectionalLight(0x3fe0d0, .8); rim.position.set(-6, 4, -6); lab.add(rim);
+{
+  const floor = new THREE.Mesh(new THREE.CircleGeometry(9, 64), std(0x0d1433, { roughness: .6, flatShading: false })); floor.rotation.x = -Math.PI / 2; lab.add(floor);
+  const grid = new THREE.PolarGridHelper(9, 16, 8, 64, 0x24346e, 0x1a2654); grid.position.y = .01; lab.add(grid);
+}
+const plinth = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.25, 1.4, 32), std(0x1b2654, { flatShading: false, roughness: .5 })); plinth.position.y = .7; lab.add(plinth);
+const bigSkull = skull(std(0xe2d7bd, { roughness: .6 })); bigSkull.scale.setScalar(4.2); bigSkull.position.y = 2.55; lab.add(bigSkull);
+const fracture = new THREE.Group(); bigSkull.add(fracture);
+{
+  const R = rng(17), mat = new THREE.LineBasicMaterial({ color: 0xff3048 });
+  for (let i = 0; i < 6; i++) {
+    const pts = []; let a = R() * .6 - .3, b = R() * .6 - .3;
+    for (let k = 0; k < 5; k++) { pts.push(V(Math.sin(a) * .245, Math.cos(a) * Math.cos(b) * .225, Math.sin(b) * .27)); a += (R() - .5) * .25; b += (R() - .5) * .25; }
+    fracture.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat));
+  }
+}
+const scan = new THREE.Mesh(new THREE.PlaneGeometry(4.2, .05), new THREE.MeshBasicMaterial({ color: 0x3fe0d0, transparent: true, opacity: .9, side: THREE.DoubleSide }));
+scan.rotation.x = -Math.PI / 2; lab.add(scan);
+const scanGlow = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 1.2), new THREE.MeshBasicMaterial({ color: 0x3fe0d0, transparent: true, opacity: .12, side: THREE.DoubleSide, depthWrite: false }));
+scanGlow.rotation.x = -Math.PI / 2; lab.add(scanGlow);
+// a human outline for "head and shoulders only"
+const figure = new THREE.Group(); lab.add(figure);
+const figMat = std(0x2a3a78, { emissive: 0x0e1a44, emissiveIntensity: .8 }), hurt = std(0xff3048, { emissive: 0xff1030, emissiveIntensity: 0 });
+{
+  const add = (geo, mat, x, y, z, rz = 0) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.z = rz; figure.add(m); return m; };
+  add(new THREE.IcosahedronGeometry(.32, 1), hurt, 0, 3.55, 0);
+  add(new THREE.CylinderGeometry(.62, .62, .32, 12), hurt, 0, 3.0, 0, Math.PI / 2).scale.set(1, 1, .5);
+  add(new THREE.CylinderGeometry(.42, .34, 1.4, 10), figMat, 0, 2.15, 0);
+  for (const s of [-1, 1]) { add(new THREE.CylinderGeometry(.11, .1, 1.3, 8), figMat, s * .72, 2.25, 0, s * .12); add(new THREE.CylinderGeometry(.15, .12, 1.5, 8), figMat, s * .2, .75, 0); }
+}
+// a hailstone beside a cricket ball
+const hailstone = new THREE.Mesh(new THREE.IcosahedronGeometry(.62, 1), new THREE.MeshStandardMaterial({ color: 0xdff0ff, roughness: .15, metalness: .1, transparent: true, opacity: .85, flatShading: true }));
+const cricket = new THREE.Group();
+{
+  cricket.add(new THREE.Mesh(new THREE.SphereGeometry(.6, 32, 16), new THREE.MeshStandardMaterial({ color: 0xa3121e, roughness: .45 })));
+  const seam = new THREE.Mesh(new THREE.TorusGeometry(.605, .025, 6, 64), std(0xf4ead2)); cricket.add(seam);
+}
+lab.add(hailstone, cricket);
+// the DNA helix
+const helix = new THREE.Group(); lab.add(helix);
+{
+  const a = std(0xf2c46d, { emissive: 0x5a3c08, emissiveIntensity: .7, flatShading: false }), b = std(0x3fe0d0, { emissive: 0x0b4a44, emissiveIntensity: .7, flatShading: false });
+  const rung = std(0x8fa6ff, { flatShading: false });
+  for (let i = 0; i < 40; i++) {
+    const y = i * .17, th = i * .42, g = new THREE.Group();
+    const s1 = new THREE.Mesh(new THREE.SphereGeometry(.13, 12, 8), a), s2 = new THREE.Mesh(new THREE.SphereGeometry(.13, 12, 8), b);
+    s1.position.set(Math.cos(th) * .9, 0, Math.sin(th) * .9); s2.position.set(-Math.cos(th) * .9, 0, -Math.sin(th) * .9);
+    const r = new THREE.Mesh(new THREE.CylinderGeometry(.03, .03, 1.8, 6), rung); r.rotation.z = Math.PI / 2; r.rotation.y = -th;
+    g.add(s1, s2, r); g.position.y = y; helix.add(g);
+  }
+}
+// 38 individuals splitting into three groups
+const people = new THREE.Group(); lab.add(people);
+const PCOL = [0xf2c46d, 0x3fe0d0, 0xb48cff];
+{
+  const kinds = [...Array(23).fill(0), ...Array(14).fill(1), 2];
+  kinds.forEach((kind, i) => {
+    const m = new THREE.Mesh(new THREE.SphereGeometry(.2, 16, 8), std(0x8fa6ff, { flatShading: false, emissive: 0x111a40 }));
+    const gi = kinds.slice(0, i).filter(k => k === kind).length, cols = kind === 2 ? 1 : 5;
+    m.userData = { kind, from: V((i % 6) * .62 - 1.55, 5.6 - Math.floor(i / 6) * .62, 0), to: V((gi % cols) * .55 - (cols - 1) * .275, [3.0, 5.9, 7.0][kind] - Math.floor(gi / cols) * .55, 0) };
+    people.add(m);
+  });
+}
+// the 1,000-year timeline
+const timeline = new THREE.Group(); lab.add(timeline);
+{
+  const bar = new THREE.Mesh(new THREE.BoxGeometry(.12, 6.4, .12), std(0x2a3a78, { flatShading: false })); timeline.add(bar);
+  const m1 = new THREE.Mesh(new THREE.SphereGeometry(.26, 16, 8), goldMat), m2 = new THREE.Mesh(new THREE.SphereGeometry(.26, 16, 8), tealMat);
+  m1.position.y = -2.4; m2.position.y = 2.4; timeline.add(m1, m2);
+  const span = new THREE.Mesh(new THREE.BoxGeometry(.06, 4.8, .06), new THREE.MeshBasicMaterial({ color: 0xffffff })); span.position.x = -.7; timeline.add(span);
+  timeline.userData = { m1, m2, span };
+}
+
+// ================= SET 4: India, and the book =================
+const india = new THREE.Scene(); india.background = gradientTex([[0, '#03061a'], [1, '#0d1846']]);
+india.add(new THREE.HemisphereLight(0xaab8ff, 0x0a0f24, 1.0));
+const bookLight = new THREE.DirectionalLight(0xffe2b0, 1.4); bookLight.position.set(3, 6, 8); india.add(bookLight);
+const IX = lon => (lon - 80) * .32, IZ = lat => -(lat - 26) * .32;
+const indiaDots = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ size: .14, map: DOT, transparent: true, depthWrite: false, vertexColors: true }));
+{
+  const pos = [], col = [], cyan = new THREE.Color(0x4fa8ff), gold = new THREE.Color(0xf2c46d);
+  GEO.india.forEach(([lo, la, uk]) => { pos.push(IX(lo), 0, IZ(la)); const c = uk ? gold : cyan; col.push(c.r, c.g, c.b); });
+  indiaDots.geometry.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  indiaDots.geometry.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  india.add(indiaDots);
+}
+const UKC = V(IX(79.3), 0, IZ(30.1));
+const pins = new THREE.Group(); india.add(pins);
+{
+  const R = rng(55), uk = GEO.india.filter(d => d[2]);
+  for (let i = 0; i < 9; i++) {
+    const d = uk[Math.floor(R() * uk.length)], g = new THREE.Group();
+    const stem = new THREE.Mesh(new THREE.ConeGeometry(.05, .4, 6), std(0xf2c46d)); stem.rotation.x = Math.PI; stem.position.y = .2; g.add(stem);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(.09, 12, 8), new THREE.MeshBasicMaterial({ color: 0xffe2a0 })); head.position.y = .42; g.add(head);
+    g.position.set(IX(d[0]) + (R() - .5) * .1, 0, IZ(d[1]) + (R() - .5) * .1); g.userData.at = i / 9; pins.add(g);
+  }
+}
+const book = new THREE.Group(); india.add(book);
+const cover = new THREE.TextureLoader().load('../assets/book-cover.jpg'); cover.encoding = THREE.sRGBEncoding;
+{
+  const page = std(0xf1e8d4, { flatShading: false }), spine = std(0x14100c, { flatShading: false });
+  const mats = [page, spine, page, page, new THREE.MeshStandardMaterial({ map: cover, roughness: .55 }), std(0x0d0b09, { flatShading: false })];
+  const b = new THREE.Mesh(new THREE.BoxGeometry(2.4, 3.6, .38), mats); book.add(b);
+}
+
+// ---------- cameras per beat ----------
+function look(pos, target) { camera.position.copy(pos); camera.lookAt(target); }
+function lakeOrbit(a, r, h, ty = 0) { return [V(Math.sin(a) * r, h, Math.cos(a) * r), V(0, ty, 0)]; }
+
+// ---------- DOM helpers ----------
+const $ = id => document.getElementById(id);
+function pop(id, t, a, b, x, y, opts = {}) {
+  const el = $(id); const k = eout(prog(t, a, a + .35)) * (1 - prog(t, b - .3, b));
+  el.style.opacity = k; if (x != null) { el.style.left = x + 'px'; el.style.top = y + 'px'; }
+  el.style.transform = `${opts.base || ''} translateY(${(1 - eout(prog(t, a, a + .35))) * 24}px) scale(${lerp(opts.from ?? .92, 1, eout(prog(t, a, a + .35)))})`;
+}
+function screenOf(v, scene3dObj) { const p = v.clone(); if (scene3dObj) scene3dObj.localToWorld(p); p.project(camera); return [(p.x + 1) / 2 * 1080, (1 - p.y) / 2 * 1920]; }
+
+// ---------- captions ----------
+const capEl = $('cap');
+function caption(t) {
+  const c = TIMELINE.captions.find(c => t >= c.start - .05 && t < c.end + .25);
+  if (!c) { capEl.innerHTML = ''; return; }
+  if (capEl.dataset.k !== String(c.start)) { capEl.innerHTML = `<span>${c.text}</span>`; capEl.dataset.k = c.start; }
+  capEl.style.opacity = eout(prog(t, c.start - .05, c.start + .15)) * (1 - prog(t, c.end + .05, c.end + .25));
+}
+
+// ---------- the film ----------
+function setFor(t) {
+  const n = TIMELINE.beats.filter(b => t >= b.start - .25).pop()?.beat ?? 1;
+  if (n === 13) return t < S(13) + 4.6 ? 'lab' : 'globe';
+  return { 1: 'lake', 2: 'lake', 3: 'lake', 4: 'lake', 5: 'globe', 6: 'globe', 7: 'lake', 8: 'lake', 9: 'lab', 10: 'lab', 11: 'lab', 12: 'lab',
+           14: 'lab', 15: 'lake', 16: 'lake', 17: 'globe', 18: 'lake', 19: 'india', 20: 'india', 21: 'india' }[n];
+}
+// every cut between the four sets, worked out once so any frame can be rendered on its own
+const CUTS = []; for (let t = .01, prev = setFor(0); t < DURATION; t += .01) { const s = setFor(t); if (s !== prev) { CUTS.push(t); prev = s; } }
+
+function render(t) {
+  const set = setFor(t), cutAt = Math.max(-9, ...CUTS.filter(c => c <= t + 1e-6));
+  // ---------------- lake ----------------
+  if (set === 'lake') {
+    const melt = prog(t, S(2), S(2) + 3), freeze = prog(t, S(18) + .5, S(18) + 4);
+    cracks.children.forEach(l => l.material.opacity = clamp((melt * 1.6 - l.userData.at) * 3) * (1 - prog(t, S(2) + 2.4, S(2) + 3.4)) * (1 - freeze));
+    ice.material.opacity = lerp(.95, .0, melt) + .95 * freeze;
+    ice.visible = ice.material.opacity > .02;
+    const strata = beatU(15, t) > 0 && t < E(15) + .3;
+    remains.children.forEach((m, i) => {
+      const d = m.userData, rise = eout(prog(t, S(2) + 1 + d.delay * 2.2, S(2) + 2.6 + d.delay * 2.2)) * (1 - freeze);
+      m.visible = rise > 0;
+      m.position.copy(d.home); m.position.y = lerp(WATER - .6, d.home.y, rise);
+      m.rotation.set(d.rot.x, d.rot.y, d.rot.z);
+      const lift = strata ? ease(prog(t, S(15) + .3 + d.delay * .6, S(15) + 2 + d.delay * .6)) * (1 - prog(t, E(15) - .2, E(15) + .3)) : 0;
+      if (lift > 0) { m.position.y += lift * (d.group === 0 ? 1.1 : 3.0); m.rotation.y += lift * t * .3; }
+      const mat = lift > .3 ? (d.group === 0 ? goldMat : tealMat) : boneMat;
+      m.traverse(o => { if (o.isMesh && o.material !== mat && (o.material === boneMat || o.material === goldMat || o.material === tealMat)) o.material = mat; });
+    });
+    const night4 = beatU(4, t) > 0 && t < E(4) + .3;
+    ranger.visible = night4; ranger.userData.light.intensity = night4 ? 2.4 * (.85 + .15 * Math.sin(t * 13)) : 0;
+    const legend = t > S(8) - .3 && t < E(8) + .3, storm = legend ? prog(t, S(8) + 6.5, S(8) + 8.5) : 0;
+    procession.visible = legend;
+    procession.children.forEach(g => { const k = (g.userData.k * .55 + prog(t, S(8), E(8)) * .45) % 1; const p = RIDGE.getPointAt(k); g.position.copy(p); });
+    lake.background = storm > .5 ? skyStorm : skyNight;
+    moonLight.intensity = .95 * (1 - storm * .8); hemi.intensity = .45 * (1 - storm * .6);
+    const fl = legend ? [9.0, 10.6, 12.1].reduce((s, f) => s + Math.max(0, 1 - Math.abs(t - S(8) - f) * 7), 0) : 0;
+    flash.intensity = fl * 2.2; stars.visible = storm < .5;
+    hail.visible = storm > 0;
+    if (storm > 0) { const p = hail.geometry.attributes.position; for (let i = 0; i < p.count; i++) p.setY(i, ((HAIL0[i * 3 + 1] - (t - S(8)) * 14) % 26 + 26) % 26 - 1); p.needsUpdate = true; hail.material.opacity = storm; }
+    const tk = beatU(16, t), trailOn = t > S(16) - .2 && t < E(16) + .3;
+    trail.visible = trailOn; trail.geometry.setDrawRange(0, Math.floor(trail.geometry.index.count * eout(prog(t, S(16) + .4, S(16) + 4)) / 6) * 6);
+    // camera
+    let pos, tgt;
+    if (t < E(1) + .2) { const k = ease(prog(t, 0, E(1))); pos = vlerp(V(-4, 16, 40), V(1, 6.5, 13), k); tgt = vlerp(V(0, 22, -60), V(0, -.3, 0), ease(prog(t, 2.5, E(1)))); }
+    else if (t < E(2) + .2) { const k = ease(beatU(2, t)); pos = vlerp(V(1, 6.5, 13), V(2.6, 3.8, 8), k); tgt = V(0, -.4, 0); }
+    else if (t < E(3) + .2) { const k = beatU(3, t); pos = vlerp(V(2.6, 3.8, 8), V(-1.4, 4.2, 8.6), ease(k)); tgt = V(0, -.4, 0); }
+    else if (t < E(4) + .2) { const k = ease(beatU(4, t)); pos = vlerp(V(6.8, 2.2, 10), V(5.2, 1.7, 7.6), k); tgt = vlerp(V(1.2, .5, 1.6), V(2.0, .8, 3.0), k); }
+    else if (t < E(7) + .2) { const k = beatU(7, t); [pos, tgt] = lakeOrbit(.6 + k * .9, 10.5, 5.2, -.2); }
+    else if (t < E(8) + .2) { const k = ease(beatU(8, t)); pos = vlerp(V(0, 3.4, 12.5), V(-1.5, 4.2, 9.5), k); tgt = V(0, 2.2, -6); }
+    else if (t < E(15) + .2) { const k = beatU(15, t); [pos, tgt] = lakeOrbit(-.4 + k * .8, 9, 3.6, 1.6); }
+    else if (t < E(16) + .2) { const k = ease(beatU(16, t)); pos = vlerp(V(14, 9, 18), V(10, 12, 8), k); tgt = vlerp(V(3, 0, 0), V(3, 2, -14), k); }
+    else { const k = ease(prog(t, S(18), E(18) + .2)); pos = vlerp(V(1, 4.5, 10), V(0, 20, 52), k); tgt = vlerp(V(0, -.3, 0), V(0, 4, -12), k); }
+    look(pos, tgt);
+    water.material.opacity = .7 + .05 * Math.sin(t * 2);
+    renderer.render(lake, camera);
+  }
+  // ---------------- globe ----------------
+  if (set === 'globe') {
+    let lon, lat, dist;
+    if (t < E(6) + .3) { const k = ease(prog(t, S(5) - .3, E(6))); lon = lerp(108, 96, k); lat = lerp(24, 28, k); dist = lerp(30, 27, k); }
+    else if (t < E(13) + .3) { const k = ease(prog(t, S(13) + 4.6, E(13))); lon = lerp(76, 58, k); lat = lerp(26, 30, k); dist = lerp(26, 28, k); }
+    else { const k = ease(beatU(17, t)); lon = lerp(60, 52, k); lat = lerp(30, 33, k); dist = lerp(28, 25, k); }
+    globe.rotation.set(0, 0, 0);
+    const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(lat * Math.PI / 180, -lon * Math.PI / 180, 0, 'XYZ'));
+    globe.quaternion.copy(q);
+    look(V(0, 0, dist), V(0, 0, 0));
+    const pulse = .5 + .5 * Math.sin(t * 5); ring.scale.setScalar(1 + pulse * .8); ring.material.opacity = 1 - pulse * .7;
+    japanArcs.forEach((a, i) => drawArc(a, eout(prog(t, S(5) + 2.2 + i * .3, S(5) + 4.2 + i * .3)), 1 - prog(t, S(6) + .2, S(6) + 1.6)));
+    const g13 = S(13) + 4.6;
+    drawArc(sAsiaArc, eout(prog(t, g13 + .1, g13 + 1.1)), t < E(13) + .3 ? 1 : 0);
+    drawArc(medArc, eout(prog(t, g13 + .5, g13 + 2.2)), t < E(13) + .3 ? 1 : .6 + .4 * Math.sin(t * 6));
+    drawArc(seaArc, eout(prog(t, g13 + .9, g13 + 2.4)), t < E(13) + .3 ? 1 : 0);
+    if (t > E(13) + .3) drawArc(medArc, 1, .55 + .45 * Math.sin(t * 6));
+    renderer.render(globeScene, camera);
+  }
+  // ---------------- lab ----------------
+  if (set === 'lab') {
+    const b9 = t < E(9) + .2, b10 = !b9 && t < E(10) + .2, b11 = !b9 && !b10 && t < E(11) + .2, b12 = !b9 && !b10 && !b11 && t < E(12) + .2;
+    const b13 = t > S(13) - .3 && t < S(13) + 4.8, b14 = t > S(14) - .3;
+    plinth.visible = bigSkull.visible = b9; scan.visible = scanGlow.visible = b9; figure.visible = b10;
+    hailstone.visible = cricket.visible = b11; helix.visible = b12; people.visible = b13; timeline.visible = b14;
+    let pos = V(0, 3.4, 9), tgt = V(0, 2.4, 0);
+    if (b9) {
+      bigSkull.rotation.y = (t - S(9)) * .45 - .6;
+      const sk = prog(t, S(9) + 4.5, S(9) + 7.5), sy = lerp(4.0, 1.3, sk);
+      scan.position.y = scanGlow.position.y = sy; scan.material.opacity = sk > 0 && sk < 1 ? .9 : 0; scanGlow.material.opacity = sk > 0 && sk < 1 ? .14 : 0;
+      fracture.visible = sk > .3; fracture.children.forEach(l => l.material.color.setHSL(0, 1, .5 + .15 * Math.sin(t * 8)));
+      const k = ease(beatU(9, t)); pos = vlerp(V(5, 4.6, 11), V(2.4, 3.8, 8.4), k); tgt = V(0, 2.3, 0);
+    } else if (b10) {
+      hurt.emissiveIntensity = .4 + .6 * eout(prog(t, S(10) + .2, S(10) + 1.2)) * (.8 + .2 * Math.sin(t * 9));
+      figure.rotation.y = Math.sin(t * .6) * .3; const k = ease(beatU(10, t)); pos = vlerp(V(0, 3, 10.5), V(0, 3.2, 9), k); tgt = V(0, 2.2, 0);
+    } else if (b11) {
+      const k = eout(beatU(11, t));
+      hailstone.position.set(-1.1, lerp(6, 2.4, eout(prog(t, S(11) + .2, S(11) + 1))), 0); hailstone.rotation.set(t * .7, t * .9, 0);
+      cricket.position.set(1.1, lerp(6, 2.4, eout(prog(t, S(11) + .5, S(11) + 1.3))), 0); cricket.rotation.set(.4, t * .8, .3);
+      pos = vlerp(V(0, 3, 10.5), V(0, 2.8, 9), k); tgt = V(0, 2.4, 0);
+    } else if (b12) {
+      const n = Math.floor(40 * eout(prog(t, S(12), S(12) + 4)));
+      helix.children.forEach((g, i) => { g.visible = i < n; g.scale.setScalar(i === n - 1 ? .6 : 1); });
+      helix.position.y = .6; helix.rotation.y = t * .8;
+      const k = ease(beatU(12, t)); pos = vlerp(V(0, 4, 13), V(2.6, 5, 10.5), k); tgt = V(0, 3.9, 0);
+    } else if (b13) {
+      const k = ease(prog(t, S(13) + .4, S(13) + 2.4));
+      people.children.forEach(m => { m.position.copy(vlerp(m.userData.from, m.userData.to, k)); m.material.color.setHex(k > .2 ? PCOL[m.userData.kind] : 0x8fa6ff); });
+      pos = V(0, 3.6, 11.5); tgt = V(0, 3.6, 0);
+    } else if (b14) {
+      const { m1, m2, span } = timeline.userData;
+      timeline.position.set(0, 3.8, 0);
+      m1.scale.setScalar(eout(prog(t, S(14) + 2.2, S(14) + 2.8))); m2.scale.setScalar(eout(prog(t, S(14) + 4.4, S(14) + 5)));
+      span.scale.y = Math.max(.001, eout(prog(t, S(14) + 5.4, S(14) + 6.6)));
+      const k = ease(beatU(14, t)); pos = vlerp(V(-1.2, 4, 11.5), V(.8, 3.8, 10.5), k); tgt = V(0, 3.8, 0);
+    }
+    look(pos, tgt); renderer.render(lab, camera);
+  }
+  // ---------------- India and the book ----------------
+  if (set === 'india') {
+    const k19 = ease(prog(t, S(19) - .2, S(19) + 6)), bk = ease(prog(t, S(20) - .3, S(20) + 2.6));
+    indiaDots.material.opacity = 1 - bk * .85;
+    pins.children.forEach(g => { const s = eout(prog(t, S(19) + 1.2 + g.userData.at * 4, S(19) + 1.6 + g.userData.at * 4)) * (1 - bk); g.scale.setScalar(Math.max(.001, s)); g.visible = s > .01; });
+    pins.visible = bk < 1;
+    book.visible = bk > 0;
+    const bp = vlerp(UKC.clone().add(V(0, -.5, 0)), V(0, 2.6, 0), bk);
+    book.position.copy(bp); book.scale.setScalar(Math.max(.001, lerp(.2, 1, bk)));
+    book.rotation.set(lerp(-Math.PI / 2, -.08, bk), lerp(Math.PI * 1.5, -.28 + Math.sin(t * .6) * .1, bk), 0);
+    let pos, tgt;
+    if (bk <= 0) { pos = vlerp(V(UKC.x + .4, 2.2, UKC.z + 1.8), V(0, 11, 5.5), k19); tgt = vlerp(UKC, V(0, 0, -.5), k19); }
+    else { pos = vlerp(V(0, 11, 5.5), V(0, 2.9, 10.2), bk); tgt = vlerp(V(0, 0, -.5), V(0, 2.75, 0), bk); }
+    look(pos, tgt); renderer.render(india, camera);
+  }
+
+  // ---------------- overlays ----------------
+  pop('c-alt', t, S(1) + 3.4, E(2) - .5, 330, 300);
+  const tk = prog(t, S(3) - .1, S(3) + .6), tout = prog(t, E(3) + .1, E(3) + .5);
+  $('title').style.opacity = eout(tk) * (1 - tout); $('title').style.transform = `scale(${lerp(1.25, 1, eout(tk))})`;
+  pop('c-place', t, S(3) + .6, E(3) + .4, 305, 940);
+  pop('c-1942', t, S(4) + .3, E(4) + .2, 90, 330);
+  pop('c-japan', t, S(5) + 3.6, S(6) + 1.2, 560, 640);
+  const st = prog(t, S(6) + 1.6, S(6) + 1.9); $('stamp').style.opacity = st * (1 - prog(t, E(6), E(6) + .3));
+  $('stamp').style.transform = `rotate(-12deg) scale(${lerp(2.2, 1, eout(st))})`;
+  for (const [id, a, b, y] of [['q1', S(7) + 2.6, E(7) + .2, 520], ['q2', S(17) + 6.2, E(17) + .3, 480]]) {
+    const k = eout(prog(t, a, a + .3)); $(id).style.opacity = k * (1 - prog(t, b - .25, b)); $(id).style.top = y + 'px'; $(id).style.transform = `scale(${lerp(1.8, 1, k)})`;
+  }
+  pop('c-legend', t, S(8) + .3, E(8), 410, 300);
+  pop('c-2004', t, S(9) + 1.2, E(9) + .2, 90, 330);
+  pop('c-weapon', t, S(10) + 2.0, E(10) + .2, 110, 820, { from: 1.3 }); pop('c-aval', t, S(10) + 2.9, E(10) + .2, 640, 820, { from: 1.3 });
+  pop('c-ball', t, S(11) + 1.6, E(11) + .2, 360, 560);
+  pop('c-2019', t, S(12) + 2.4, E(12) + .2, 90, 330);
+  const ck = prog(t, S(12) + 5.4, S(12) + 6.6); $('count').style.opacity = ck > 0 ? eout(prog(t, S(12) + 5.2, S(12) + 5.6)) * (1 - prog(t, E(12), E(12) + .3)) : 0;
+  $('count-n').textContent = Math.round(38 * eout(ck));
+  pop('g-sa', t, S(13) + 2.2, S(13) + 4.5, 290, 1320); pop('g-med', t, S(13) + 2.6, S(13) + 4.5, 250, 560); pop('g-sea', t, S(13) + 3.0, S(13) + 4.5, 270, 330);
+  pop('t-800', t, S(14) + 2.3, E(14) + .2, 600, 1240); pop('t-1800', t, S(14) + 4.5, E(14) + .2, 600, 540);
+  pop('t-gap', t, S(14) + 6.0, E(14) + .2, 110, 880);
+  pop('t-800', t, S(15) + 1.5, E(15), 120, 980); pop('t-1800', t, S(15) + 1.9, E(15), 120, 560); pop('t-gap', t, S(15) + 5.0, E(15), 650, 760);
+  if (t < S(15) - .3) { pop('t-800', t, S(14) + 2.3, E(14) + .2, 600, 1240); pop('t-1800', t, S(14) + 4.5, E(14) + .2, 600, 540); pop('t-gap', t, S(14) + 6.0, E(14) + .2, 110, 880); }
+  pop('c-rajjat', t, S(16) + 1.5, E(16) + .2, 330, 360);
+  const lg = prog(t, S(20) + .6, S(20) + 1.4), au = prog(t, S(20) + 2.6, S(20) + 3.3);
+  $('logo').style.opacity = eout(lg); $('logo').style.transform = `scale(${lerp(1.3, 1, eout(lg))})`;
+  $('author').style.opacity = eout(au); $('author').style.transform = `translateY(${(1 - eout(au)) * 30}px)`;
+  const sn = prog(t, S(21) + .1, S(21) + .6); $('soon').style.opacity = eout(sn); $('soon').style.transform = `translateY(${(1 - eout(sn)) * 30}px)`;
+  $('cap').style.display = t > S(20) - .2 ? 'none' : '';
+  caption(t);
+  // cut flashes, fade in and out
+  const dc = t - cutAt;
+  $('fade').style.background = dc >= 0 && dc < .25 ? '#fff' : '#000';
+  $('fade').style.opacity = dc >= 0 && dc < .25 ? .35 * (1 - dc / .25) : Math.max(1 - prog(t, 0, .8), prog(t, DURATION - 1.2, DURATION));
+}
+window.ready = new Promise(res => { const chk = () => (cover.image && cover.image.complete ? res() : setTimeout(chk, 50)); chk(); });
+</script>
+</body>
+</html>
