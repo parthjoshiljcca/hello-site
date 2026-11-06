@@ -1,6 +1,6 @@
 # Roopkund ka rahasya — script (draft 1)
 
-Voice: Sarvam Bulbul `bulbul:v4-flash`, speaker `mukul_hi_suspense`. 9:16, about 2 min 20 s.
+Voice: Sarvam Bulbul `bulbul:v4-flash`, speaker `mukul_hi_suspense`. 9:16, about 2 min 30 s.
 Style: "Isse Kehte Hain" — a hook question, "tum", one layer at a time, labels and numbers on screen.
 
 | # | Narration | On screen (3D) |
@@ -22,7 +22,10 @@ Style: "Isse Kehte Hain" — a hook question, "tum", one layer at a time, labels
 | 15 | यानी ये एक हादसा नहीं था। एक ही झील… अलग-अलग मौतें… और बीच में हज़ार साल का फ़ासला। | Two layers of bones in the lake, separated in time. Label: `1,000 साल` |
 | 16 | भारतीय लोग शायद नंदा देवी राजजात के यात्री थे — वो यात्रा जो आज भी इसी रास्ते से गुज़रती है। | Pilgrim trail lights up past the lake toward Trishul. Label: `नंदा देवी राजजात` |
 | 17 | पर भूमध्य सागर के लोग? सोलह हज़ार फ़ीट ऊपर, हिमालय की एक झील में… वो क्या कर रहे थे? इसका जवाब… आज तक किसी के पास नहीं है। | Globe line from Crete to Roopkund pulses; a big `?` |
-| 18 | रूपकुंड आज भी साल के ज़्यादातर महीने जमी रहती है… अपने राज़ बर्फ़ के नीचे दबाए। ऐसी ही अनकही कहानियाँ — हिडन उत्तराखंड में। | Lake freezes over again; pull back to the peaks; book title card. |
+| 18 | रूपकुंड आज भी साल के ज़्यादातर महीने जमी रहती है… अपने राज़ बर्फ़ के नीचे दबाए। | Lake freezes over again; camera pulls back to the peaks. |
+| 19 | पर उत्तराखंड में ऐसी झीलें, ऐसे रास्ते, ऐसी कहानियाँ… और भी हैं। जो किसी नक्शे पर नहीं, किसी गाइडबुक में नहीं। | Pull back further: the whole state lights up as a glowing map, with small markers popping up across it. |
+| 20 | वो सब मिलेंगी एक किताब में — हिडन उत्तराखंड। | The map folds into a 3D book that turns to the camera: cover, title `HIDDEN UTTARAKHAND`, author name. |
+| 21 | अगली अनकही कहानी के लिए… किताब पढ़िए। लिंक बायो में। | End card: book cover, author, where to buy, `लिंक बायो में`, the series tag for the next episode. |
 
 ## Facts and sources
 
