@@ -6,7 +6,8 @@
    "tts": "एक इंटरेस्टिंग सवाल है...",
    "cap": "Ek interesting sawaal hai...",
    "dur": 1.326,
-   "start": 0.2
+   "start": 0.2,
+   "pause": 0
   },
   {
    "id": 2,
@@ -14,7 +15,8 @@
    "tts": "अगर Earth को अपनी axis पर एक rotation complete करने में लगभग twenty-four hours लगते हैं...",
    "cap": "Agar Earth ko apni axis par ek rotation complete karne mein lagbhag 24 hours lagte hain...",
    "dur": 4.734,
-   "start": 1.726
+   "start": 1.726,
+   "pause": 0
   },
   {
    "id": 3,
@@ -22,7 +24,8 @@
    "tts": "तो हमने decide कैसे किया, कि एक दिन में twenty-four hours ही होंगे?",
    "cap": "Toh humne decide kaise kiya ki ek din mein 24 hours hi honge?",
    "dur": 3.174,
-   "start": 6.66
+   "start": 6.66,
+   "pause": 0.4
   },
   {
    "id": 4,
@@ -30,7 +33,8 @@
    "tts": "बारह, बीस, या तीस क्यों नहीं?",
    "cap": "12, 20 ya 30 kyun nahi?",
    "dur": 2.272,
-   "start": 9.914
+   "start": 10.314,
+   "pause": 1.15
   },
   {
    "id": 5,
@@ -38,7 +42,8 @@
    "tts": "इसका जवाब छुपा है, हज़ारों साल पुरानी civilizations में।",
    "cap": "Iska jawab chhupa hai hazaaron saal purani civilizations mein.",
    "dur": 2.854,
-   "start": 12.386
+   "start": 13.936,
+   "pause": 0
   },
   {
    "id": 6,
@@ -46,7 +51,8 @@
    "tts": "Ancient Egypt में लोग दिन और रात को measure करने के लिए stars और sundials का use करते थे।",
    "cap": "Ancient Egypt mein log din aur raat ko measure karne ke liye stars aur sundials ka use karte the.",
    "dur": 4.707,
-   "start": 15.44
+   "start": 16.99,
+   "pause": 0
   },
   {
    "id": 7,
@@ -54,7 +60,8 @@
    "tts": "उन्होंने daytime को बारह parts, और nighttime को भी बारह parts में divide किया।",
    "cap": "Unhone daytime ko 12 parts aur nighttime ko bhi 12 parts mein divide kiya.",
    "dur": 3.738,
-   "start": 20.347
+   "start": 21.897,
+   "pause": 0
   },
   {
    "id": 8,
@@ -62,7 +69,8 @@
    "tts": "और यहीं से शुरू हुई, twenty-four hour day की कहानी।",
    "cap": "Aur yahin se shuru hui 24-hour day ki kahaani.",
    "dur": 2.577,
-   "start": 24.165
+   "start": 25.715,
+   "pause": 0
   },
   {
    "id": 9,
@@ -70,7 +78,8 @@
    "tts": "लेकिन कहानी में एक और interesting civilization आती है...",
    "cap": "Lekin kahaani mein ek aur interesting civilization aati hai...",
    "dur": 2.574,
-   "start": 26.942
+   "start": 28.492,
+   "pause": 0
   },
   {
    "id": 10,
@@ -78,7 +87,8 @@
    "tts": "Ancient Babylon.",
    "cap": "Ancient Babylon.",
    "dur": 1.188,
-   "start": 29.596
+   "start": 31.146,
+   "pause": 0.85
   },
   {
    "id": 11,
@@ -86,7 +96,8 @@
    "tts": "Babylonians mathematics में base sixty number system use करते थे।",
    "cap": "Babylonians mathematics mein base-60 number system use karte the.",
    "dur": 3.277,
-   "start": 30.984
+   "start": 33.384,
+   "pause": 0
   },
   {
    "id": 12,
@@ -94,7 +105,8 @@
    "tts": "इसी mathematical tradition का influence आज भी हमारी timekeeping में दिखता है।",
    "cap": "Isi mathematical tradition ka influence aaj bhi hamari timekeeping mein dikhta hai.",
    "dur": 4.248,
-   "start": 34.461
+   "start": 36.861,
+   "pause": 0
   },
   {
    "id": 13,
@@ -102,7 +114,8 @@
    "tts": "Sixty seconds in a minute.",
    "cap": "60 seconds in a minute.",
    "dur": 1.071,
-   "start": 38.789
+   "start": 41.189,
+   "pause": 0
   },
   {
    "id": 14,
@@ -110,7 +123,8 @@
    "tts": "Sixty minutes in an hour.",
    "cap": "60 minutes in an hour.",
    "dur": 1.089,
-   "start": 39.94
+   "start": 42.34,
+   "pause": 0
   },
   {
    "id": 15,
@@ -118,7 +132,8 @@
    "tts": "लेकिन एक twist और है!",
    "cap": "Lekin ek twist aur hai!",
    "dur": 0.981,
-   "start": 41.229
+   "start": 43.629,
+   "pause": 0.7
   },
   {
    "id": 16,
@@ -126,7 +141,8 @@
    "tts": "Initially, hours हमेशा equal duration के नहीं होते थे।",
    "cap": "Initially, hours hamesha equal duration ke nahi hote the.",
    "dur": 2.798,
-   "start": 42.29
+   "start": 45.39,
+   "pause": 0
   },
   {
    "id": 17,
@@ -134,7 +150,8 @@
    "tts": "Ancient systems में daylight और nighttime को अलग-अलग बारह parts में divide किया जाता था।",
    "cap": "Ancient systems mein daylight aur nighttime ko alag-alag 12 parts mein divide kiya jaata tha.",
    "dur": 4.89,
-   "start": 45.288
+   "start": 48.388,
+   "pause": 0
   },
   {
    "id": 18,
@@ -142,7 +159,8 @@
    "tts": "इसलिए seasons के according, एक hour की actual length भी बदल सकती थी।",
    "cap": "Isliye seasons ke according ek hour ki actual length bhi badal sakti thi.",
    "dur": 3.57,
-   "start": 50.258
+   "start": 53.358,
+   "pause": 0
   },
   {
    "id": 19,
@@ -150,7 +168,8 @@
    "tts": "बाद में astronomy और mechanical clocks के development के साथ, equal-length hours standard बन गए।",
    "cap": "Baad mein astronomy aur mechanical clocks ke development ke saath equal-length hours standard ban gaye.",
    "dur": 5.828,
-   "start": 54.028
+   "start": 57.128,
+   "pause": 0
   },
   {
    "id": 20,
@@ -158,7 +177,8 @@
    "tts": "तो अगली बार जब तुम अपनी watch में time देखोगे...",
    "cap": "Toh agli baar jab tum apni watch mein time dekhoge...",
    "dur": 2.128,
-   "start": 60.056
+   "start": 63.156,
+   "pause": 0.6
   },
   {
    "id": 21,
@@ -166,7 +186,8 @@
    "tts": "याद रखना, तुम सिर्फ़ घड़ी नहीं देख रहे।",
    "cap": "Yaad rakhna, tum sirf ghadi nahi dekh rahe.",
    "dur": 1.96,
-   "start": 62.264
+   "start": 65.964,
+   "pause": 0
   },
   {
    "id": 22,
@@ -174,7 +195,8 @@
    "tts": "तुम ancient Egypt, Babylon, और thousands of years of human discoveries का legacy देख रहे हो।",
    "cap": "Tum ancient Egypt, Babylon aur thousands of years of human discoveries ka legacy dekh rahe ho.",
    "dur": 5.693,
-   "start": 64.424
+   "start": 68.124,
+   "pause": 0
   },
   {
    "id": 23,
@@ -182,7 +204,8 @@
    "tts": "और दुनिया में ऐसे कितने ही सवाल हैं...",
    "cap": "Aur duniya mein aise kitne hi sawaal hain...",
    "dur": 1.642,
-   "start": 70.317
+   "start": 74.017,
+   "pause": 0
   },
   {
    "id": 24,
@@ -190,7 +213,8 @@
    "tts": "जिनके पीछे छुपी हैं fascinating stories.",
    "cap": "Jinke peeche chhupi hain fascinating stories.",
    "dur": 1.92,
-   "start": 72.039
+   "start": 75.739,
+   "pause": 0
   },
   {
    "id": 25,
@@ -198,7 +222,8 @@
    "tts": "This is The Why Spaces.",
    "cap": "This is THE WHY SPACES.",
    "dur": 1.552,
-   "start": 74.409
+   "start": 78.109,
+   "pause": 0.6
   },
   {
    "id": 26,
@@ -206,8 +231,9 @@
    "tts": "Because every why, deserves a story.",
    "cap": "Because every WHY deserves a story.",
    "dur": 2.472,
-   "start": 76.041
+   "start": 80.341,
+   "pause": 0
   }
  ],
- "total": 80.31
+ "total": 84.61
 }
