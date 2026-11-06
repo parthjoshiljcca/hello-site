@@ -4,6 +4,8 @@
 # paragraph is found from the pauses, and written to out/beats.json for the picture to follow.
 #
 #   python3 narrate.py            (SARVAM_API_KEY from the environment or the repository's .env)
+#   EPISODE_DIR=short python3 narrate.py   voices another script folder; its narration.json can set
+#                                          paragraphs, pace and speaker
 import base64
 import hashlib
 import json
@@ -14,15 +16,21 @@ import numpy as np
 import soundfile as sf
 from sarvamai import SarvamAI
 
-DIR = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.abspath(__file__))
+DIR = os.path.abspath(os.environ.get('EPISODE_DIR', HERE))
 OUT = os.path.join(DIR, 'out')
 SPEAKER, PACE, SR = 'mukul_hi_suspense', 1.15, 48000
 LEAD, BREATH = .8, .35   # silence before the first paragraph, and between paragraphs
 PARAGRAPHS = [(1, 2, 3), (4, 5, 6), (7, 8), (9, 10, 11), (12, 13, 14, 15), (16, 17), (18, 19, 20, 21)]
+CONFIG = os.path.join(DIR, 'narration.json')
+if os.path.exists(CONFIG):
+    cfg = json.load(open(CONFIG))
+    PARAGRAPHS = [tuple(p) for p in cfg.get('paragraphs', PARAGRAPHS)]
+    PACE, SPEAKER = cfg.get('pace', PACE), cfg.get('speaker', SPEAKER)
 # spellings that make the voice say a word right; the subtitles keep the script's spelling
 SAY = {'रूपकुंड': 'रूपकूंड'}
 
-ENV = os.path.join(DIR, '..', '..', '.env')
+ENV = os.path.join(HERE, '..', '..', '.env')
 if 'SARVAM_API_KEY' not in os.environ and os.path.exists(ENV):
     for line in open(ENV):
         key, _, value = line.strip().partition('=')

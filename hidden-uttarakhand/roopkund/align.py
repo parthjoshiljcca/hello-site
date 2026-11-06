@@ -2,7 +2,7 @@
 # Whisper transcribes every chunk once, and dynamic programming splits the chunk sequence into the
 # paragraph's beats so that each beat's chunks best match that beat's text. Runs locally (no credits).
 #
-#   python3 align.py <sherpa-onnx-whisper-small dir>
+#   python3 align.py <sherpa-onnx-whisper-small dir>     (EPISODE_DIR as for narrate.py)
 import difflib
 import json
 import os

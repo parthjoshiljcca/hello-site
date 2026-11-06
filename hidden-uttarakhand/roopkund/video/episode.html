@@ -8,6 +8,8 @@
 <script src="timeline.js"></script>
 <style>
   @font-face { font-family:Tiro; src:url(../../fonts/TiroDevanagariHindi.ttf); }
+  @font-face { font-family:Mukta; font-weight:500; src:url(../../fonts/Mukta-Medium.ttf); }
+  @font-face { font-family:Mukta; font-weight:800; src:url(../../fonts/Mukta-ExtraBold.ttf); }
   :root { --gold:#f2c46d; --teal:#3fe0d0; --red:#ff4d5e; --violet:#b48cff; --ink:#0a1030; }
   * { box-sizing:border-box; margin:0; padding:0; }
   html, body { width:1080px; height:1920px; overflow:hidden; background:#060a1c; color:#fff; }
@@ -30,7 +32,7 @@
   #cap { position:absolute; left:70px; right:70px; bottom:250px; text-align:center; font:50px/1.42 Tiro; color:#fff; }
   #cap span { background:rgba(4,8,26,.72); padding:4px 18px 0; border-radius:10px; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
   .x { text-decoration:line-through; text-decoration-thickness:5px; text-decoration-color:var(--red); }
-  #count { position:absolute; left:0; right:0; top:330px; text-align:center; font:800 120px 'JetBrains Mono', monospace; color:var(--teal); opacity:0;
+  #count { position:absolute; left:0; right:0; top:380px; text-align:center; font:800 120px 'JetBrains Mono', monospace; color:var(--teal); opacity:0;
            text-shadow:0 0 40px rgba(63,224,208,.5); }
   #count small { display:block; font:44px Tiro; color:#fff; margin-top:4px; }
   #logo, #author { position:absolute; left:90px; width:900px; opacity:0; }
@@ -38,6 +40,15 @@
   #soon { position:absolute; left:0; right:0; top:1630px; text-align:center; opacity:0; }
   #soon .chip { position:relative; display:inline-block; opacity:1; font-size:34px; }
   #soon .follow { display:block; margin-top:26px; font:44px Tiro; color:#fff; text-shadow:0 4px 20px rgba(0,0,0,.8); }
+  #head { position:absolute; left:50px; right:50px; top:140px; text-align:center; }
+  #head .lead { font:500 42px/1.2 Mukta; color:#d6def8; text-shadow:0 3px 14px rgba(0,0,0,.7); }
+  #head .lead span { display:inline-block; opacity:0; }
+  #head .kw { font:800 84px/1.12 Mukta; color:var(--gold); text-shadow:0 4px 24px rgba(0,0,0,.75), 0 0 40px rgba(242,196,109,.35); opacity:0; }
+  #oneline { position:absolute; left:80px; right:80px; top:560px; padding:44px 52px 40px; border-radius:22px; opacity:0;
+             background:rgba(250,247,238,.96); color:#141a2e; box-shadow:0 30px 80px rgba(0,0,0,.5); }
+  #oneline .lbl { font:700 24px 'JetBrains Mono', monospace; letter-spacing:5px; color:#b07a12; }
+  #oneline p { font:500 50px/1.38 Mukta; margin-top:14px; }
+  #oneline b { font-weight:800; color:#0f7a4a; }
   #fade { position:absolute; inset:0; background:#000; pointer-events:none; }
   #vig { position:absolute; inset:0; background:radial-gradient(ellipse 80% 65% at 50% 45%, transparent 55%, rgba(0,0,0,.6) 100%); }
 </style>
@@ -71,6 +82,8 @@
 <img id="logo" src="../assets/title-logo.png">
 <img id="author" src="../assets/author-logo.png">
 <div id="soon"><span class="chip">Coming soon · जल्द आ रही है</span><span class="follow">फ़ॉलो करें — अगली अनकही कहानी के लिए</span></div>
+<div id="head"><div class="lead"></div><div class="kw"></div></div>
+<div id="oneline"><div class="lbl">एक लाइन में</div><p>रूपकुंड के कंकाल <b>एक हादसे</b> के नहीं — <b>हज़ार साल</b> के फ़ासले पर मरे <b>अलग-अलग लोगों</b> के हैं।</p></div>
 <div id="cap"></div>
 <div id="fade"></div>
 
@@ -389,6 +402,27 @@ function pop(id, t, a, b, x, y, opts = {}) {
 }
 function screenOf(v, scene3dObj) { const p = v.clone(); if (scene3dObj) scene3dObj.localToWorld(p); p.project(camera); return [(p.x + 1) / 2 * 1080, (1 - p.y) / 2 * 1920]; }
 
+// ---------- headlines: a short lead line and one bold keyword per beat ----------
+const HEAD = {
+  1: ['सोलह हज़ार फ़ीट पर', 'एक जमी हुई झील'], 2: ['बर्फ़ के नीचे', 'सैकड़ों कंकाल'], 4: ['1942 · नंदा देवी रिज़र्व', 'पहली खोज'],
+  5: ['अंग्रेज़ों का शक', 'जापानी सैनिक?'], 6: ['जाँच का नतीजा', 'शक ग़लत'], 7: ['सबसे बड़ा सवाल', 'मरे कैसे?'],
+  8: ['पहाड़ की लोककथा', 'देवी का क्रोध'], 9: ['2004 · विज्ञान', 'एक जैसी चोट'], 10: ['चोट सिर्फ़', 'सिर और कंधों पर'],
+  11: ['नतीजा', 'क्रिकेट बॉल जितने ओले'], 12: ['2019 · ट्विस्ट', 'DNA टेस्ट'], 13: ['38 कंकाल', 'तीन अलग लोग'],
+  14: ['रेडियोकार्बन डेटिंग', '1,000 साल का फ़ासला'], 15: ['यानी', 'एक नहीं, कई हादसे'], 16: ['भारतीय लोग', 'राजजात के यात्री?'],
+  17: ['पर ग्रीस वाले?', 'आज तक रहस्य'],
+};
+const headEl = document.querySelector('#head'), leadEl = headEl.querySelector('.lead'), kwEl = headEl.querySelector('.kw');
+function headline(t) {
+  const n = +Object.keys(HEAD).find(n => t >= S(+n) - .1 && t < E(+n) + .25);
+  if (!n) { headEl.style.opacity = 0; return; }
+  if (headEl.dataset.n !== String(n)) {
+    leadEl.innerHTML = HEAD[n][0].split(' ').map(w => `<span>${w}</span>`).join(' '); kwEl.textContent = HEAD[n][1]; headEl.dataset.n = n;
+  }
+  headEl.style.opacity = 1 - prog(t, E(n) - .05, E(n) + .25);
+  [...leadEl.children].forEach((w, i) => { const k = eout(prog(t, S(n) + i * .08, S(n) + i * .08 + .3)); w.style.opacity = k; w.style.transform = `translateY(${(1 - k) * 14}px)`; });
+  const k = prog(t, S(n) + .45, S(n) + .7); kwEl.style.opacity = eout(k); kwEl.style.transform = `scale(${lerp(1.3, 1, eout(k))})`;
+}
+
 // ---------- captions ----------
 const capEl = $('cap');
 function caption(t) {
@@ -499,7 +533,7 @@ function render(t) {
       const n = Math.floor(40 * eout(prog(t, S(12), S(12) + 4)));
       helix.children.forEach((g, i) => { g.visible = i < n; g.scale.setScalar(i === n - 1 ? .6 : 1); });
       helix.position.y = .6; helix.rotation.y = t * .8;
-      const k = ease(beatU(12, t)); pos = vlerp(V(0, 4, 13), V(2.6, 5, 10.5), k); tgt = V(0, 3.9, 0);
+      const k = ease(beatU(12, t)); pos = vlerp(V(0, 4.6, 14), V(2.6, 5.6, 11.5), k); tgt = V(0, 4.9, 0);
     } else if (b13) {
       const k = ease(prog(t, S(13) + .4, S(13) + 2.4));
       people.children.forEach(m => { m.position.copy(vlerp(m.userData.from, m.userData.to, k)); m.material.color.setHex(k > .2 ? PCOL[m.userData.kind] : 0x8fa6ff); });
@@ -530,36 +564,39 @@ function render(t) {
   }
 
   // ---------------- overlays ----------------
-  pop('c-alt', t, S(1) + 3.4, E(2) - .5, 330, 300);
+  pop('c-alt', t, S(1) + 3.4, E(2) - .5, 330, 390);
   const tk = prog(t, S(3) - .1, S(3) + .6), tout = prog(t, E(3) + .1, E(3) + .5);
   $('title').style.opacity = eout(tk) * (1 - tout); $('title').style.transform = `scale(${lerp(1.25, 1, eout(tk))})`;
   pop('c-place', t, S(3) + .6, E(3) + .4, 305, 940);
-  pop('c-1942', t, S(4) + .3, E(4) + .2, 90, 330);
+  pop('c-1942', t, S(4) + .3, E(4) + .2, 90, 400);
   pop('c-japan', t, S(5) + 3.6, S(6) + 1.2, 560, 640);
   const st = prog(t, S(6) + 1.6, S(6) + 1.9); $('stamp').style.opacity = st * (1 - prog(t, E(6), E(6) + .3));
   $('stamp').style.transform = `rotate(-12deg) scale(${lerp(2.2, 1, eout(st))})`;
   for (const [id, a, b, y] of [['q1', S(7) + 2.6, E(7) + .2, 520], ['q2', S(17) + 6.2, E(17) + .3, 480]]) {
     const k = eout(prog(t, a, a + .3)); $(id).style.opacity = k * (1 - prog(t, b - .25, b)); $(id).style.top = y + 'px'; $(id).style.transform = `scale(${lerp(1.8, 1, k)})`;
   }
-  pop('c-legend', t, S(8) + .3, E(8), 410, 300);
-  pop('c-2004', t, S(9) + 1.2, E(9) + .2, 90, 330);
+  pop('c-legend', t, S(8) + .3, E(8), 410, 390);
+  pop('c-2004', t, S(9) + 1.2, E(9) + .2, 90, 400);
   pop('c-weapon', t, S(10) + 2.0, E(10) + .2, 110, 820, { from: 1.3 }); pop('c-aval', t, S(10) + 2.9, E(10) + .2, 640, 820, { from: 1.3 });
   pop('c-ball', t, S(11) + 1.6, E(11) + .2, 360, 560);
-  pop('c-2019', t, S(12) + 2.4, E(12) + .2, 90, 330);
+  pop('c-2019', t, S(12) + 2.4, E(12) + .2, 90, 400);
   const ck = prog(t, S(12) + 5.4, S(12) + 6.6); $('count').style.opacity = ck > 0 ? eout(prog(t, S(12) + 5.2, S(12) + 5.6)) * (1 - prog(t, E(12), E(12) + .3)) : 0;
   $('count-n').textContent = Math.round(38 * eout(ck));
-  pop('g-sa', t, S(13) + 2.2, S(13) + 4.5, 290, 1320); pop('g-med', t, S(13) + 2.6, S(13) + 4.5, 250, 560); pop('g-sea', t, S(13) + 3.0, S(13) + 4.5, 270, 330);
+  pop('g-sa', t, S(13) + 2.2, S(13) + 4.5, 290, 1320); pop('g-med', t, S(13) + 2.6, S(13) + 4.5, 250, 560); pop('g-sea', t, S(13) + 3.0, S(13) + 4.5, 270, 380);
   pop('t-800', t, S(14) + 2.3, E(14) + .2, 600, 1240); pop('t-1800', t, S(14) + 4.5, E(14) + .2, 600, 540);
   pop('t-gap', t, S(14) + 6.0, E(14) + .2, 110, 880);
   pop('t-800', t, S(15) + 1.5, E(15), 120, 980); pop('t-1800', t, S(15) + 1.9, E(15), 120, 560); pop('t-gap', t, S(15) + 5.0, E(15), 650, 760);
   if (t < S(15) - .3) { pop('t-800', t, S(14) + 2.3, E(14) + .2, 600, 1240); pop('t-1800', t, S(14) + 4.5, E(14) + .2, 600, 540); pop('t-gap', t, S(14) + 6.0, E(14) + .2, 110, 880); }
-  pop('c-rajjat', t, S(16) + 1.5, E(16) + .2, 330, 360);
+  pop('c-rajjat', t, S(16) + 1.5, E(16) + .2, 330, 400);
   const lg = prog(t, S(20) + .6, S(20) + 1.4), au = prog(t, S(20) + 2.6, S(20) + 3.3);
   $('logo').style.opacity = eout(lg); $('logo').style.transform = `scale(${lerp(1.3, 1, eout(lg))})`;
   $('author').style.opacity = eout(au); $('author').style.transform = `translateY(${(1 - eout(au)) * 30}px)`;
   const sn = prog(t, S(21) + .1, S(21) + .6); $('soon').style.opacity = eout(sn); $('soon').style.transform = `translateY(${(1 - eout(sn)) * 30}px)`;
   $('cap').style.display = t > S(20) - .2 ? 'none' : '';
   caption(t);
+  headline(t);
+  const ol = prog(t, S(18) + .3, S(18) + .8); $('oneline').style.opacity = eout(ol) * (1 - prog(t, E(18), E(18) + .3));
+  $('oneline').style.transform = `translateY(${(1 - eout(ol)) * 40}px)`;
   // cut flashes, fade in and out
   const dc = t - cutAt;
   $('fade').style.background = dc >= 0 && dc < .25 ? '#fff' : '#000';
