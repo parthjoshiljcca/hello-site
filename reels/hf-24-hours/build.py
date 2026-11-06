@@ -83,8 +83,11 @@ for l in L:
         top = TOP.get(l['scene'], 300)
         spans = ''.join(f'<span class="w{" k" if x.lower().strip("…") in KEY else ""}">{html.escape(x)}</span> ' for x in g)
         cap_html.append(f'    <div id="cg{gid}" class="cg" style="top:{top}px">{spans.strip()}</div>')
-        cap_js.append(f"  word('#cg{gid}', {s}, {e});")
+        cap_js.append([gid, s, e])
         gid += 1
+for i in range(len(cap_js) - 1):                     # never let a group overlap the next one
+    cap_js[i][2] = round(min(cap_js[i][2], cap_js[i + 1][1] - 0.02), 3)
+cap_js = [f"  word('#cg{g}', {s}, {e});" for g, s, e in cap_js]
 captions = f"""<template>
   <style>
     #root {{ position: absolute; inset: 0; }}
