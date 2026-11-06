@@ -1,0 +1,7 @@
+.hyperframes/
+node_modules/
+out/*
+!out/why-24-hours-hf.mp4
+render.log
+check.json
+sheet.jpg
