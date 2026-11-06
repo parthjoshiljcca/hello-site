@@ -1,0 +1,91 @@
+<!doctype html>
+<html
+  lang="en"
+  data-composition-variables='[
+    {"id":"tagline","type":"string","label":"Closing tagline","default":"Because every WHY deserves a story."},
+    {"id":"gold","type":"color","label":"Gold accent","default":"#C9A45C"}
+  ]'
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=2160, height=3840" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --ground: #050403;
+        --ink: #f3ede2;
+        --gold: #c9a45c;
+        --brand: #f28c1b;
+        --cosmic: #7d9cc4;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 2160px;
+        height: 3840px;
+        overflow: hidden;
+        background: var(--ground);
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: var(--ground);
+        font-family: "Montserrat", sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="50"
+      data-fps="24"
+      data-width="2160"
+      data-height="3840"
+    >
+      <!-- Scenes overlap ~0.6 s so each one dissolves in over the last. -->
+      <div id="hook" data-composition-id="hook" data-composition-src="compositions/hook.html"
+        data-start="0" data-duration="4.6" data-track-index="1" data-track-kind="graphics"
+        data-width="2160" data-height="3840" style="z-index: 1"></div>
+      <div id="tradition" data-composition-id="tradition" data-composition-src="compositions/tradition.html"
+        data-start="4" data-duration="7.6" data-track-index="2" data-track-kind="graphics"
+        data-width="2160" data-height="3840" style="z-index: 2"></div>
+      <div id="wisdom" data-composition-id="wisdom" data-composition-src="compositions/wisdom.html"
+        data-start="11" data-duration="9.3" data-track-index="1" data-track-kind="graphics"
+        data-width="2160" data-height="3840" style="z-index: 3"></div>
+      <div id="cosmic" data-composition-id="cosmic" data-composition-src="compositions/cosmic.html"
+        data-start="19.7" data-duration="13.1" data-track-index="2" data-track-kind="graphics"
+        data-width="2160" data-height="3840" style="z-index: 4"></div>
+      <div id="meaning" data-composition-id="meaning" data-composition-src="compositions/meaning.html"
+        data-start="32.2" data-duration="8.8" data-track-index="1" data-track-kind="graphics"
+        data-width="2160" data-height="3840" style="z-index: 5"></div>
+      <div id="closing" data-composition-id="closing" data-composition-src="compositions/closing.html"
+        data-start="40.4" data-duration="9.6" data-track-index="2" data-track-kind="graphics"
+        data-width="2160" data-height="3840" style="z-index: 6"></div>
+
+      <div id="captions" data-composition-id="captions" data-composition-src="compositions/captions.html"
+        data-start="0" data-duration="50" data-track-index="3" data-track-kind="captions"
+        data-width="2160" data-height="3840" style="z-index: 20"></div>
+
+      <!-- Narration: Sarvam bulbul:v3, voice Kabir -->
+      <audio id="vo1" class="clip" src="assets/vo/vo1.wav" data-start="0.3" data-duration="3.472" data-track-index="10" data-volume="1"></audio>
+      <audio id="vo2" class="clip" src="assets/vo/vo2.wav" data-start="4.3" data-duration="6.471" data-track-index="10" data-volume="1"></audio>
+      <audio id="vo3" class="clip" src="assets/vo/vo3.wav" data-start="11.4" data-duration="7.859" data-track-index="10" data-volume="1"></audio>
+      <audio id="vo4" class="clip" src="assets/vo/vo4.wav" data-start="20.1" data-duration="11.678" data-track-index="10" data-volume="1"></audio>
+      <audio id="vo5" class="clip" src="assets/vo/vo5.wav" data-start="32.6" data-duration="7.749" data-track-index="10" data-volume="1"></audio>
+      <audio id="vo6" class="clip" src="assets/vo/vo6.wav" data-start="40.8" data-duration="7.281" data-track-index="10" data-volume="1"></audio>
+      <audio id="vo7" class="clip" src="assets/vo/vo7.wav" data-start="48.4" data-duration="1.203" data-track-index="10" data-volume="1"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

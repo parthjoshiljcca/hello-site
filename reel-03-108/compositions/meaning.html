@@ -1,0 +1,43 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; }
+    .shot { position: absolute; inset: 0; overflow: hidden; }
+    .shot img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+    .vignette { position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 65% at 50% 45%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.75) 100%); }
+    .shaft { position: absolute; left: -400px; top: -600px; width: 1500px; height: 5200px;
+      background: linear-gradient(90deg, rgba(255,214,150,0) 0%, rgba(255,214,150,0.16) 50%, rgba(255,214,150,0) 100%);
+      mix-blend-mode: screen; }
+    #me-num { position: absolute; left: 0; right: 0; top: 820px; text-align: center;
+      font-family: "Montserrat", sans-serif; font-weight: 300; font-size: 380px; letter-spacing: 0.1em;
+      color: var(--gold, #c9a45c); text-shadow: 0 0 60px rgba(0,0,0,0.6); }
+  </style>
+  <div id="root" data-composition-id="meaning" data-width="2160" data-height="3840">
+    <div id="me-a" class="shot clip" data-start="0" data-duration="4.6">
+      <img id="me-a-img" src="assets/img/s3b-carving.webp" alt="Sunlight on carved temple pillars" />
+      <div id="me-shaft" class="shaft"></div>
+      <div class="vignette"></div>
+    </div>
+    <div id="me-b" class="shot clip" data-start="4" data-duration="4.8">
+      <img id="me-b-img" src="assets/img/s2b-meditation.webp" alt="Rudraksha beads resting on the temple floor" />
+      <div class="vignette"></div>
+    </div>
+    <div id="me-title" class="clip" data-start="4.8" data-duration="3.4">
+      <div id="me-num">108</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#me-a", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.out" }, 0);
+    // Sunlight moves across the carved pillars.
+    tl.fromTo("#me-a-img", { scale: 1.5, rotation: 0, xPercent: 8, yPercent: 14, transformOrigin: "50% 50%" },
+      { scale: 1.2, rotation: 0, duration: 4.6, ease: "sine.inOut" }, 0);
+    tl.fromTo("#me-shaft", { x: -200, rotation: 18, opacity: 0.5 }, { x: 500, opacity: 1, duration: 4.6, ease: "sine.inOut" }, 0);
+    tl.fromTo("#me-b", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.inOut" }, 4);
+    tl.fromTo("#me-b-img", { scale: 2.6, xPercent: 62, yPercent: -66, transformOrigin: "50% 50%" },
+      { scale: 2.4, xPercent: 58, yPercent: -60, duration: 4.8, ease: "sine.inOut" }, 4);
+    tl.fromTo("#me-num", { opacity: 0 }, { opacity: 0.9, duration: 1.2, ease: "sine.out" }, 4.8);
+    tl.to("#me-num", { opacity: 0, duration: 1.0, ease: "sine.in" }, 7.2);
+    window.__timelines["meaning"] = tl;
+  </script>
+</template>

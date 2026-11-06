@@ -1,0 +1,44 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; }
+    .shot { position: absolute; inset: 0; overflow: hidden; }
+    .shot img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+    .vignette { position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 62%, rgba(0,0,0,0.7) 100%); }
+    .list { position: absolute; left: 0; right: 0; top: 560px; text-align: center; }
+    .item { display: block; font-family: "Montserrat", sans-serif; font-weight: 500; font-size: 76px;
+      letter-spacing: 0.3em; color: #f3ede2; line-height: 1.7; text-shadow: 0 4px 30px rgba(0,0,0,0.8); }
+    .item b { color: var(--gold, #c9a45c); font-weight: 600; }
+  </style>
+  <div id="root" data-composition-id="tradition" data-width="2160" data-height="3840">
+    <div id="tr-a" class="shot clip" data-start="0" data-duration="4.1">
+      <img id="tr-a-img" src="assets/img/s2a-scripture.webp" alt="Rudraksha mala beside a manuscript" />
+      <div class="vignette"></div>
+    </div>
+    <!-- Hands only: framed on the lap so the devotee's face stays out of shot. -->
+    <div id="tr-b" class="shot clip" data-start="3.5" data-duration="4.1">
+      <img id="tr-b-img" src="assets/img/s2b-meditation.webp" alt="Hands counting mala beads in meditation" />
+      <div class="vignette"></div>
+    </div>
+    <div id="tr-list" class="list clip" data-start="1.5" data-duration="6.1">
+      <span id="tr-i1" class="item"><b>108</b> BEADS</span>
+      <span id="tr-i2" class="item"><b>108</b> NAMES</span>
+      <span id="tr-i3" class="item"><b>108</b> UPANISHADS</span>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#tr-a", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.out" }, 0);
+    tl.fromTo("#tr-a-img", { scale: 1.12, xPercent: 2, transformOrigin: "70% 65%" },
+      { scale: 1.24, xPercent: -1, duration: 4.1, ease: "sine.inOut" }, 0);
+    tl.fromTo("#tr-b", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.inOut" }, 3.5);
+    tl.fromTo("#tr-b-img", { scale: 2.05, xPercent: 0, yPercent: -30, transformOrigin: "50% 50%" },
+      { scale: 2.2, xPercent: -2, yPercent: -33, duration: 4.1, ease: "sine.inOut" }, 3.5);
+    // Each line lands on the word that says it.
+    tl.fromTo("#tr-i1", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 1.5);
+    tl.fromTo("#tr-i2", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 3.2);
+    tl.fromTo("#tr-i3", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 5.6);
+    tl.to("#tr-list", { opacity: 0, duration: 0.4, ease: "power2.in" }, 7.1);
+    window.__timelines["tradition"] = tl;
+  </script>
+</template>

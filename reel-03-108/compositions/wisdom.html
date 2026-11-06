@@ -1,0 +1,48 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; }
+    .shot { position: absolute; inset: 0; overflow: hidden; }
+    .shot img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+    .vignette { position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 65% at 50% 45%, rgba(0,0,0,0) 35%, rgba(0,0,0,0.8) 100%); }
+    .darken { position: absolute; inset: 0; background: rgba(5,4,3,0.55); }
+    #wi-num { position: absolute; left: 0; right: 0; top: 1150px; text-align: center;
+      font-family: "Montserrat", sans-serif; font-weight: 300; font-size: 560px; letter-spacing: 0.08em;
+      color: var(--gold, #c9a45c); text-shadow: 0 0 80px rgba(201,164,92,0.35); }
+    #wi-sub { position: absolute; left: 0; right: 0; top: 1820px; text-align: center;
+      font-family: "Montserrat", sans-serif; font-weight: 500; font-size: 60px; letter-spacing: 0.32em;
+      line-height: 1.6; color: #f3ede2; }
+    #wi-rule { position: absolute; left: 830px; width: 500px; top: 1790px; height: 3px; background: var(--gold, #c9a45c); }
+  </style>
+  <div id="root" data-composition-id="wisdom" data-width="2160" data-height="3840">
+    <div id="wi-a" class="shot clip" data-start="0" data-duration="4.9">
+      <img id="wi-a-img" src="assets/img/s2a-scripture.webp" alt="Ancient manuscript pages" />
+      <div class="vignette"></div>
+    </div>
+    <div id="wi-b" class="shot clip" data-start="4.3" data-duration="5">
+      <img id="wi-b-img" src="assets/img/s3b-carving.webp" alt="Ancient temple stone carvings" />
+      <div id="wi-b-dark" class="darken"></div>
+      <div class="vignette"></div>
+    </div>
+    <div id="wi-title" class="clip" data-start="4.9" data-duration="4.4">
+      <div id="wi-num">108</div>
+      <div id="wi-rule"></div>
+      <div id="wi-sub">SPIRITUAL COMPLETENESS<br />COSMIC HARMONY</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#wi-a", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.out" }, 0);
+    tl.fromTo("#wi-a-img", { scale: 2.0, xPercent: 38, yPercent: -12, transformOrigin: "50% 50%" },
+      { scale: 2.2, xPercent: 44, yPercent: -14, duration: 4.9, ease: "sine.inOut" }, 0);
+    tl.fromTo("#wi-b", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "sine.inOut" }, 4.3);
+    tl.fromTo("#wi-b-img", { scale: 1.18, xPercent: 3, transformOrigin: "60% 40%" },
+      { scale: 1.06, xPercent: -1, duration: 5, ease: "sine.inOut" }, 4.3);
+    tl.fromTo("#wi-b-dark", { opacity: 0 }, { opacity: 1, duration: 1, ease: "sine.inOut" }, 4.7);
+    tl.fromTo("#wi-num", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 1.4, ease: "power2.out" }, 4.9);
+    tl.fromTo("#wi-rule", { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "power2.inOut" }, 6.0);
+    tl.fromTo("#wi-sub", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 6.3);
+    tl.to("#wi-title", { opacity: 0, duration: 0.5, ease: "power2.in" }, 8.6);
+    window.__timelines["wisdom"] = tl;
+  </script>
+</template>

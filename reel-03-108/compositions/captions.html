@@ -1,0 +1,109 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; pointer-events: none; }
+    .cap { position: absolute; left: 0; width: 2160px; top: 2440px; text-align: center; overflow: visible; }
+    .cap .t { display: inline-block; max-width: 1800px; font-family: "Montserrat", sans-serif; font-weight: 600;
+      font-size: 96px; line-height: 1.25; color: #f3ede2; padding: 14px 40px; border-radius: 18px;
+      background: rgba(5,4,3,0.38); text-shadow: 0 3px 18px rgba(0,0,0,0.85); }
+    .cap .t b { color: #e2bd73; font-weight: 700; }
+  </style>
+  <div id="root" data-composition-id="captions" data-width="2160" data-height="3840">
+      <div id="cap0" class="cap clip" data-start="0.25" data-duration="0.65"><span class="t">Kabhi socha hai...</span></div>
+      <div id="cap1" class="cap clip" data-start="0.87" data-duration="1.48"><span class="t">Hindu traditions mein</span></div>
+      <div id="cap2" class="cap clip" data-start="2.32" data-duration="1.54"><span class="t"><b>108</b> number itna special kyun hai?</span></div>
+      <div id="cap3" class="cap clip" data-start="4.25" data-duration="2.05"><span class="t">Ek Japa Mala mein <b>108</b> beads...</span></div>
+      <div id="cap4" class="cap clip" data-start="6.27" data-duration="1.91"><span class="t">Kai devtaon ke <b>108</b> naam...</span></div>
+      <div id="cap5" class="cap clip" data-start="8.15" data-duration="1.41"><span class="t">Aur parampara ke anusaar,</span></div>
+      <div id="cap6" class="cap clip" data-start="9.53" data-duration="1.33"><span class="t"><b>108</b> Upanishads.</span></div>
+      <div id="cap7" class="cap clip" data-start="11.35" data-duration="1.25"><span class="t">Lekin is number ki kahaani</span></div>
+      <div id="cap8" class="cap clip" data-start="12.57" data-duration="1.58"><span class="t">aur bhi fascinating hai.</span></div>
+      <div id="cap9" class="cap clip" data-start="14.12" data-duration="1.46"><span class="t">Ancient Indian traditions mein</span></div>
+      <div id="cap10" class="cap clip" data-start="15.55" data-duration="1.75"><span class="t"><b>108</b> ko spiritual completeness</span></div>
+      <div id="cap11" class="cap clip" data-start="17.27" data-duration="0.93"><span class="t">aur cosmic harmony ka</span></div>
+      <div id="cap12" class="cap clip" data-start="18.17" data-duration="1.17"><span class="t">symbol maana gaya hai.</span></div>
+      <div id="cap13" class="cap clip" data-start="20.05" data-duration="1.1"><span class="t">Aur astronomy mein bhi</span></div>
+      <div id="cap14" class="cap clip" data-start="21.12" data-duration="1.97"><span class="t">ek interesting coincidence milta hai!</span></div>
+      <div id="cap15" class="cap clip" data-start="23.06" data-duration="1.28"><span class="t">Earth aur Sun ke beech ki</span></div>
+      <div id="cap16" class="cap clip" data-start="24.31" data-duration="0.73"><span class="t">average distance,</span></div>
+      <div id="cap17" class="cap clip" data-start="25.01" data-duration="1.28"><span class="t">Sun ke diameter se</span></div>
+      <div id="cap18" class="cap clip" data-start="26.26" data-duration="1.97"><span class="t">approximately <b>108</b> times hai.</span></div>
+      <div id="cap19" class="cap clip" data-start="28.2" data-duration="1.47"><span class="t">Earth aur Moon ke case mein bhi</span></div>
+      <div id="cap20" class="cap clip" data-start="29.64" data-duration="2.22"><span class="t">aisa hi approximate ratio milta hai.</span></div>
+      <div id="cap21" class="cap clip" data-start="32.55" data-duration="2.0"><span class="t">Lekin <b>108</b> ka asli significance</span></div>
+      <div id="cap22" class="cap clip" data-start="34.52" data-duration="1.54"><span class="t">sirf mathematics mein nahi...</span></div>
+      <div id="cap23" class="cap clip" data-start="36.03" data-duration="1.31"><span class="t">Yeh meditation, devotion</span></div>
+      <div id="cap24" class="cap clip" data-start="37.31" data-duration="1.69"><span class="t">aur spiritual practice mein bhi</span></div>
+      <div id="cap25" class="cap clip" data-start="38.97" data-duration="1.46"><span class="t">gehra meaning rakhta hai.</span></div>
+      <div id="cap26" class="cap clip" data-start="40.75" data-duration="0.82"><span class="t">Shayad isi liye</span></div>
+      <div id="cap27" class="cap clip" data-start="41.54" data-duration="1.81"><span class="t"><b>108</b> sirf ek number nahi...</span></div>
+      <div id="cap28" class="cap clip" data-start="43.32" data-duration="1.36"><span class="t">Balki spirituality, tradition</span></div>
+      <div id="cap29" class="cap clip" data-start="44.65" data-duration="1.5"><span class="t">aur human curiosity ke beech</span></div>
+      <div id="cap30" class="cap clip" data-start="46.12" data-duration="2.05"><span class="t">ek fascinating connection hai.</span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#cap0 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 0.25);
+    tl.to("#cap0 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 0.8);
+    tl.fromTo("#cap1 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 0.87);
+    tl.to("#cap1 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 2.25);
+    tl.fromTo("#cap2 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 2.32);
+    tl.to("#cap2 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 3.76);
+    tl.fromTo("#cap3 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 4.25);
+    tl.to("#cap3 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 6.2);
+    tl.fromTo("#cap4 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 6.27);
+    tl.to("#cap4 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 8.08);
+    tl.fromTo("#cap5 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 8.15);
+    tl.to("#cap5 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 9.46);
+    tl.fromTo("#cap6 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 9.53);
+    tl.to("#cap6 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 10.76);
+    tl.fromTo("#cap7 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 11.35);
+    tl.to("#cap7 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 12.5);
+    tl.fromTo("#cap8 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 12.57);
+    tl.to("#cap8 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 14.05);
+    tl.fromTo("#cap9 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 14.12);
+    tl.to("#cap9 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 15.48);
+    tl.fromTo("#cap10 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 15.55);
+    tl.to("#cap10 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 17.2);
+    tl.fromTo("#cap11 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 17.27);
+    tl.to("#cap11 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 18.1);
+    tl.fromTo("#cap12 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 18.17);
+    tl.to("#cap12 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 19.24);
+    tl.fromTo("#cap13 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 20.05);
+    tl.to("#cap13 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 21.05);
+    tl.fromTo("#cap14 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 21.12);
+    tl.to("#cap14 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 22.99);
+    tl.fromTo("#cap15 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 23.06);
+    tl.to("#cap15 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 24.24);
+    tl.fromTo("#cap16 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 24.31);
+    tl.to("#cap16 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 24.94);
+    tl.fromTo("#cap17 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 25.01);
+    tl.to("#cap17 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 26.19);
+    tl.fromTo("#cap18 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 26.26);
+    tl.to("#cap18 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 28.13);
+    tl.fromTo("#cap19 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 28.2);
+    tl.to("#cap19 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 29.57);
+    tl.fromTo("#cap20 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 29.64);
+    tl.to("#cap20 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 31.76);
+    tl.fromTo("#cap21 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 32.55);
+    tl.to("#cap21 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 34.45);
+    tl.fromTo("#cap22 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 34.52);
+    tl.to("#cap22 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 35.96);
+    tl.fromTo("#cap23 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 36.03);
+    tl.to("#cap23 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 37.24);
+    tl.fromTo("#cap24 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 37.31);
+    tl.to("#cap24 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 38.9);
+    tl.fromTo("#cap25 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 38.97);
+    tl.to("#cap25 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 40.33);
+    tl.fromTo("#cap26 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 40.75);
+    tl.to("#cap26 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 41.47);
+    tl.fromTo("#cap27 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 41.54);
+    tl.to("#cap27 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 43.25);
+    tl.fromTo("#cap28 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 43.32);
+    tl.to("#cap28 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 44.58);
+    tl.fromTo("#cap29 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 44.65);
+    tl.to("#cap29 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 46.05);
+    tl.fromTo("#cap30 .t", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" }, 46.12);
+    tl.to("#cap30 .t", { opacity: 0, duration: 0.1, ease: "power2.in" }, 48.07);
+    window.__timelines["captions"] = tl;
+  </script>
+</template>
