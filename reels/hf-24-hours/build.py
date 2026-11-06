@@ -9,14 +9,14 @@ FPS = 30
 L = json.load(open('lines.json'))
 
 # ---------- timeline: calm pacing ----------
-IN_SCENE, NEW_SCENE = 0.35, 0.7
-PAUSE = {3: 0.5, 4: 1.6, 10: 1.2, 15: 1.0, 20: 0.9, 25: 0.8}   # dramatic pauses after these lines
-t = 0.5
+IN_SCENE, NEW_SCENE = 0.2, 0.4
+PAUSE = {3: 0.3, 4: 1.0, 10: 0.7, 15: 0.6, 20: 0.5, 25: 0.6}   # dramatic pauses after these lines
+t = 0.3
 for i, l in enumerate(L):
     l['start'] = round(t, 3)
     l['pause'] = PAUSE.get(l['id'], 0)
     nxt = L[i + 1]['scene'] if i + 1 < len(L) else None
-    t += l['dur'] + l['pause'] + (2.8 if nxt is None else IN_SCENE if nxt == l['scene'] else NEW_SCENE)
+    t += l['dur'] + l['pause'] + (2.4 if nxt is None else IN_SCENE if nxt == l['scene'] else NEW_SCENE)
 TOTAL = round(t, 2)
 json.dump({'lines': L, 'total': TOTAL}, open('timeline.json', 'w'), ensure_ascii=False, indent=1)
 end = lambda l: l['start'] + l['dur']
