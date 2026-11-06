@@ -20,13 +20,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DIR = os.path.abspath(os.environ.get('EPISODE_DIR', HERE))
 OUT = os.path.join(DIR, 'out')
 SPEAKER, PACE, SR = 'mukul_hi_suspense', 1.15, 48000
+TEMPERATURE = None   # Sarvam's default (0.6); higher reads more expressively
 LEAD, BREATH = .8, .35   # silence before the first paragraph, and between paragraphs
 PARAGRAPHS = [(1, 2, 3), (4, 5, 6), (7, 8), (9, 10, 11), (12, 13, 14, 15), (16, 17), (18, 19, 20, 21)]
 CONFIG = os.path.join(DIR, 'narration.json')
 if os.path.exists(CONFIG):
     cfg = json.load(open(CONFIG))
     PARAGRAPHS = [tuple(p) for p in cfg.get('paragraphs', PARAGRAPHS)]
-    PACE, SPEAKER = cfg.get('pace', PACE), cfg.get('speaker', SPEAKER)
+    PACE, SPEAKER, TEMPERATURE = cfg.get('pace', PACE), cfg.get('speaker', SPEAKER), cfg.get('temperature', TEMPERATURE)
 # spellings that make the voice say a word right; the subtitles keep the script's spelling
 SAY = {'रूपकुंड': 'रूपकूंड'}
 
@@ -80,11 +81,12 @@ def main():
     for group in PARAGRAPHS:
         said = [spoken(text[n]) for n in group]
         full = ' '.join(said)
-        key = hashlib.sha1(f'{SPEAKER}|{PACE}|{full}'.encode()).hexdigest()[:10]
+        key = hashlib.sha1(f'{SPEAKER}|{PACE}|{full}'.encode() + (f'|{TEMPERATURE}'.encode() if TEMPERATURE else b'')).hexdigest()[:10]
         path = os.path.join(OUT, 'paragraphs', f'{group[0]:02d}-{key}.wav')
         if not os.path.exists(path):  # only changed paragraphs are paid for again
             resp = client.text_to_speech.convert(text=full, language_code='hi-IN', model='bulbul:v4-flash',
-                                                 speaker=SPEAKER, pace=PACE, speech_sample_rate=SR)
+                                                 speaker=SPEAKER, pace=PACE, speech_sample_rate=SR,
+                                                 **({'temperature': TEMPERATURE} if TEMPERATURE else {}))
             open(path, 'wb').write(base64.b64decode(''.join(resp.audios)))
         a, sr = sf.read(path)
         a = a.mean(1) if a.ndim > 1 else a

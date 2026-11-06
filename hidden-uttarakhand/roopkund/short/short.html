@@ -8,31 +8,35 @@
 <style>
   @font-face { font-family:Mukta; font-weight:500; src:url(../../fonts/Mukta-Medium.ttf); }
   @font-face { font-family:Mukta; font-weight:800; src:url(../../fonts/Mukta-ExtraBold.ttf); }
-  :root { --green:#14804f; --ink:#1d2321; --mute:#6c726e; --red:#d93a3a; --gold:#c8901a; --teal:#1a9a92; --violet:#7a5bd6; }
+  :root { --green:#f2c46d; --ink:#e8ecf5; --mute:#6c7690; --red:#ff4d5e; --gold:#c8901a; --teal:#1a9a92; --violet:#7a5bd6; }
   * { box-sizing:border-box; margin:0; padding:0; }
   html, body { width:1080px; height:1920px; overflow:hidden; }
-  body { background:#f2efe7; font-family:Mukta, sans-serif; color:var(--ink); transition:none; }
-  #bg { position:absolute; inset:0; background-image:radial-gradient(rgba(29,35,33,.07) 2px, transparent 2px); background-size:36px 36px; }
+  body { background:#090d1b; font-family:Mukta, sans-serif; color:var(--ink); transition:none; }
+  #bg { position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,.045) 2px, transparent 2px); background-size:36px 36px; }
   #chips { position:absolute; top:110px; left:0; right:0; display:flex; justify-content:center; gap:14px; }
   #chips span { font:600 26px 'JetBrains Mono', monospace; padding:10px 22px; border-radius:999px; letter-spacing:1px; }
-  #chips .a { background:#1d2321; color:#fff; } #chips .a i { display:inline-block; width:12px; height:12px; border-radius:50%; background:#35d07f; margin-right:12px; vertical-align:middle; }
-  #chips .b { background:#fff; color:#1d2321; border:2px solid #d8d4c8; }
+  #chips .a { background:#f2c46d; color:#0a0e1c; } #chips .a i { display:inline-block; width:12px; height:12px; border-radius:50%; background:#ff4d5e; margin-right:12px; vertical-align:middle; }
+  #chips .b { background:rgba(255,255,255,.06); color:#e8ecf5; border:2px solid rgba(255,255,255,.18); }
   #say { position:absolute; left:70px; right:70px; top:250px; text-align:center; min-height:300px; font:500 50px/1.3 Mukta; }
-  #say .w { display:inline-block; font:500 50px/1.3 Mukta; color:#3a403d; opacity:0; }
-  #say .k { display:block; font:800 104px/1.08 Mukta; color:var(--green); opacity:0; margin-top:8px; }
+  #say .w { display:inline-block; font:500 50px/1.3 Mukta; color:#c4cce2; opacity:0; text-shadow:0 3px 14px rgba(0,0,0,.6); }
+  #say .k { display:block; font:800 104px/1.08 Mukta; color:var(--green); opacity:0; margin-top:8px; text-shadow:0 0 40px rgba(242,196,109,.35), 0 6px 24px rgba(0,0,0,.7); }
+  #say .k.red { text-shadow:0 0 40px rgba(255,77,94,.4), 0 6px 24px rgba(0,0,0,.7); }
   #say .k.red { color:var(--red); }
-  #card { position:absolute; left:90px; top:640px; width:900px; height:900px; border-radius:40px; background:#fff; overflow:hidden;
-          box-shadow:0 30px 80px rgba(29,35,33,.14), 0 2px 0 rgba(29,35,33,.04); }
+  #card { position:absolute; left:90px; top:640px; width:900px; height:900px; border-radius:40px; background:#0d1226; overflow:hidden;
+          box-shadow:0 30px 90px rgba(0,0,0,.65), 0 0 0 1px rgba(255,255,255,.08), 0 0 80px rgba(80,120,255,.08); }
   #card canvas { position:absolute; inset:0; }
   #one { position:absolute; inset:0; padding:90px 70px; display:none; }
   #one .lbl { font:700 28px 'JetBrains Mono', monospace; letter-spacing:4px; color:var(--green); }
-  #one p { font:500 62px/1.38 Mukta; margin-top:30px; color:#9aa09c; }
+  #one p { font:500 62px/1.38 Mukta; margin-top:30px; color:#5b6480; }
   #one p b { font-weight:800; }
   #book { position:absolute; inset:0; display:none; background:#0b0d14; }
   #book img.cover { position:absolute; left:250px; top:120px; width:400px; border-radius:6px; box-shadow:0 30px 60px rgba(0,0,0,.6); }
   #book .soon { position:absolute; left:0; right:0; bottom:60px; text-align:center; font:700 30px 'JetBrains Mono', monospace; letter-spacing:4px; color:#f2c46d; }
   #logo { position:absolute; left:220px; top:1560px; width:640px; opacity:0; filter:drop-shadow(0 6px 10px rgba(0,0,0,.25)); }
-  #handle { position:absolute; bottom:120px; left:0; right:0; text-align:center; font:500 26px 'JetBrains Mono', monospace; color:#9a9f9b; }
+  #vig { position:absolute; inset:0; background:radial-gradient(ellipse 85% 70% at 50% 50%, transparent 50%, rgba(0,0,0,.7) 100%); pointer-events:none; }
+  #grain { position:absolute; inset:0; width:1080px; height:1920px; opacity:.07; mix-blend-mode:overlay; }
+  #flash { position:absolute; inset:0; background:#fff; opacity:0; }
+  #handle { position:absolute; bottom:120px; left:0; right:0; text-align:center; font:500 26px 'JetBrains Mono', monospace; color:#4d5675; }
   #follow { position:absolute; left:0; right:0; top:1785px; text-align:center; font:800 54px Mukta; color:var(--green); opacity:0; }
 </style>
 </head>
@@ -42,11 +46,12 @@
 <div id="say"></div>
 <div id="card"><canvas id="cv" width="900" height="900"></canvas>
   <div id="one"><div class="lbl">एक लाइन में</div>
-    <p><span>रूपकुंड</span> <span><b style="color:#1d2321">एक हादसा नहीं,</b></span> <span><b style="color:var(--green)">हज़ार साल</b></span> <span>में बिखरी</span> <span><b style="color:var(--green)">कई कहानियाँ</b></span> <span>है।</span></p></div>
+    <p><span>रूपकुंड</span> <span><b style="color:#ffffff">एक हादसा नहीं,</b></span> <span><b style="color:var(--green)">हज़ार साल</b></span> <span>में बिखरी</span> <span><b style="color:var(--green)">कई कहानियाँ</b></span> <span>है।</span></p></div>
   <div id="book"><img class="cover" src="../assets/book-cover.jpg"><div class="soon">COMING SOON · जल्द आ रही है</div></div>
 </div>
 <img id="logo" src="../assets/title-logo.png">
 <div id="follow">फ़ॉलो करें →</div>
+<div id="vig"></div><canvas id="grain" width="540" height="960"></canvas><div id="flash"></div>
 <div id="handle">Hidden Uttarakhand · Parth D. Joshi</div>
 
 <script>
@@ -92,7 +97,7 @@ function narration(t) {
 }
 
 // ---------- drawing helpers ----------
-function pill(x, y, text, bg = '#1d2321', fg = '#fff', size = 28, mono = true) {
+function pill(x, y, text, bg = '#f2c46d', fg = '#0a0e1c', size = 28, mono = true) {
   c.font = `${mono ? '700' : '800'} ${size}px ${mono ? "'JetBrains Mono', monospace" : 'Mukta'}`;
   const w = c.measureText(text).width + size * 1.2, h = size * 1.7;
   c.fillStyle = bg; c.beginPath(); c.roundRect(x - w / 2, y - h / 2, w, h, h / 2); c.fill();
@@ -108,7 +113,7 @@ function arcPath(P, a, b, k, col, lift = .25, w = 6, dash = null) {
   c.stroke(); c.setLineDash([]);
   if (k > 0 && k < 1) { const u = k, x = (1 - u) ** 2 * x0 + 2 * u * (1 - u) * mx + u * u * x1, y = (1 - u) ** 2 * y0 + 2 * u * (1 - u) * my + u * u * y1; dot(x, y, w * 1.6, col); }
 }
-function pin(x, y, k, col = '#14804f') {
+function pin(x, y, k, col = '#ff4d5e') {
   if (k <= 0) return; const s = back(k), yy = y - (1 - eout(k)) * 60;
   c.save(); c.translate(x, yy); c.scale(s, s);
   c.fillStyle = 'rgba(0,0,0,.15)'; c.beginPath(); c.ellipse(0, 4, 14, 5, 0, 0, 7); c.fill();
@@ -119,13 +124,13 @@ const ROOP = GEO.places.roopkund;
 const IND = proj([66.5, 6, 98.5, 38]), ASIA = proj([58, 2, 150, 54]), WORLD = proj([8, -5, 138, 60]);
 const asiaDots = GEO.globe.filter(([lo, la]) => lo > 56 && lo < 152 && la > 0 && la < 56), worldDots = GEO.globe.filter(([lo, la]) => lo > 6 && lo < 140 && la > -7 && la < 62);
 function mountains(u, bones) {
-  c.fillStyle = '#dfeaf3'; c.fillRect(0, 0, 900, 900);
+  c.fillStyle = '#0b1534'; c.fillRect(0, 0, 900, 900); for (let i = 0; i < 70; i++) dot((i * 137) % 900, (i * 89) % 380, 1.6, 'rgba(255,255,255,.6)'); dot(720, 120, 34, '#e8eeff');
   const ridge = (base, amp, col, seed) => { c.fillStyle = col; c.beginPath(); c.moveTo(0, 900); for (let x = 0; x <= 900; x += 30) c.lineTo(x, base - amp * Math.abs(Math.sin(x * .011 + seed) * Math.cos(x * .004 + seed * 2))); c.lineTo(900, 900); c.fill(); };
-  ridge(470, 300, '#b9c8da', 1); ridge(560, 220, '#93a7c0', 3);
-  c.fillStyle = '#fff'; for (const [x, y] of [[300, 210], [610, 260]]) { c.beginPath(); c.moveTo(x - 60, y + 70); c.lineTo(x, y); c.lineTo(x + 60, y + 70); c.lineTo(x + 25, y + 55); c.lineTo(x, y + 75); c.lineTo(x - 25, y + 55); c.fill(); }
-  c.fillStyle = '#eef3f7'; c.beginPath(); c.moveTo(0, 900); c.lineTo(0, 620); c.quadraticCurveTo(450, 540, 900, 620); c.lineTo(900, 900); c.fill();
-  c.fillStyle = '#7fb3d5'; c.beginPath(); c.ellipse(450, 720, 260, 90, 0, 0, 7); c.fill();
-  c.fillStyle = 'rgba(255,255,255,.35)'; c.beginPath(); c.ellipse(420, 700, 180, 40, 0, 0, 7); c.fill();
+  ridge(470, 300, '#22325c', 1); ridge(560, 220, '#18244a', 3);
+  c.fillStyle = '#8ea2d2'; for (const [x, y] of [[300, 210], [610, 260]]) { c.beginPath(); c.moveTo(x - 60, y + 70); c.lineTo(x, y); c.lineTo(x + 60, y + 70); c.lineTo(x + 25, y + 55); c.lineTo(x, y + 75); c.lineTo(x - 25, y + 55); c.fill(); }
+  c.fillStyle = '#2b3b68'; c.beginPath(); c.moveTo(0, 900); c.lineTo(0, 620); c.quadraticCurveTo(450, 540, 900, 620); c.lineTo(900, 900); c.fill();
+  c.fillStyle = '#163f66'; c.beginPath(); c.ellipse(450, 720, 260, 90, 0, 0, 7); c.fill();
+  c.fillStyle = 'rgba(160,200,255,.12)'; c.beginPath(); c.ellipse(420, 700, 180, 40, 0, 0, 7); c.fill();
   for (let i = 0; i < 22; i++) {
     const k = eout(prog(u, .15 + i * .02, .35 + i * .02)); if (k <= 0) continue;
     const x = 450 + Math.cos(i * 2.4) * 200 * Math.sqrt((i % 7 + 1) / 7), y = 720 + Math.sin(i * 2.4) * 60 * Math.sqrt((i % 7 + 1) / 7);
@@ -140,31 +145,31 @@ function mountains(u, bones) {
 const CARD = {
   1: u => { mountains(u); pill(700, 90, '5,029 m'); },
   2: u => {
-    c.fillStyle = '#eef4fb'; c.fillRect(0, 0, 900, 900);
-    for (const d of GEO.india) { const [x, y] = IND(d); dot(x, y, 4.2, d[2] ? '#14804f' : '#9fb6cf'); }
-    const [x, y] = IND(ROOP); pin(x, y, prog(u, .25, .55)); if (u > .5) pill(x + 30, y - 120, 'रूपकुंड · चमोली', '#14804f', '#fff', 34, false);
+    c.fillStyle = '#0a1230'; c.fillRect(0, 0, 900, 900);
+    for (const d of GEO.india) { const [x, y] = IND(d); dot(x, y, 4.2, d[2] ? '#f2c46d' : '#3d6cb3'); }
+    const [x, y] = IND(ROOP); pin(x, y, prog(u, .25, .55)); if (u > .5) pill(x + 30, y - 120, 'रूपकुंड · चमोली', '#ff4d5e', '#fff', 34, false);
   },
   3: u => {
-    c.fillStyle = '#eef4fb'; c.fillRect(0, 0, 900, 900); dots(asiaDots, ASIA, '#a9bdd4', 4);
+    c.fillStyle = '#0a1230'; c.fillRect(0, 0, 900, 900); dots(asiaDots, ASIA, '#2f4d80', 4);
     const [rx, ry] = ASIA(ROOP), [jx, jy] = ASIA(GEO.places.japan);
-    dot(jx, jy, 12, '#d93a3a'); pill(jx - 20, jy + 50, 'JAPAN', '#d93a3a', '#fff', 22);
-    arcPath(ASIA, GEO.places.japan, ROOP, eout(prog(u, .45, .85)), '#d93a3a', .3, 7, [18, 14]);
+    dot(jx, jy, 12, '#ff4d5e'); pill(jx - 20, jy + 50, 'JAPAN', '#ff4d5e', '#fff', 22);
+    arcPath(ASIA, GEO.places.japan, ROOP, eout(prog(u, .45, .85)), '#ff4d5e', .3, 7, [18, 14]);
     pin(rx, ry, prog(u, .05, .3)); pill(130, 80, '1942');
   },
   4: u => {
-    c.fillStyle = '#fff'; c.fillRect(0, 0, 900, 900);
-    c.font = '800 96px Mukta'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#1d2321'; c.fillText('जापानी सैनिक', 450, 380);
-    const k = eout(prog(u, .1, .35)); c.strokeStyle = '#d93a3a'; c.lineWidth = 12; c.lineCap = 'round'; c.beginPath(); c.moveTo(150, 390); c.lineTo(150 + 600 * k, 390); c.stroke();
+    c.fillStyle = '#0d1226'; c.fillRect(0, 0, 900, 900);
+    c.font = '800 96px Mukta'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#e8ecf5'; c.fillText('जापानी सैनिक', 450, 380);
+    const k = eout(prog(u, .1, .35)); c.strokeStyle = '#ff4d5e'; c.lineWidth = 12; c.lineCap = 'round'; c.beginPath(); c.moveTo(150, 390); c.lineTo(150 + 600 * k, 390); c.stroke();
     const s = prog(u, .5, .62); if (s > 0) { c.save(); c.translate(450, 590); c.rotate(-.12); c.scale(lerp(1.8, 1, eout(s)), lerp(1.8, 1, eout(s))); c.globalAlpha = s;
-      c.strokeStyle = '#14804f'; c.lineWidth = 8; c.strokeRect(-230, -70, 460, 140); c.fillStyle = '#14804f'; c.font = '800 76px Mukta'; c.fillText('बहुत पुरानी', 0, 8); c.restore(); }
+      c.strokeStyle = '#f2c46d'; c.lineWidth = 8; c.strokeRect(-230, -70, 460, 140); c.fillStyle = '#f2c46d'; c.font = '800 76px Mukta'; c.fillText('बहुत पुरानी', 0, 8); c.restore(); }
   },
   5: u => {
-    c.fillStyle = '#f7faf8'; c.fillRect(0, 0, 900, 900);
-    const p = 1 + .04 * Math.sin(u * 20); dot(450, 450, 230 * p * back(prog(u, 0, .35)), '#14804f');
+    c.fillStyle = '#0d1226'; c.fillRect(0, 0, 900, 900);
+    const p = 1 + .04 * Math.sin(u * 20); dot(450, 450, 260 * p * back(prog(u, 0, .35)), 'rgba(179,32,44,.25)'); dot(450, 450, 230 * p * back(prog(u, 0, .35)), '#b3202c');
     c.fillStyle = '#fff'; c.font = '800 300px Mukta'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.globalAlpha = prog(u, .1, .3); c.fillText('?', 450, 480); c.globalAlpha = 1;
   },
   6: u => {
-    c.fillStyle = '#fff'; c.fillRect(0, 0, 900, 900);
+    c.fillStyle = '#0d1226'; c.fillRect(0, 0, 900, 900);
     const sk = 1 - prog(u, .5, .58), hb = prog(u, .55, .7);
     if (sk > 0) {
       c.globalAlpha = sk; c.save(); c.translate(450, 470);
@@ -173,9 +178,9 @@ const CARD = {
       c.fillStyle = '#3a3226'; for (const s of [-1, 1]) { c.beginPath(); c.ellipse(s * 80, 40, 55, 48, 0, 0, 7); c.fill(); }
       c.beginPath(); c.moveTo(0, 90); c.lineTo(-22, 140); c.lineTo(22, 140); c.fill();
       for (let i = -3; i <= 3; i++) c.fillRect(i * 22 - 8, 165, 16, 26);
-      const ck = eout(prog(u, .12, .32)); c.strokeStyle = '#d93a3a'; c.lineWidth = 8; c.beginPath();
+      const ck = eout(prog(u, .12, .32)); c.strokeStyle = '#ff4d5e'; c.lineWidth = 8; c.beginPath();
       const crack = [[-10, -235], [10, -190], [-12, -150], [16, -110], [0, -80]]; crack.slice(0, 1 + Math.round(ck * 4)).forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y))); c.stroke();
-      if (ck > .5) { c.fillStyle = '#d93a3a'; c.beginPath(); c.moveTo(-40, -330); c.lineTo(40, -330); c.lineTo(0, -270); c.fill(); }
+      if (ck > .5) { c.fillStyle = '#ff4d5e'; c.beginPath(); c.moveTo(-40, -330); c.lineTo(40, -330); c.lineTo(0, -270); c.fill(); }
       c.restore(); c.globalAlpha = 1;
     }
     if (hb > 0) {
@@ -183,26 +188,26 @@ const CARD = {
       c.fillStyle = '#d9ecfb'; c.strokeStyle = '#7fb3d5'; c.lineWidth = 6; c.beginPath();
       for (let i = 0; i < 9; i++) { const a = i / 9 * Math.PI * 2, r = 120 + (i % 2) * 14; c.lineTo(240 + Math.cos(a) * r, 450 + Math.sin(a) * r); } c.closePath(); c.fill(); c.stroke();
       dot(660, 450, 125, '#b3202c'); c.strokeStyle = '#fff'; c.lineWidth = 6; c.beginPath(); c.arc(660, 450, 125, -1.2, 1.2); c.stroke(); c.beginPath(); c.arc(660, 450, 100, -1.1, 1.1); c.stroke();
-      c.fillStyle = '#1d2321'; c.font = '800 110px Mukta'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('≈', 450, 460);
+      c.fillStyle = '#e8ecf5'; c.font = '800 110px Mukta'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('≈', 450, 460);
       pill(240, 650, 'ओला', '#7fb3d5', '#fff', 32, false); pill(660, 650, 'क्रिकेट बॉल', '#b3202c', '#fff', 32, false);
       c.globalAlpha = 1;
     }
     pill(140, 80, '2004');
   },
   7: u => {
-    c.fillStyle = '#fbfaf6'; c.fillRect(0, 0, 900, 900);
+    c.fillStyle = '#0d1226'; c.fillRect(0, 0, 900, 900);
     const k = ease(prog(u, .5, .85)), cols = ['#c8901a', '#1a9a92', '#7a5bd6'], kinds = [...Array(23).fill(0), ...Array(14).fill(1), 2];
     kinds.forEach((kd, i) => {
       const gi = kinds.slice(0, i).filter(x => x === kd).length;
       const fx = 165 + (i % 7) * 95, fy = 220 + Math.floor(i / 7) * 95;
       const tx = [130, 520, 790][kd] + (kd === 2 ? 0 : (gi % 4) * 70), ty = 250 + Math.floor(gi / 4) * 70 * (kd === 2 ? 0 : 1);
-      dot(lerp(fx, tx, k), lerp(fy, ty, k), 26 * back(prog(u, i * .008, i * .008 + .15)), k > .1 ? cols[kd] : '#c4c9c6');
+      dot(lerp(fx, tx, k), lerp(fy, ty, k), 26 * back(prog(u, i * .008, i * .008 + .15)), k > .1 ? cols[kd] : '#3a4466');
     });
     if (k > .9) { [['23', 235, 760], ['14', 625, 760], ['1', 790, 760]].forEach(([n, x, y], j) => { c.fillStyle = cols[j]; c.font = '800 90px Mukta'; c.textAlign = 'center'; c.fillText(n, x, y); }); }
     pill(140, 80, '2019 · DNA');
   },
   8: u => {
-    c.fillStyle = '#eef4fb'; c.fillRect(0, 0, 900, 900); dots(worldDots, WORLD, '#b3c4d8', 3.4);
+    c.fillStyle = '#0a1230'; c.fillRect(0, 0, 900, 900); dots(worldDots, WORLD, '#2b4372', 3.4);
     const P = GEO.places, [rx, ry] = WORLD(ROOP);
     arcPath(WORLD, P.delhi, ROOP, eout(prog(u, .02, .2)), '#c8901a', .6, 9);
     arcPath(WORLD, P.crete, ROOP, eout(prog(u, .25, .55)), '#1a9a92', .3, 9);
@@ -213,13 +218,13 @@ const CARD = {
     if (u > .75) { const [x, y] = WORLD(P.seAsia); pill(x, y + 60, '1', '#7a5bd6', '#fff', 34, false); }
   },
   9: u => {
-    c.fillStyle = '#fbfaf6'; c.fillRect(0, 0, 900, 900);
-    c.fillStyle = '#d9ddda'; c.beginPath(); c.roundRect(100, 446, 700, 12, 6); c.fill();
+    c.fillStyle = '#0d1226'; c.fillRect(0, 0, 900, 900);
+    c.fillStyle = '#2a3354'; c.beginPath(); c.roundRect(100, 446, 700, 12, 6); c.fill();
     const a = back(prog(u, .1, .3)), b = back(prog(u, .3, .5)), g = eout(prog(u, .55, .9));
     dot(180, 452, 34 * a, '#c8901a'); dot(720, 452, 34 * b, '#1a9a92');
     if (a > .5) pill(180, 540, '~800 CE', '#c8901a', '#fff', 28); if (b > .5) pill(720, 540, '~1800 CE', '#1a9a92', '#fff', 28);
-    c.strokeStyle = '#14804f'; c.lineWidth = 8; c.lineCap = 'round'; c.beginPath(); c.moveTo(180, 360); c.lineTo(180 + 540 * g, 360); c.stroke();
-    if (g > .95) { c.fillStyle = '#14804f'; c.font = '800 84px Mukta'; c.textAlign = 'center'; c.fillText('1,000 साल', 450, 300); }
+    c.strokeStyle = '#f2c46d'; c.lineWidth = 8; c.lineCap = 'round'; c.beginPath(); c.moveTo(180, 360); c.lineTo(180 + 540 * g, 360); c.stroke();
+    if (g > .95) { c.fillStyle = '#f2c46d'; c.font = '800 84px Mukta'; c.textAlign = 'center'; c.fillText('1,000 साल', 450, 300); }
   },
   10: u => {
     if (u < .45) {
@@ -229,10 +234,10 @@ const CARD = {
       for (let i = 0; i < n; i++) { const p = pts[Math.min(pts.length - 1, Math.floor(i))]; i ? c.lineTo(...p) : c.moveTo(...p); } c.stroke(); c.setLineDash([]);
       pill(450, 90, 'नंदा देवी राजजात', '#c8901a', '#fff', 36, false);
     } else {
-      c.fillStyle = '#eef4fb'; c.fillRect(0, 0, 900, 900); dots(worldDots, WORLD, '#b3c4d8', 3.4);
+      c.fillStyle = '#0a1230'; c.fillRect(0, 0, 900, 900); dots(worldDots, WORLD, '#2b4372', 3.4);
       const pulse = .6 + .4 * Math.sin(u * 40); c.globalAlpha = pulse; arcPath(WORLD, GEO.places.crete, ROOP, 1, '#1a9a92', .3, 10); c.globalAlpha = 1;
       const [rx, ry] = WORLD(ROOP); pin(rx, ry, 1);
-      const q = back(prog(u, .55, .7)); c.save(); c.translate(450, 300); c.scale(q, q); dot(0, 0, 110, '#14804f'); c.fillStyle = '#fff'; c.font = '800 160px Mukta'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('?', 0, 14); c.restore();
+      const q = back(prog(u, .55, .7)); c.save(); c.translate(450, 300); c.scale(q, q); dot(0, 0, 110, '#b3202c'); c.fillStyle = '#fff'; c.font = '800 160px Mukta'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('?', 0, 14); c.restore();
     }
   },
 };
@@ -246,13 +251,17 @@ function render(t) {
   card.style.opacity = n === 1 ? prog(t, .2, .6) : 1;
   one.style.display = n === 11 ? 'block' : 'none'; bookEl.style.display = n === 12 ? 'block' : 'none'; cv.style.display = n >= 11 ? 'none' : 'block';
   if (CARD[n]) { c.clearRect(0, 0, 900, 900); CARD[n](u); }
-  if (n === 11) [...one.querySelectorAll('p > span')].forEach((s, i) => { const k = prog(t, S(11) + .9 + i * .55, S(11) + 1.2 + i * .55); s.style.color = k > 0 ? '#1d2321' : ''; s.style.opacity = .35 + .65 * k; });
-  document.body.style.background = [11, 12].includes(n) ? '#e6f0ea' : n % 2 ? '#f2efe7' : '#eaf1ec';
+  if (n === 11) [...one.querySelectorAll('p > span')].forEach((s, i) => { const k = prog(t, S(11) + .9 + i * .55, S(11) + 1.2 + i * .55); s.style.color = k > 0 ? '#e8ecf5' : ''; s.style.opacity = .35 + .65 * k; });
+  document.body.style.background = n % 2 ? '#090d1b' : '#0b1020';
   const lg = prog(t, S(12) + .4, S(12) + 1); document.getElementById('logo').style.opacity = eout(lg);
   document.getElementById('logo').style.transform = `scale(${lerp(1.2, 1, eout(lg))})`;
   document.getElementById('handle').style.opacity = n === 12 ? 0 : 1;
   document.getElementById('follow').style.opacity = eout(prog(t, S(12) + 3.2, S(12) + 3.6));
   narration(t);
+  const cut = n === 1 ? -9 : S(n) - .2, fl = t - cut; document.getElementById('flash').style.opacity = fl >= 0 && fl < .25 ? .22 * (1 - fl / .25) : 0;
+  const gc = document.getElementById('grain').getContext('2d'), gi = gc.createImageData(540, 960); let sd = Math.floor(t * 30) * 7919 + 1;
+  for (let i = 0; i < gi.data.length; i += 4) { sd = (sd * 16807) % 2147483647; const v = sd % 256; gi.data[i] = gi.data[i + 1] = gi.data[i + 2] = v; gi.data[i + 3] = 255; }
+  gc.putImageData(gi, 0, 0);
   if (n === 11) { say.innerHTML = '<span class="k" style="opacity:1">एक लाइन में:</span>'; say.dataset.k = 'one'; }
   if (n === 12) { say.innerHTML = '<span class="w" style="opacity:1">ऐसी ही अनकही कहानियाँ</span>'; say.dataset.k = 'book'; }
   document.body.style.opacity = Math.min(prog(t, 0, .3) * 0 + 1, 1 - prog(t, DURATION - .6, DURATION));
