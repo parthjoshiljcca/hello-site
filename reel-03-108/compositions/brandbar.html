@@ -1,0 +1,22 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; pointer-events: none; }
+    .bar { position: absolute; top: 172px; font-family: "JetBrains Mono", monospace; font-weight: 400;
+      font-size: 50px; letter-spacing: 0.06em; color: rgba(150,150,150,0.62); white-space: nowrap; }
+    #bb-left { left: 130px; }
+    #bb-left b { font-weight: 400; color: rgba(214,112,40,0.85); }
+    #bb-right { right: 130px; }
+  </style>
+  <div id="root" data-composition-id="brandbar" data-width="2160" data-height="3840">
+    <div id="bb" class="clip" data-start="0" data-duration="48.3" data-layout-allow-caption-zone>
+      <div id="bb-left" class="bar">THE WHY SPACES · <b>REEL 03</b></div>
+      <div id="bb-right" class="bar">@thewhyspaces</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#bb-left", { opacity: 1 }, { opacity: 1, duration: 47.6, ease: "none" }, 0);
+    tl.to(["#bb-left", "#bb-right"], { opacity: 0, duration: 0.6, ease: "sine.in" }, 47.6);
+    window.__timelines["brandbar"] = tl;
+  </script>
+</template>

@@ -7,21 +7,12 @@
     /* Isolates one bead: everything beyond a soft circle falls to black. */
     .iris { position: absolute; inset: 0;
       background: radial-gradient(circle 560px at 50% 46%, rgba(0,0,0,0) 55%, rgba(0,0,0,1) 100%); }
-    #cl-logo { position: absolute; left: 0; top: 1020px; width: 2160px; height: 2160px; mix-blend-mode: screen; }
-    #cl-tag { position: absolute; left: 0; right: 0; top: 2630px; text-align: center;
-      font-family: "Montserrat", sans-serif; font-weight: 400; font-size: 68px; letter-spacing: 0.08em; color: #f3ede2; }
   </style>
   <div id="root" data-composition-id="closing" data-width="2160" data-height="3840">
     <canvas id="cl-stars" data-layout-ignore width="2160" height="3840"></canvas>
     <div id="cl-bead" class="shot clip" data-start="0" data-duration="4.2">
       <img id="cl-bead-img" src="assets/img/s1-mala.webp" alt="A single Rudraksha bead" />
       <div class="iris"></div>
-    </div>
-    <div id="cl-brand" class="clip" data-start="5.4" data-duration="4.2">
-      <img id="cl-logo" src="assets/logo.png" alt="THE WHY SPACES" />
-    </div>
-    <div id="cl-tagline" class="clip" data-start="7" data-duration="2.6">
-      <div id="cl-tag" data-var-text="tagline">Because every WHY deserves a story.</div>
     </div>
   </div>
   <script>
@@ -48,9 +39,10 @@
     tl.fromTo("#cl-bead-img", { scale: 3.0, xPercent: -12.6, yPercent: 9.8, transformOrigin: "50% 50%" },
       { scale: 3.4, xPercent: -14.3, yPercent: 11.6, duration: 4.2, ease: "sine.inOut" }, 0);
     tl.to("#cl-bead", { opacity: 0, duration: 1.0, ease: "sine.inOut" }, 3.2);
-    tl.fromTo("#cl-stars", { scale: 1.12, opacity: 0 }, { scale: 1.0, opacity: 1, duration: 9.6, ease: "sine.out" }, 0);
-    tl.fromTo("#cl-logo", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 1.6, ease: "power2.out" }, 5.4);
-    tl.fromTo("#cl-tag", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 7);
+    tl.fromTo("#cl-stars", { scale: 1.12 }, { scale: 1.0, duration: 7.9, ease: "sine.out" }, 0);
+    tl.fromTo("#cl-stars", { opacity: 0 }, { opacity: 1, duration: 3.0, ease: "sine.out" }, 0);
+    // Hand-off to the signature ending, which opens on near-black.
+    tl.to("#cl-stars", { opacity: 0, duration: 0.6, ease: "sine.in" }, 7.3);
     window.__timelines["closing"] = tl;
   </script>
 </template>

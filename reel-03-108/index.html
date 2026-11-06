@@ -44,7 +44,7 @@
       id="root"
       data-composition-id="main"
       data-start="0"
-      data-duration="50"
+      data-duration="55"
       data-fps="24"
       data-width="2160"
       data-height="3840"
@@ -66,12 +66,22 @@
         data-start="32.2" data-duration="8.8" data-track-index="1" data-track-kind="graphics"
         data-width="2160" data-height="3840" style="z-index: 5"></div>
       <div id="closing" data-composition-id="closing" data-composition-src="compositions/closing.html"
-        data-start="40.4" data-duration="9.6" data-track-index="2" data-track-kind="graphics"
+        data-start="40.4" data-duration="7.9" data-track-index="2" data-track-kind="graphics"
         data-width="2160" data-height="3840" style="z-index: 6"></div>
 
       <div id="captions" data-composition-id="captions" data-composition-src="compositions/captions.html"
-        data-start="0" data-duration="50" data-track-index="3" data-track-kind="captions"
+        data-start="0" data-duration="48.3" data-track-index="3" data-track-kind="captions"
         data-width="2160" data-height="3840" style="z-index: 20"></div>
+
+      <!-- Channel signature: header bar on every story frame. -->
+      <div id="brandbar" data-composition-id="brandbar" data-composition-src="compositions/brandbar.html"
+        data-start="0" data-duration="48.3" data-track-index="4" data-track-kind="graphics"
+        data-width="2160" data-height="3840" style="z-index: 21"></div>
+
+      <!-- Channel signature ending ("Welcome to… THE WHY SPACES"), cut from the channel intro, with its own sound. -->
+      <video id="outro" class="clip" src="assets/signature-outro.mp4" data-start="48.3" data-duration="6.7"
+        data-track-index="5" data-has-audio="true" data-volume="1" playsinline
+        style="position: absolute; left: 0; top: 0; width: 2160px; height: 3840px; object-fit: cover; z-index: 30"></video>
 
       <!-- Narration: Sarvam bulbul:v3, voice Kabir -->
       <audio id="vo1" class="clip" src="assets/vo/vo1.wav" data-start="0.3" data-duration="3.472" data-track-index="10" data-volume="1"></audio>
@@ -80,7 +90,6 @@
       <audio id="vo4" class="clip" src="assets/vo/vo4.wav" data-start="20.1" data-duration="11.678" data-track-index="10" data-volume="1"></audio>
       <audio id="vo5" class="clip" src="assets/vo/vo5.wav" data-start="32.6" data-duration="7.749" data-track-index="10" data-volume="1"></audio>
       <audio id="vo6" class="clip" src="assets/vo/vo6.wav" data-start="40.8" data-duration="7.281" data-track-index="10" data-volume="1"></audio>
-      <audio id="vo7" class="clip" src="assets/vo/vo7.wav" data-start="48.4" data-duration="1.203" data-track-index="10" data-volume="1"></audio>
     </div>
     <script>
       window.__timelines = window.__timelines || {};
