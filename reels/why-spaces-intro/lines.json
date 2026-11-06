@@ -1,0 +1,68 @@
+[
+ {
+  "id": 1,
+  "tts": "कभी सोचा है...",
+  "cap": "Kabhi socha hai...",
+  "dur": 1.012
+ },
+ {
+  "id": 2,
+  "tts": "कि दुनिया जैसी दिखती है, क्या वो वैसी ही है?",
+  "cap": "Ki duniya jaisi dikhti hai, kya woh waise hi hai?",
+  "dur": 4.015
+ },
+ {
+  "id": 3,
+  "tts": "हर जगह के पीछे, एक कहानी है।",
+  "cap": "Har jagah ke peeche ek kahaani hai.",
+  "dur": 2.355
+ },
+ {
+  "id": 4,
+  "tts": "हर किताब के पीछे, एक सोच।",
+  "cap": "Har kitaab ke peeche ek soch.",
+  "dur": 2.492
+ },
+ {
+  "id": 5,
+  "tts": "हर टेक्नोलॉजी के पीछे, एक डिस्कवरी।",
+  "cap": "Har technology ke peeche ek discovery.",
+  "dur": 3.093
+ },
+ {
+  "id": 6,
+  "tts": "और हर परंपरा के पीछे... एक वजह।",
+  "cap": "Aur har parampara ke peeche... ek wajah.",
+  "dur": 3.081
+ },
+ {
+  "id": 7,
+  "tts": "लेकिन अक्सर, हम देखते तो हैं... समझने की कोशिश नहीं करते।",
+  "cap": "Lekin aksar hum dekhte toh hain, samajhne ki koshish nahi karte.",
+  "dur": 4.578
+ },
+ {
+  "id": 8,
+  "tts": "ये सफ़र है उन सवालों का, जिनके जवाब हमें दुनिया को एक नए नज़रिए से देखना सिखाते हैं।",
+  "cap": "Yeh safar hai un sawaalon ka, jinke jawaab humein duniya ko ek naye nazariye se dekhna sikhaate hain.",
+  "dur": 7.096
+ },
+ {
+  "id": 9,
+  "tts": "Welcome to...",
+  "cap": "Welcome to...",
+  "dur": 0.89
+ },
+ {
+  "id": 10,
+  "tts": "The Why Spaces.",
+  "cap": "THE WHY SPACES.",
+  "dur": 1.383
+ },
+ {
+  "id": 11,
+  "tts": "Because every why, deserves a story.",
+  "cap": "Because every WHY deserves a story.",
+  "dur": 3.128
+ }
+]
