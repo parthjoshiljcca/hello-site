@@ -1,10 +1,11 @@
-# Voices the Roopkund episode with Sarvam Bulbul (mukul_hi_suspense): reads the narration column of
-# SCRIPT.md, speaks each beat, and joins them with short pauses into out/narration.wav. The start and
-# end of every beat go to out/beats.json for the picture to follow.
+# Voices the Roopkund episode with Sarvam Bulbul (mukul_hi_suspense). The narration column of
+# SCRIPT.md is spoken a paragraph at a time (several beats per request), so the voice keeps its own
+# natural pauses; paragraphs are joined with a short breath. Each beat's start and end inside its
+# paragraph is found from the pauses, and written to out/beats.json for the picture to follow.
 #
 #   python3 narrate.py            (SARVAM_API_KEY from the environment or the repository's .env)
 import base64
-import io
+import hashlib
 import json
 import os
 import re
@@ -15,8 +16,11 @@ from sarvamai import SarvamAI
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(DIR, 'out')
-SPEAKER, PACE, SR = 'mukul_hi_suspense', 1.0, 48000
-LEAD, GAP = 1.0, .45   # silence before the first beat, and between beats
+SPEAKER, PACE, SR = 'mukul_hi_suspense', 1.15, 48000
+LEAD, BREATH = .8, .35   # silence before the first paragraph, and between paragraphs
+PARAGRAPHS = [(1, 2, 3), (4, 5, 6), (7, 8), (9, 10, 11), (12, 13, 14, 15), (16, 17), (18, 19, 20, 21)]
+# spellings that make the voice say a word right; the subtitles keep the script's spelling
+SAY = {'रूपकुंड': 'रूपकूंड'}
 
 ENV = os.path.join(DIR, '..', '..', '.env')
 if 'SARVAM_API_KEY' not in os.environ and os.path.exists(ENV):
@@ -27,35 +31,80 @@ if 'SARVAM_API_KEY' not in os.environ and os.path.exists(ENV):
 
 
 def beats():
+    out = {}
     for line in open(os.path.join(DIR, 'SCRIPT.md')):
         m = re.match(r'\| (\d+) \| (.+?) \| (.+) \|$', line.strip())
         if m:
-            yield int(m.group(1)), m.group(2).strip()
+            out[int(m.group(1))] = m.group(2).strip()
+    return out
+
+
+def spoken(text):
+    """Script text -> what the voice reads: no long dramatic gaps, words respelt where needed."""
+    for a, b in SAY.items():
+        text = text.replace(a, b)
+    text = re.sub(r'\s*—\s*', ', ', text)
+    text = re.sub(r'…\s*', ', ', text)
+    return re.sub(r',\s*([।?])', r'\1', text)
+
+
+def pauses(a, min_len=.12, thr=.012):
+    """(start, end) of every quiet stretch of at least min_len seconds, in seconds."""
+    fr = int(SR * .01)
+    n = len(a) // fr
+    quiet = np.abs(a[: n * fr]).reshape(n, fr).max(1) < thr
+    out, s = [], None
+    for i, q in enumerate(np.append(quiet, False)):
+        if q and s is None:
+            s = i
+        elif not q and s is not None:
+            if (i - s) * .01 >= min_len:
+                out.append((s * .01, i * .01))
+            s = None
+    return out
 
 
 def main():
-    os.makedirs(os.path.join(OUT, 'beats'), exist_ok=True)
+    os.makedirs(os.path.join(OUT, 'paragraphs'), exist_ok=True)
     client = SarvamAI(api_subscription_key=os.environ['SARVAM_API_KEY'])
-    track, info, t = [np.zeros(int(LEAD * SR))], [], LEAD
-    for n, text in beats():
-        path = os.path.join(OUT, 'beats', f'{n:02d}.wav')
-        if not os.path.exists(path):  # keep beats already voiced, so a re-run only pays for changed ones
-            resp = client.text_to_speech.convert(text=text, language_code='hi-IN', model='bulbul:v4-flash',
+    text = beats()
+    track, info, paras, t = [np.zeros(int(LEAD * SR))], [], [], LEAD
+    for group in PARAGRAPHS:
+        said = [spoken(text[n]) for n in group]
+        full = ' '.join(said)
+        key = hashlib.sha1(f'{SPEAKER}|{PACE}|{full}'.encode()).hexdigest()[:10]
+        path = os.path.join(OUT, 'paragraphs', f'{group[0]:02d}-{key}.wav')
+        if not os.path.exists(path):  # only changed paragraphs are paid for again
+            resp = client.text_to_speech.convert(text=full, language_code='hi-IN', model='bulbul:v4-flash',
                                                  speaker=SPEAKER, pace=PACE, speech_sample_rate=SR)
             open(path, 'wb').write(base64.b64decode(''.join(resp.audios)))
         a, sr = sf.read(path)
-        assert sr == SR, sr
-        if a.ndim > 1:
-            a = a.mean(1)
-        idx = np.flatnonzero(np.abs(a) > .01)  # trim leading and trailing silence
-        a = a[max(0, idx[0] - 240): idx[-1] + 1200]
-        info.append({'beat': n, 'start': round(t, 3), 'end': round(t + len(a) / SR, 3), 'text': text})
-        track += [a, np.zeros(int(GAP * SR))]
-        t += len(a) / SR + GAP
-        print(f'beat {n:2d}: {info[-1]["start"]:6.2f} - {info[-1]["end"]:6.2f}')
+        a = a.mean(1) if a.ndim > 1 else a
+        idx = np.flatnonzero(np.abs(a) > .01)
+        i0 = int(max(0, idx[0] - 240))
+        a = a[i0: idx[-1] + 2400]
+        dur = len(a) / SR
+        paras.append({'file': os.path.relpath(path, DIR), 'trim': i0, 'start': round(t, 3), 'beats': list(group),
+                      'said': said})
+        # beat boundaries: the pause nearest to where each beat should end by its share of the text
+        gaps, cuts, acc = pauses(a), [], 0
+        total = sum(len(s) for s in said)
+        for s in said[:-1]:
+            acc += len(s)
+            want = dur * acc / total
+            best = min((g for g in gaps if not cuts or g[0] > cuts[-1][1]), key=lambda g: abs((g[0] + g[1]) / 2 - want))
+            cuts.append(best)
+        edges = [(0, None)] + cuts + [(None, dur)]
+        for k, n in enumerate(group):
+            s, e = edges[k][1] or 0, edges[k + 1][0] if edges[k + 1][0] is not None else dur
+            info.append({'beat': n, 'start': round(t + s, 3), 'end': round(t + e, 3), 'text': text[n]})
+            print(f'beat {n:2d}: {t + s:6.2f} - {t + e:6.2f}')
+        track += [a, np.zeros(int(BREATH * SR))]
+        t += dur + BREATH
     sf.write(os.path.join(OUT, 'narration.wav'), np.concatenate(track), SR)
     json.dump(info, open(os.path.join(OUT, 'beats.json'), 'w'), ensure_ascii=False, indent=1)
-    print(f'narration: {len(info)} beats, {t:.1f} s')
+    json.dump(paras, open(os.path.join(OUT, 'paragraphs.json'), 'w'), ensure_ascii=False, indent=1)
+    print(f'narration: {len(info)} beats in {len(PARAGRAPHS)} paragraphs, {t:.1f} s')
 
 
 if __name__ == '__main__':
