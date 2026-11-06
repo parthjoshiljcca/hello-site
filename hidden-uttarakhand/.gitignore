@@ -2,3 +2,4 @@ out/audio/
 out/*-silent.mp4
 out/frames/
 __pycache__/
+out/sarvam-test-*
