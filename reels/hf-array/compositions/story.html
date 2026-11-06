@@ -226,7 +226,7 @@ window.render=function(t,f=0){
     const sc=Ls[i].scene;let s0=i;while(s0>0&&Ls[s0-1].scene===sc)s0--;let e=i;while(e<N-1&&Ls[e+1].scene===sc)e++;
     const a0=Ls[s0].start-.08,a1=Ls[e+1].start-.08,lt=t-a0,p=seg(t,a0,a1),b=k=>(Ls[s0+k]?Ls[s0+k].start-a0:a1-a0),g={dur:a1-a0};
     cam(lerp(1,1.08,eio(p)),...FOC[sc],()=>SC[sc](lt,p,b,g));
-    ctx.save();ctx.font='700 24px Montserrat';const sl='DATA STRUCTURES VISUALISED · EP 01',sw=ctx.measureText(sl).width+40;rr(CX-sw/2,178,sw,40,20,'rgba(10,12,16,.6)');txt(sl,CX,199,24,'#f39a3d',700);ctx.restore();
+    ctx.save();ctx.font='700 24px Montserrat';const sl='THE WHY SPACES · DATA STRUCTURES · EP 01',sw=ctx.measureText(sl).width+40;rr(CX-sw/2,178,sw,40,20,'rgba(10,12,16,.6)');txt(sl,CX,199,24,'#f39a3d',700);ctx.restore();
     }
   const v=ctx.createRadialGradient(CX,H/2,520,CX,H/2,1250);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.7)');ctx.fillStyle=v;ctx.fillRect(0,0,W,H);
   ctx.globalAlpha=.06;ctx.drawImage(GRAIN[f%6],0,0,W,H);ctx.globalAlpha=1;
