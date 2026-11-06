@@ -1,15 +1,14 @@
 {
  "pause": {
-  "2": 1.0,
-  "3": 0.7,
-  "12": 0.6,
-  "19": 0.5,
-  "21": 0.6
+  "2": 0.9,
+  "3": 0.6,
+  "8": 0.5,
+  "12": 0.3
  },
  "hook": 2,
  "reveal": 3,
- "twist": 12,
- "thud": 19,
+ "twist": 8,
+ "thud": 12,
  "key": [
   "1",
   "lakh",
@@ -32,7 +31,14 @@
   "fixed",
   "copy",
   "arrays",
-  "powerful"
+  "powerful",
+  "o(1).",
+  "instant!",
+  "o(n).",
+  "list.",
+  "linked",
+  "powerful",
+  "array."
  ],
  "top": {
   "train": 400,
@@ -44,7 +50,7 @@
  "era": [
   "intro",
   "insert",
-  "ending"
+  "next"
  ],
  "tick_scenes": []
 }
