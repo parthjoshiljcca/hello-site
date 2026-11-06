@@ -48,3 +48,10 @@ Approved on the "Why 24 hours" reel (`reels/hf-24-hours/`). Every new reel follo
 - Commit sources and only the compressed final MP4 (never the raw render).
 - Fact-check every script and mention any nuance (e.g. solar vs sidereal day).
 - Start each new reel in a fresh session to save tokens.
+
+## Series: Data Structures Visualised (1-minute reels)
+- Each episode about **55–60 s** (about 48 s of speech at pace 1.2). Project per episode: copy `reels/hf-array/`, then edit `lines.json`, `cues.json` and `scenes.js` (`build.py` is generic).
+- Structure: hook question (0–5 s, 1.0 s dramatic pause) → reveal of the structure's name → Indian analogy → visualised operations with Big-O badges (orange for fast, red `#e0533a` for slow) → real-world uses → "Agle episode mein: …" teaser scene → end card.
+- Persistent label at the top: `DATA STRUCTURES VISUALISED · EP NN` (orange, 24 px, y ≈ 200).
+- Diagrams: dark rounded cells (`cell()`), indexes in blue under the cells, highlighted cell in orange with a glow.
+- Episodes: 01 Array (train) · 02 Linked List (treasure-hunt chits) · 03 Stack (shaadi buffet plates, Undo) · 04 Queue (railway ticket line) · 05 Hash Table (hostel room numbers) · 06 Binary Tree (khandaan family tree) · 07 BST (dictionary search) · 08 Heap (hospital emergency) · 09 Graph (metro map) · 10 Trie (keyboard autocomplete).
