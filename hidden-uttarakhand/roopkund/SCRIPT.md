@@ -24,8 +24,8 @@ Style: "Isse Kehte Hain" — a hook question, "tum", one layer at a time, labels
 | 17 | पर भूमध्य सागर के लोग? सोलह हज़ार फ़ीट ऊपर, हिमालय की एक झील में… वो क्या कर रहे थे? इसका जवाब… आज तक किसी के पास नहीं है। | Globe line from Crete to Roopkund pulses; a big `?` |
 | 18 | रूपकुंड आज भी साल के ज़्यादातर महीने जमी रहती है… अपने राज़ बर्फ़ के नीचे दबाए। | Lake freezes over again; camera pulls back to the peaks. |
 | 19 | पर उत्तराखंड में ऐसी झीलें, ऐसे रास्ते, ऐसी कहानियाँ… और भी हैं। जो किसी नक्शे पर नहीं, किसी गाइडबुक में नहीं। | Pull back further: the whole state lights up as a glowing map, with small markers popping up across it. |
-| 20 | वो सब मिलेंगी एक किताब में — हिडन उत्तराखंड। | The map folds into a 3D book that turns to the camera: cover, title `HIDDEN UTTARAKHAND`, author name. |
-| 21 | अगली अनकही कहानी के लिए… किताब पढ़िए। लिंक बायो में। | End card: book cover, author, where to buy, `लिंक बायो में`, the series tag for the next episode. |
+| 20 | वो सब आ रही हैं एक किताब में — हिडन उत्तराखंड। लेखक — पार्थ डी. जोशी। | The map folds into a 3D book (`assets/book-cover.jpg`) that turns to the camera; the gold title logo (`assets/title-logo.png`) lands above it, the author logo (`assets/author-logo.png`) below. |
+| 21 | किताब जल्द आ रही है। तब तक… अगली अनकही कहानी के लिए फ़ॉलो करो। | End card: the book, `COMING SOON · जल्द आ रही है`, `FOLLOW करें — अगली अनकही कहानी`. |
 
 ## Facts and sources
 
