@@ -48,7 +48,7 @@ function background(t){
   ctx.fillStyle=C.bg;ctx.fillRect(0,0,W,H);
   const g=ctx.createRadialGradient(CX,VY,40,CX,VY,1100);g.addColorStop(0,'rgba(60,38,20,.55)');g.addColorStop(.5,'rgba(20,14,10,.4)');g.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-  for(const p of PARTS){const y=((p.y-p.v*t)%H+H)%H,x=p.x+Math.sin(t*.4+p.ph)*14;
+  for(const p of PARTS){const y=((p.y-p.v*1.8*t)%H+H)%H,x=p.x+Math.sin(t*.4+p.ph)*14;
     ctx.globalAlpha=p.a*(.6+.4*Math.sin(t*1.3+p.ph));ctx.fillStyle=p.s>1.6?C.or:C.ink;ctx.beginPath();ctx.arc(x,y,p.s,0,7);ctx.fill()}
   ctx.globalAlpha=1;
 }
@@ -84,9 +84,9 @@ function caption(l,t,a){
   words.forEach((w,i)=>{const ww=ctx.measureText(w).width;if(lw+ww>900&&lines[lines.length-1].length){lines.push([]);lw=0}lines[lines.length-1].push(i);lw+=ww+sp});
   const lh=size*1.28,y0=1300;
   lines.forEach((ln,li)=>{const widths=ln.map(i=>ctx.measureText(words[i]).width);const total=widths.reduce((s,x)=>s+x,0)+sp*(ln.length-1);let x=CX-total/2;
-    ln.forEach((i,k)=>{const p=eo(seg(t,tw[i]-.05,tw[i]+.22));const clean=words[i].replace(/[^\w]/g,'');const key=(KEY[l.id]||[]).includes(clean);
+    ln.forEach((i,k)=>{const p=eo(seg(t,tw[i]-.04,tw[i]+.12));const clean=words[i].replace(/[^\w]/g,'');const key=(KEY[l.id]||[]).includes(clean);
       ctx.globalAlpha=a*p;ctx.fillStyle=key?C.or:C.ink;if(key){ctx.shadowColor=C.or;ctx.shadowBlur=24}else ctx.shadowBlur=0;
-      ctx.fillText(words[i],x,y0+li*lh+(1-p)*22);x+=widths[k]+sp});});
+      if(key){const sc=1+.35*(1-p),cx=x+widths[k]/2,cy=y0+li*lh-size*.35;ctx.save();ctx.translate(cx,cy);ctx.scale(sc,sc);ctx.translate(-cx,-cy);ctx.fillText(words[i],x,y0+li*lh);ctx.restore()}else ctx.fillText(words[i],x,y0+li*lh+(1-p)*14);x+=widths[k]+sp});});
   ctx.restore();
 }
 
@@ -101,7 +101,7 @@ function s1(t,p){ // the question
 }
 const GP=(()=>{const n=950,o=[],ga=Math.PI*(3-Math.sqrt(5));for(let i=0;i<n;i++){const y=1-2*(i+.5)/n,r=Math.sqrt(1-y*y),th=ga*i;o.push([Math.cos(th)*r,y,Math.sin(th)*r])}return o})();
 function s2(t,p){ // the world: seen vs real
-  const R=310,rot=t*.25,tilt=.35,scan=lerp(-R-60,R+60,eio(seg(p,.25,.85)));
+  const R=310,rot=t*.6,tilt=.35,scan=lerp(-R-60,R+60,eio(seg(p,.1,.7)));
   glowDot(CX,VY,520,C.orS,.12);
   // orbit ring
   poly(arc(CX,VY,R+70,0,Math.PI*2,120,(R+70)*.28),eo(seg(p,0,.4)),{w:2,c:C.dim,a:.6});
@@ -184,7 +184,7 @@ function s7(t,p,l){ // seeing vs understanding: the eye
 function s8(t,p){ // the journey
   const hz=VY-180,ap=eo(seg(p,0,.3));
   glowDot(CX,hz,520,C.orS,.4*ap);ctx.globalAlpha=ap*.6;ctx.fillStyle=`rgba(${C.orS},.7)`;ctx.fillRect(CX-420,hz,840,2);ctx.globalAlpha=1;
-  for(let i=0;i<70;i++){const k=((i/70)+t*.06)%1,z=Math.pow(k,1.7);const yy=lerp(1110,hz+6,1-z),xs=Math.sin((1-z)*4+.6)*lerp(260,10,1-z)*(1-z)+0;const w=lerp(3,190,z);
+  for(let i=0;i<70;i++){const k=((i/70)+t*.18)%1,z=Math.pow(k,1.7);const yy=lerp(1110,hz+6,1-z),xs=Math.sin((1-z)*4+.6)*lerp(260,10,1-z)*(1-z)+0;const w=lerp(3,190,z);
     ctx.globalAlpha=ap*lerp(.1,.9,z);ctx.fillStyle=C.ink;ctx.beginPath();ctx.arc(CX+xs-w,yy,lerp(1,5,z),0,7);ctx.arc(CX+xs+w,yy,lerp(1,5,z),0,7);ctx.fill()}
   const r=rng(11);for(let i=0;i<9;i++){const x=CX+(r()-.5)*760,y0=hz+120+r()*500,ph=r();const q=seg(p,.15+ph*.4,.55+ph*.4);
     ctx.globalAlpha=(1-q)*ap*.9;ctx.font=`800 ${44+r()*30}px M`;ctx.fillStyle=C.ink;ctx.textAlign='center';ctx.fillText('?',x,y0-q*200);
@@ -193,12 +193,12 @@ function s8(t,p){ // the journey
 }
 function s9(t,p){const w=eio(seg(p,.05,.7))*380;ctx.fillStyle=`rgba(${C.orS},.9)`;ctx.shadowColor=C.or;ctx.shadowBlur=30;ctx.fillRect(CX-w,VY+40,2*w,3);ctx.shadowBlur=0;glowDot(CX,VY+40,300*eo(p),C.orS,.3)}
 function logo(t,L10,L11){
-  const t0=L10.start-0.15,p=seg(t,t0,t0+1.1),e=eo(p);if(p<=0)return;
-  const lw=1320,s=lerp(1.18,1,e)*(1+.015*seg(t,t0+1.1,TL.total)),x=CX,y=820;
+  const t0=L10.start-0.1,p=seg(t,t0,t0+.55),e=eo(p);if(p<=0)return;
+  const lw=1320,s=lerp(1.3,1,e)*(1+.03*seg(t,t0+.55,TL.total)),x=CX,y=820;
   glowDot(x,y,700,C.orS,.25*e);
   ctx.save();ctx.globalAlpha=e;ctx.filter=`blur(${(1-e)*18}px)`;ctx.translate(x,y);ctx.scale(s,s);ctx.drawImage(LOGO,-lw/2,-lw/2,lw,lw);ctx.restore();ctx.filter='none';
   // light sweep
-  const sw=seg(t,t0+.9,t0+2.2);if(sw>0&&sw<1){const o=document.createElement('canvas');o.width=W;o.height=H;const c=o.getContext('2d');
+  const sw=seg(t,t0+.45,t0+1.25);if(sw>0&&sw<1){const o=document.createElement('canvas');o.width=W;o.height=H;const c=o.getContext('2d');
     c.translate(x,y);c.scale(s,s);c.drawImage(LOGO,-lw/2,-lw/2,lw,lw);c.setTransform(1,0,0,1,0,0);c.globalCompositeOperation='source-atop';
     const sx=lerp(-300,W+300,sw),g=c.createLinearGradient(sx-140,0,sx+140,0);g.addColorStop(0,'rgba(255,240,220,0)');g.addColorStop(.5,'rgba(255,240,220,.85)');g.addColorStop(1,'rgba(255,240,220,0)');
     c.fillStyle=g;c.fillRect(0,0,W,H);ctx.globalCompositeOperation='lighter';ctx.globalAlpha=.6;ctx.drawImage(o,0,0);ctx.globalAlpha=1;ctx.globalCompositeOperation='source-over'}
@@ -206,11 +206,11 @@ function logo(t,L10,L11){
   const words='Because every WHY deserves a story.'.split(' ');const tot=words.join(' ').length;let acc=0;
   ctx.save();ctx.font='500 54px M';ctx.textBaseline='alphabetic';const sp=ctx.measureText(' ').width;
   const ws=words.map(w=>ctx.measureText(w).width);let X=CX-(ws.reduce((a,b)=>a+b,0)+sp*(words.length-1))/2;
-  words.forEach((w,i)=>{const s0=L11.start+L11.dur*acc/tot*.95;acc+=w.length+1;const q=eo(seg(t,s0-.05,s0+.25));
+  words.forEach((w,i)=>{const s0=L11.start+L11.dur*acc/tot*.95;acc+=w.length+1;const q=eo(seg(t,s0-.04,s0+.14));
     ctx.globalAlpha=q;ctx.fillStyle=w==='WHY'?C.or:C.ink;ctx.font=(w==='WHY'?'800':'500')+' 54px M';ctx.shadowColor=w==='WHY'?C.or:'transparent';ctx.shadowBlur=w==='WHY'?24:0;
     ctx.fillText(w,X,1230+(1-q)*20);X+=ws[i]+sp});ctx.restore();
   // follow pill
-  const f=eo(seg(t,L11.start+L11.dur+.2,L11.start+L11.dur+.8));if(f>0){ctx.save();ctx.globalAlpha=f;ctx.font='700 40px M';const txt='Follow  @thewhyspaces',w=ctx.measureText(txt).width+80;
+  const f=eo(seg(t,L11.start+L11.dur*.7,L11.start+L11.dur*.7+.35));if(f>0){ctx.save();ctx.globalAlpha=f;ctx.font='700 40px M';const txt='Follow  @thewhyspaces',w=ctx.measureText(txt).width+80;
     ctx.fillStyle=C.or;ctx.beginPath();ctx.roundRect(CX-w/2,1340+(1-f)*20,w,84,42);ctx.fill();ctx.fillStyle='#120a04';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(txt,CX,1383+(1-f)*20);ctx.restore()}
 }
 const SCENES={1:s1,2:s2,3:s3,4:s4,5:s5,6:s6,7:s7,8:s8,9:s9};
@@ -218,15 +218,17 @@ const CHIPS={3:'JAGAH → KAHAANI',4:'KITAAB → SOCH',5:'TECHNOLOGY → DISCOVE
 
 window.render=function(t,f=0){
   background(t);const Ls=TL.lines;
-  let logoOn=t>=Ls[9].start-0.15;
-  chrome(1-seg(t,Ls[8].start,Ls[8].start+.6));
-  for(let i=0;i<9;i++){const l=Ls[i],a0=l.start-.3,a1=Ls[i+1].start-.25;if(t<a0-.01||t>a1+.4)continue;
-    const p=seg(t,a0,a1),alpha=Math.min(eo(seg(t,a0,a0+.45)),1-seg(t,a1,a1+.4));if(alpha<=0)continue;
-    ctx.save();ctx.globalAlpha=alpha;SCENES[l.id](t,p,l);ctx.restore();
-    ctx.save();ctx.globalAlpha=1;caption(l,t,alpha);chip(CHIPS[l.id]||'',alpha*eo(seg(t,a0+.1,a0+.5)));ctx.restore();}
+  let logoOn=t>=Ls[9].start-0.1;
+  chrome(1-seg(t,Ls[8].start,Ls[8].start+.3));
+  for(let i=0;i<9;i++){const l=Ls[i],a0=l.start-.12,a1=Ls[i+1].start-.1;if(t<a0-.01||t>a1+.15)continue;
+    const p=seg(t,a0,a1),alpha=Math.min(eo(seg(t,a0,a0+.16)),1-seg(t,a1,a1+.15));if(alpha<=0)continue;
+    const z=lerp(1.14,1,eo(seg(t,a0,a0+.4)))*lerp(1,1.04,p);
+    ctx.save();ctx.globalAlpha=alpha;ctx.translate(CX,VY);ctx.scale(z,z);ctx.translate(-CX,-VY);SCENES[l.id](t,p,l);ctx.restore();
+    if(i>0){const fl=1-seg(t,a0,a0+.12);if(fl>0&&fl<1){ctx.fillStyle=`rgba(255,200,150,${.10*fl})`;ctx.fillRect(0,0,W,H)}}
+    ctx.save();ctx.globalAlpha=1;caption(l,t,alpha);chip(CHIPS[l.id]||'',alpha*eo(seg(t,a0+.05,a0+.25)));ctx.restore();}
   if(logoOn)logo(t,Ls[9],Ls[10]);
   // fade in from black / out
-  const fo=Math.max(1-seg(t,0,.5),seg(t,TL.total-.5,TL.total));if(fo>0){ctx.fillStyle=`rgba(0,0,0,${fo})`;ctx.fillRect(0,0,W,H)}
+  const fo=Math.max(1-seg(t,0,.12),seg(t,TL.total-.3,TL.total));if(fo>0){ctx.fillStyle=`rgba(0,0,0,${fo})`;ctx.fillRect(0,0,W,H)}
   finish(t,f);
 };
 window.init=async function(tl){TL=tl;makeGrain();LOGO=new Image();LOGO.src='assets/logo.png';await LOGO.decode();

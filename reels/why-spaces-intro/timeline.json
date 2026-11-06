@@ -4,79 +4,79 @@
    "id": 1,
    "tts": "कभी सोचा है...",
    "cap": "Kabhi socha hai...",
-   "dur": 1.012,
-   "start": 0.8
+   "dur": 0.755,
+   "start": 0.25
   },
   {
    "id": 2,
    "tts": "कि दुनिया जैसी दिखती है, क्या वो वैसी ही है?",
    "cap": "Ki duniya jaisi dikhti hai, kya woh waise hi hai?",
-   "dur": 4.015,
-   "start": 2.512
+   "dur": 2.334,
+   "start": 1.155
   },
   {
    "id": 3,
    "tts": "हर जगह के पीछे, एक कहानी है।",
    "cap": "Har jagah ke peeche ek kahaani hai.",
-   "dur": 2.355,
-   "start": 7.427
+   "dur": 1.878,
+   "start": 3.789
   },
   {
    "id": 4,
    "tts": "हर किताब के पीछे, एक सोच।",
    "cap": "Har kitaab ke peeche ek soch.",
-   "dur": 2.492,
-   "start": 10.232
+   "dur": 2.021,
+   "start": 5.817
   },
   {
    "id": 5,
    "tts": "हर टेक्नोलॉजी के पीछे, एक डिस्कवरी।",
    "cap": "Har technology ke peeche ek discovery.",
-   "dur": 3.093,
-   "start": 13.174
+   "dur": 2.559,
+   "start": 7.988
   },
   {
    "id": 6,
    "tts": "और हर परंपरा के पीछे... एक वजह।",
    "cap": "Aur har parampara ke peeche... ek wajah.",
-   "dur": 3.081,
-   "start": 16.717
+   "dur": 2.904,
+   "start": 10.697
   },
   {
    "id": 7,
    "tts": "लेकिन अक्सर, हम देखते तो हैं... समझने की कोशिश नहीं करते।",
    "cap": "Lekin aksar hum dekhte toh hain, samajhne ki koshish nahi karte.",
-   "dur": 4.578,
-   "start": 20.698
+   "dur": 3.608,
+   "start": 13.901
   },
   {
    "id": 8,
    "tts": "ये सफ़र है उन सवालों का, जिनके जवाब हमें दुनिया को एक नए नज़रिए से देखना सिखाते हैं।",
    "cap": "Yeh safar hai un sawaalon ka, jinke jawaab humein duniya ko ek naye nazariye se dekhna sikhaate hain.",
-   "dur": 7.096,
-   "start": 26.076
+   "dur": 6.593,
+   "start": 17.759
   },
   {
    "id": 9,
    "tts": "Welcome to...",
    "cap": "Welcome to...",
-   "dur": 0.89,
-   "start": 34.172
+   "dur": 0.651,
+   "start": 24.702
   },
   {
    "id": 10,
    "tts": "The Why Spaces.",
    "cap": "THE WHY SPACES.",
-   "dur": 1.383,
-   "start": 35.312
+   "dur": 1.014,
+   "start": 25.453
   },
   {
    "id": 11,
    "tts": "Because every why, deserves a story.",
    "cap": "Because every WHY deserves a story.",
-   "dur": 3.128,
-   "start": 37.595
+   "dur": 2.818,
+   "start": 26.917
   }
  ],
- "total": 43.32
+ "total": 31.53
 }

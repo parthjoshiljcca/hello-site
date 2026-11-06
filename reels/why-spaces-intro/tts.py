@@ -1,7 +1,7 @@
 import json,base64,subprocess,urllib.request,sys
 lines=json.load(open('lines.json')); spk=sys.argv[1] if len(sys.argv)>1 else 'kabir'
 for l in lines:
-    body=json.dumps({"text":l["tts"],"target_language_code":"hi-IN","model":"bulbul:v3","speaker":spk,"pace":0.88,"speech_sample_rate":48000}).encode()
+    body=json.dumps({"text":l["tts"],"target_language_code":"hi-IN","model":"bulbul:v3","speaker":spk,"pace":float(sys.argv[2]) if len(sys.argv)>2 else 1.1,"speech_sample_rate":48000}).encode()
     req=urllib.request.Request("https://api.sarvam.ai/text-to-speech",body,{"Content-Type":"application/json","api-subscription-key":"proxy-injected"})
     d=json.load(urllib.request.urlopen(req))
     raw=f"audio/{l['id']:02d}_raw.wav"; open(raw,'wb').write(base64.b64decode(d["audios"][0]))
