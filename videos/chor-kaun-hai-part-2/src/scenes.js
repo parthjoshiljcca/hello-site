@@ -81,9 +81,9 @@ function eyeIcon(x,y,s,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.trans
 
 // ---------- scenes ----------
 function S0(t,lt,dur){ // case 01 jawaab
- const a=eo(seg(lt,0,0.5));folder(540,960,1.25,a);
- SUS.forEach(([L,n,k],i)=>{const p=pop(t,'jawaab',0.45,-0.3+i*0.12);person(260+i*280,940,0.55,cl(p),k,false);qm(260+i*280,790,60,cl(p),t)});
- stamp(540,1170,0.85,seg(lt,dur-1.2,dur-0.8),'JAWAAB');
+ const a=eo(seg(lt,0,0.5));folder(540,1040,1.0,a);
+ SUS.forEach(([L,n,k],i)=>{const p=pop(t,'jawaab',0.45,-0.3+i*0.12);person(260+i*280,740,0.5,cl(p),k,false);qm(260+i*280,615,56,cl(p),t)});
+ stamp(540,1080,0.85,seg(lt,dur-1.2,dur-0.8),'JAWAAB');
 }
 function S1(t,lt){ // raju + rumaal trap
  const a=eo(seg(lt,0,0.5));person(280,1000,1.0,a,'chef',true);monoTag(280,1160,'RAJU · COOK',a);
@@ -128,7 +128,7 @@ function S6(t,lt){ // sun - moon - earth
 function S7(t,lt){ // impossible
  const a=eo(seg(lt,0,0.5));for(let i=0;i<14;i++){const r=rng(i+21);star(70+r()*940,580+r()*200,3+r()*5,a*(0.4+0.6*Math.abs(Math.sin(t*2+i))))}
  dashedMoon(780,700,70,fin(t,'dikhta',0.5,-0.3));bulb(300,700,1.2,pop(t,'bijli',0.45,-0.1),false);cross(300,690,50,fin(t,'bijli',0.4,0.2));
- thought(540,1000,1.15,a,()=>{moonK(0,-10,42,1,1,false);txt('CHAAND KI ROSHNI',0,55,'800 20px M',WH)});cross(540,990,110,fin(t,'impossible',0.4,-0.1));
+ thought(540,1000,1.35,a,()=>{moonK(0,-14,36,1,1,false);txt('CHAAND KI ROSHNI',0,46,'800 15px M',WH)});cross(540,990,110,fin(t,'impossible',0.4,-0.1));
  badge(540,1250,'IMPOSSIBLE!',pop(t,'impossible',0.45,0.1),{fs:34});
 }
 function S8(t,lt){ // diyas

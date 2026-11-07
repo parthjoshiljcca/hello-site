@@ -63,21 +63,19 @@ def powerup():u=tt(0.5);f=60+400*u;return np.sin(2*np.pi*np.cumsum(f)/SR)*np.min
 def creak():u=tt(0.9);f=180+60*np.sin(2*np.pi*3*u);return hp(np.sign(np.sin(2*np.pi*np.cumsum(f)/SR))*(0.5+0.5*np.sin(2*np.pi*23*u)),0.3)*np.sin(np.pi*u/0.9)*0.5
 # scene whooshes
 for i,s in enumerate(scn[1:],1): add(whoosh(),s['start']-0.1,0.12,(-1)**i*0.3)
-add(thud(),0.3,0.35);add(shimmer(1.0),ev['chori'],0.08)
-for k in ['suspects','jhooth','diwali','gate','das','pandrah','dadi','inspector','raju','pinky','vicky','socho','raju2','pinky2','vicky2','reason']: add(pop(rs.uniform(700,1100)),ev[k],0.07,rs.uniform(-.4,.4))
-add(heartbeat(4),ev['jhooth']+0.3,0.25);add(whoosh(0.8),ev['pakad'],0.1)
-add(shimmer(1.4),ev['party'],0.06)
-for k in range(6): add(pop(rs.uniform(1500,2200),0.15),ev['diwali']+0.4+k*0.55,0.05,rs.uniform(-.6,.6))
-for k in range(5): add(pop(rs.uniform(1500,2200),0.15),ev['patakhe']+k*0.5,0.05,rs.uniform(-.6,.6))
-add(tickTock(6),ev['das'],0.08);add(powerdown(),ev['bijli'],0.12);add(buzz(0.4),ev['backup'],0.05)
-add(powerup(),ev['light'],0.1);add(creak(),ev['tijori'],0.12);add(shimmer(1.0),ev['dadi'],0.08);add(thud(),ev['ghayab'],0.35);add(glitch(),ev['ghayab'],0.1)
-add(beep(600,0.3),ev['poochtaach'],0.06)
-add(scratch(),ev['mombatti'],0.03);add(shimmer(1.2),ev['chaand'],0.06);add(click(),ev['phone'],0.2);add(blips(0.5,5),ev['dost'],0.05)
-add(thud(),ev['rumaal'],0.3);add(whoosh(0.8),ev['raju3'],0.08);add(beep(500,0.3),ev['rumaal']+0.4,0.06)
-add(heartbeat(7,0.7),ev['socho'],0.28);add(tickTock(16),ev['clue'],0.07)
-add(heartbeat(5,0.6),ev['chor2'],0.3);add(rise(),ev['vicky2']+0.4,0.06)
-add(ratchet(1.0,14),ev['jawaab'],0.04);add(ding(),ev['comments'],0.08);add(ding(),ev['agle']+0.2,0.07)
-# music: 112bpm (locked tempo) in a minor, suspense progression
+add(thud(),0.2,0.3);add(thud(),scn[1]['start']-0.9,0.35)
+for k in ['raju','vicky','kartik','dharti','suraj','haar','comments']: add(pop(rs.uniform(700,1100)),ev[k],0.07,rs.uniform(-.4,.4))
+add(shimmer(0.8),ev['rumaal'],0.06);add(thud(),ev['trap'],0.3);add(whoosh(0.6),ev['khaana'],0.08);add(ding(),ev['dadi']+0.4,0.07)
+for k in range(5): add(pop(rs.uniform(1500,2200),0.15),ev['patakhe']+k*0.45,0.05,rs.uniform(-.6,.6))
+add(ding(),ev['sach']+0.3,0.07)
+add(heartbeat(3,0.6),ev['pinky']-1.0,0.28);add(thud(),ev['chor'],0.4);add(glitch(),ev['chor'],0.1);add(shimmer(1.0),ev['chaand'],0.06)
+add(buzz(0.4),ev['nahi'],0.05);add(beep(600,0.25),ev['kyun'],0.08);add(blips(0.9,10),ev['kyun']+0.2,0.05);add(rise(),ev['amavasya'],0.06)
+add(whoosh(1.0),ev['beech']-0.5,0.1);add(shimmer(1.2),ev['roshni'],0.06);add(beep(500,0.3),ev['andhera'],0.07)
+add(powerdown(),ev['bijli'],0.1);add(thud(),ev['impossible'],0.35);add(glitch(),ev['impossible'],0.1)
+add(shimmer(2.0),ev['diye'],0.09);add(ding(),ev['roshan']+0.3,0.08)
+add(thud(),ev['jhooth'],0.3);add(shimmer(1.4),ev['wapas'],0.1);add(rise(),ev['wapas']+0.3,0.07)
+add(ratchet(1.0,14),ev['sahi'],0.04);add(ding(),ev['agla']+0.2,0.07)
+# music: 112bpm (locked tempo), same minor progression as Part 1
 bpm=112;beat=60/bpm;T=np.arange(N)/SR;bar=4*beat
 chords=[[57,60,64],[53,57,60],[50,53,57],[52,56,59]]
 mus=np.zeros(N);ci=0
