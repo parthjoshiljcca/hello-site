@@ -55,25 +55,46 @@ add(glitch(),ev['twist'],0.15);add(scratch(),ev['scratch']-0.1,0.18)
 add(rise(),ev['reconstruct']+0.2,0.08);add(ding(),ev['samajh'],0.1);add(ding(),ev['scanok']+0.5,0.08)
 for k,d in [('tech',1.2),('combo',1.2),('samajhte',1.6)]: add(shimmer(d),ev[k],0.12)
 a,b=ev['auto'],scn[4]['start'];hum=lp(noise(b-a),0.02)*np.minimum(1,np.arange(int((b-a)*SR))/SR*3)*np.minimum(1,(b-a-np.arange(int((b-a)*SR))/SR)*3);add(hum,a,0.25)
-# music
-bpm=88;beat=60/bpm;T=np.arange(N)/SR
-chords=[[57,60,64,67],[53,57,60,64],[48,55,59,64],[55,59,62,65]]
-mus=np.zeros(N);bar=4*beat;ci=0
+# music: energetic 112bpm
+bpm=112;beat=60/bpm;T=np.arange(N)/SR;bar=4*beat
+chords=[[57,60,64],[53,57,60],[48,52,55],[55,59,62]]
+mus=np.zeros(N);ci=0
 while ci*bar<TOT:
-    ch=chords[ci%4];o=int(ci*bar*SR);n=min(int(bar*SR),N-o);u=np.arange(n)/SR;e=np.minimum(1,u/0.3)*np.minimum(1,(bar-u)/0.3)
+    ch=chords[ci%4];o=int(ci*bar*SR);n=min(int(bar*SR),N-o);u=np.arange(n)/SR;e=np.minimum(1,u/0.05)*np.minimum(1,(bar-u)/0.1)
     for m in ch:
-        f=440*2**((m-69)/12);mus[o:o+n]+=(np.sin(2*np.pi*f*u)+0.3*np.sin(2*np.pi*2*f*u+0.3)+0.1*np.sin(2*np.pi*3*f*u))*e*0.05*(1+0.2*np.sin(2*np.pi*0.5*u))
-    f=440*2**((ch[0]-12-69)/12);mus[o:o+n]+=np.sin(2*np.pi*f*u)*e*0.09;ci+=1
-mus=lp(mus,0.15)
+        f=440*2**((m-69)/12);mus[o:o+n]+=(np.sin(2*np.pi*f*u)+0.25*np.sin(2*np.pi*2*f*u))*e*0.03
+    # 16th arp plucks
+    notes=[ch[0]+12,ch[1]+12,ch[2]+12,ch[1]+12]
+    for k in range(16):
+        po=int(k*beat/4*SR);pn=min(int(0.16*SR),n-po)
+        if pn<=0: break
+        pu=np.arange(pn)/SR;f=440*2**((notes[k%4]-69)/12)
+        mus[o+po:o+po+pn]+=(np.sin(2*np.pi*f*pu)+0.4*np.sign(np.sin(2*np.pi*f*pu))*0.3)*np.exp(-pu*28)*0.05
+    # pulsing bass 8ths
+    f=440*2**((ch[0]-24-69)/12)
+    for k in range(8):
+        po=int(k*beat/2*SR);pn=min(int(beat/2*SR),n-po)
+        if pn<=0: break
+        pu=np.arange(pn)/SR;mus[o+po:o+po+pn]+=np.sin(2*np.pi*f*pu)*np.exp(-pu*7)*0.13
+    ci+=1
+mus=lp(mus,0.25)
 drum=np.zeros(N);k=0;t=0.0
 while t<TOT:
     i=int(t*SR);n=min(int(0.3*SR),N-i);u=np.arange(n)/SR
-    if k%8 in (0,5): drum[i:i+n]+=np.sin(2*np.pi*np.cumsum(50+90*np.exp(-u*35))/SR)*np.exp(-u*9)*0.55
-    if k%8 in (2,6): drum[i:i+n]+=hp(noise(n/SR),0.4)*np.exp(-u*22)*0.18
-    m=min(int(0.05*SR),N-i);drum[i:i+m]+=hp(noise(m/SR),0.7)*np.exp(-np.arange(m)/SR*90)*(0.07 if k%2 else 0.04)
-    t+=beat/2;k+=1
-drum*=np.minimum(1,np.maximum(0,(T-0.3)/1.0))
+    if k%4==0: drum[i:i+n]+=np.sin(2*np.pi*np.cumsum(48+110*np.exp(-u*40))/SR)*np.exp(-u*10)*0.6
+    if k%8==4: drum[i:i+n]+=hp(noise(n/SR),0.35)*np.exp(-u*20)*0.22
+    m=min(int(0.04*SR),N-i);drum[i:i+m]+=hp(noise(m/SR),0.75)*np.exp(-np.arange(m)/SR*110)*(0.08 if k%2 else 0.05)
+    t+=beat/4;k+=1
+drum*=np.minimum(1,np.maximum(0,(T-0.2)/0.6))
 bgm=mus+drum*0.35
+# risers into each scene + sub boom
+def riser(d=0.9):
+    n=noise(d);x=np.linspace(0,1,len(n));y=0;out=np.empty_like(n);a=0.01+0.4*x**2
+    for i in range(len(n)): y+=a[i]*(n[i]-y);out[i]=y
+    return out*x**2*1.2
+for s in scn[1:]:
+    add(riser(),s['start']-0.85,0.10)
+    u=tt(0.5);add(np.sin(2*np.pi*np.cumsum(40+60*np.exp(-u*20))/SR)*np.exp(-u*6),s['start']+0.05,0.35)
 ve=np.abs(voice);ve=lp(ve,0.0008);ve=ve/ve.max();duck=1-0.7*np.minimum(1,ve*4)
 bgm*=duck*0.28;bgm*=np.minimum(1,(TOT-T)/1.5)
 fx=np.minimum(1,(TOT-T)/0.5)

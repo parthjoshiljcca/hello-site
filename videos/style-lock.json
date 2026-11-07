@@ -1,19 +1,36 @@
 {
-  "locked": "2026-11-07",
-  "reference_video": "how-to-make-chai/how-to-make-chai.mp4 (v2)",
-  "format": { "width": 1080, "height": 1920, "fps": 30, "content_seconds": 30, "video": "libx264 crf 21 maxrate 9M yuv420p", "audio": "aac 192k 48kHz stereo" },
-  "colors": { "bg": "#0a0807", "orange": "#ff8a1f", "orange_light": "#ffb15c", "white": "#f6efe7", "muted": "#9a8e83", "header_gray": "#5d534b" },
-  "fonts": { "titles_captions": "Montserrat 500/700/800/900", "labels": "JetBrains Mono Medium" },
+  "locked": "2026-11-07 (rev 2)",
+  "reference_video": "qr-code-kaise-kaam-karta-hai/qr-code-kaise-kaam-karta-hai.mp4",
+  "format": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "content_seconds": 30,
+    "video": "libx264 crf 21 maxrate 9M yuv420p",
+    "audio": "aac 192k 48kHz stereo"
+  },
+  "colors": {
+    "bg": "#0a0807",
+    "orange": "#ff8a1f",
+    "orange_light": "#ffb15c",
+    "white": "#f6efe7",
+    "muted": "#9a8e83",
+    "header_gray": "#5d534b"
+  },
+  "fonts": {
+    "titles_captions": "Montserrat 500/700/800/900",
+    "labels": "JetBrains Mono Medium"
+  },
   "layout": {
     "header": "THE WHY SPACES · <TOPIC> (left, mono) + @thewhyspaces (right) at y=88",
     "pill": "NN · STEP (mono, orange outline) y=190",
-    "title": "Montserrat 900 96px, one key word orange + glow",
+    "title": "Montserrat 900, one key word orange + glow, auto-shrinks to fit one line (96px → min 60px)",
     "subtitle": "Montserrat 500 38px muted",
     "illustration": "2D line-art motion graphics, white strokes + orange glow, centre y~1000",
     "tag": "small mono tag under illustration y=1318",
     "captions": "3D: Montserrat 800 72px, extruded text-shadow, rotateX(16deg) tilt, word-by-word flip-in, key words orange, top y=1420",
-    "bottom_bar": "pill at y=1736: orange '?' logo, The Why Spaces / @thewhyspaces, 13-bar orange waveform, mm:ss timer (JetBrains 30px)",
-    "progress": "8px orange gradient bar at bottom",
+    "bottom_bar": "pill at y=1736: orange '?' logo, The Why Spaces / @thewhyspaces, 13-bar orange waveform on the right. NO timer.",
+    "progress": "8px orange gradient bar at bottom (the only time indicator)",
     "texture": "subtle grid, film grain, floating dust, drifting orange radial glow, vignette"
   },
   "narration": {
@@ -21,22 +38,25 @@
     "model": "bulbul:v3",
     "speaker": "kabir",
     "language": "hi-IN",
-    "pace": 1.0,
+    "pace": 1.2,
     "sample_rate": 48000,
-    "script": "Write in Devanagari (English words transliterated), Hinglish tone. Generate the WHOLE script in ONE call; never line-by-line.",
-    "split": "Split only at sentence-end pauses (silencedetect -40dB, 0.12s); keep in-sentence pauses as spoken",
-    "placement": "0.3s lead into each scene, ~0.9-1.4s breathing room after each sentence; captions roman Hinglish, timed clause-by-clause"
+    "script": "Hindi words in Devanagari, English/technical words in Latin script (code-mixed, e.g. 'QR code को scan करो'). No '...' mid-sentence; minimal commas. Numbers in Hindi words.",
+    "split": "Word/caption timing snapped to Kabir's own pauses inside each scene",
+    "placement": "NO extra padding between sentences; only ~0.4s between scenes. Keep it fast and thrilling.",
+    "calls": "One TTS call per scene (all sentences of that scene together) so flow is natural and scene boundaries are exact",
+    "verify": "Transcribe each scene with Sarvam saarika:v2.5 to catch mispronunciations"
   },
   "mix": {
     "voice_gain": 1.3,
-    "music": "soft lo-fi pad + light beat, bgm gain 0.28, drums 0.35, ducked 70% under voice, fade out last 1.2s",
+    "music": "energetic 112bpm: pulsing bass, 16th arps, four-on-floor kick; bgm gain 0.28, drums 0.35, ducked 70% under voice; riser + sub boom into each scene",
     "sfx": "global 0.4; bubbles 0.018, flame hiss 0.01 — SFX stay ~15 dB under voice",
     "normalise": "peak 0.92"
   },
   "ending": {
     "credit_clip": "assets/the-why-spaces-credit.mp4",
-    "length_seconds": 6.72,
-    "content": "Welcome to… → THE WHY? SPACES logo → 'Because every WHY deserves a story.' → Follow @thewhyspaces",
-    "rule": "Append to EVERY video unchanged, hard cut after the 30s content, 0.04s audio fade-in"
+    "length_seconds": 6.7,
+    "content": "'This is…' (orange This) → THE WHY? SPACES logo → 'Because every WHY deserves a story.' → Follow @thewhyspaces",
+    "voice": "Kabir: 'This is The Why Spaces.' (logo hits on 'The Why Spaces') + 'Because every why deserves a story.'",
+    "rule": "Append to EVERY video unchanged, hard cut after content. Narration scripts should NOT repeat these lines."
   }
 }
