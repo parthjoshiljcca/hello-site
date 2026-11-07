@@ -2,7 +2,7 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { ThreeCanvas } from "@remotion/three";
 import { useMemo } from "react";
 import * as THREE from "three";
-import { BRAIN_H, BRAIN_W, buildBrain } from "./brainGeometry";
+import { BRAIN_CENTER, BRAIN_H, BRAIN_W, buildBrain } from "./brainGeometry";
 
 const vert = /* glsl */ `
 attribute float aSul;
@@ -23,17 +23,19 @@ void main(){
   float fill = max(dot(N, normalize(vec3(0.7, -0.35, 0.45))), 0.0);
   float rim = pow(1.0 - max(N.z, 0.0), 2.4);
   vec3 OR = vec3(1.0, 0.25, 0.014);
-  vec3 col = vec3(0.030, 0.010, 0.0035) * (0.25 + 1.2 * dif)
-           + OR * fill * 0.035
-           + OR * rim * 0.5;
+  float ao = 1.0 - 0.82 * vSul;                 // grooves sit in shadow, gyri catch the light
+  float spec = pow(max(dot(reflect(-L, N), vec3(0.0, 0.0, 1.0)), 0.0), 18.0) * (1.0 - vSul);
+  vec3 tissue = vec3(0.30, 0.085, 0.022);       // burnt orange (linear)
+  vec3 col = tissue * (0.14 + 1.15 * dif) * ao
+           + OR * fill * 0.06 * ao
+           + vec3(1.0, 0.55, 0.25) * spec * 0.22
+           + OR * rim * 0.45;
   // thought pulses racing across the folds
   float w1 = 0.5 + 0.5 * sin(dot(vP, vec3(3.3, 1.9, 2.6)) * 2.2 - uTime * 4.2);
   float w2 = 0.5 + 0.5 * sin(dot(vP, vec3(-2.4, 2.8, 1.3)) * 2.9 - uTime * 5.7 + 1.7);
   float spark = pow(max(w1 * w2, 0.0), 6.0);
-  float glow = vSul * (0.38 + 0.55 * w1 * uActivity + 3.0 * spark * uActivity);
-  col += OR * glow * 1.15;
-  // the longitudinal fissure stays dark
-  col *= mix(0.35, 1.0, smoothstep(0.0, 0.05, abs(vP.x)));
+  float glow = vSul * (0.10 + 0.35 * w1 * uActivity + 2.6 * spark * uActivity);
+  col += OR * glow;
   gl_FragColor = vec4(col, uAlpha);
 }`;
 
@@ -52,14 +54,16 @@ const Brain: React.FC<{ pose: BrainPose; t: number }> = ({ pose, t }) => {
   mat.uniforms.uAlpha.value = pose.a;
   // scale (pixels per unit) so the brain covers the spheres' widest extent with a margin
   const k = Math.max((pose.w * 1.12) / BRAIN_W, (pose.h * 1.22) / BRAIN_H) * pose.s;
-  const yaw = 0.32 * Math.sin(t * 0.55) + 0.08 * Math.sin(t * 1.3);
+  const yaw = 0.2 * Math.sin(t * 0.55) + 0.05 * Math.sin(t * 1.3);
   const breathe = 1 + 0.015 * Math.sin(t * 2.4);
   return (
     <group position={[pose.cx - 540, 960 - pose.cy, 0]} scale={k * breathe}>
-      <group rotation={[0.62, yaw, 0]}>
-        {geos.map((g, i) => (
-          <mesh key={i} geometry={g} material={mat} />
-        ))}
+      <group rotation={[0.2, yaw, 0]}>
+        <group position={[-BRAIN_CENTER[0], -BRAIN_CENTER[1], 0]}>
+          {geos.map((g, i) => (
+            <mesh key={i} geometry={g} material={mat} />
+          ))}
+        </group>
       </group>
     </group>
   );

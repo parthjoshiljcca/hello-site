@@ -23,53 +23,120 @@ export function noise(x: number, y: number, z: number) {
     L(L(grad(perm[AA + 1], x, y, z - 1), grad(perm[BA + 1], x - 1, y, z - 1), u), L(grad(perm[AB + 1], x, y - 1, z - 1), grad(perm[BB + 1], x - 1, y - 1, z - 1), u), v), w);
 }
 
-/**
- * Brain in "front, slightly from above" orientation: x = left/right, y = up, z = toward viewer (frontal lobe).
- * Two hemispheres with a longitudinal fissure, flattened base, temporal lobes, and gyri/sulci from
- * domain-warped noise. Attribute `aSul` (0..1) marks the grooves so the shader can light them up.
+/* ---------- SDF helpers ---------- */
+type V = [number, number, number];
+const ellip = (p: V, c: V, r: V) => {
+  const x = (p[0] - c[0]) / r[0], y = (p[1] - c[1]) / r[1], z = (p[2] - c[2]) / r[2];
+  return (Math.sqrt(x * x + y * y + z * z) - 1) * Math.min(r[0], r[1], r[2]);
+};
+const smin = (a: number, b: number, k: number) => {
+  const h = Math.max(0, Math.min(1, 0.5 + (0.5 * (b - a)) / k));
+  return b + (a - b) * h - k * h * (1 - h);
+};
+const segDist = (px: number, py: number, ax: number, ay: number, bx: number, by: number) => {
+  const vx = bx - ax, vy = by - ay;
+  const t = Math.max(0, Math.min(1, ((px - ax) * vx + (py - ay) * vy) / (vx * vx + vy * vy)));
+  return Math.hypot(px - ax - t * vx, py - ay - t * vy);
+};
+
+/*
+ * Anatomical brain, side view: x = front(+)/back(-), y = up, z = lateral (+z = right hemisphere, faces the camera).
+ * Cerebrum hemispheres (frontal, parietal, occipital, temporal lobes), longitudinal fissure, Sylvian fissure,
+ * central sulcus, gyri from domain-warped noise, a striped cerebellum and the brain stem.
+ * Attribute `aSul` (0..1) = how deep in a groove a vertex sits (used for shading and the glow).
  */
-export function buildBrain(widthSeg = 360, heightSeg = 270) {
-  const geos: THREE.BufferGeometry[] = [];
-  for (const side of [-1, 1]) {
-    const g = new THREE.SphereGeometry(1, widthSeg, heightSeg);
-    const pos = g.attributes.position as THREE.BufferAttribute;
-    const sul = new Float32Array(pos.count);
-    const v = new THREE.Vector3();
-    for (let i = 0; i < pos.count; i++) {
-      v.fromBufferAttribute(pos, i);
-      // base hemisphere ellipsoid
-      let x = v.x * 0.56, y = v.y * 0.62, z = v.z * 0.86;
-      // flat medial wall (toward the fissure)
-      const m = x * side; // >0 = lateral, <0 = toward the midline
-      if (m < -0.3) x = side * (-0.3 + (m + 0.3) * 0.15);
-      // flatten the base and tuck it in, temporal lobe bulge low and to the side, slightly narrower frontal pole
-      if (y < -0.18) y = -0.18 + (y + 0.18) * 0.62;
-      const temporal = Math.exp(-(((y + 0.28) / 0.2) ** 2) - (((z - 0.12) / 0.38) ** 2)) * Math.max(0, x * side);
-      x += side * temporal * 0.22; y -= temporal * 0.06;
-      x *= 1 - 0.1 * Math.max(0, z / 0.86) ** 2;
-      y += 0.06 * Math.max(0, -z / 0.86); // occipital slightly higher
-      // folds: domain-warped noise; grooves where |n| ~ 0
-      const p = new THREE.Vector3(x, y, z).multiplyScalar(5.6).addScalar(side * 11.3);
-      const wx = noise(p.x * 0.45 + 3, p.y * 0.45, p.z * 0.45) * 1.3;
-      const wy = noise(p.x * 0.45, p.y * 0.45 + 7, p.z * 0.45) * 1.3;
-      const wz = noise(p.x * 0.45, p.y * 0.45, p.z * 0.45 + 13) * 1.3;
-      const n = noise(p.x + wx, p.y + wy, p.z + wz) + 0.22 * noise((p.x + wx) * 2.3, (p.y + wy) * 2.3, (p.z + wz) * 2.3);
-      const g01 = Math.min(1, Math.abs(n) / 0.22);
-      const fold = Math.pow(g01, 0.45); // broad rounded gyri, narrow sulci
-      const medial = x * side < -0.27 ? 0.25 : 1; // the medial wall is mostly hidden: keep it smooth
-      const r = Math.hypot(x, y, z) || 1;
-      const k = 1 + (fold - 1) * 0.07 * medial;
-      x *= k; y *= k; z *= k;
-      sul[i] = (1 - Math.min(1, Math.abs(n) / 0.075)) * medial * (r > 0 ? 1 : 0);
-      pos.setXYZ(i, x + side * 0.315, y, z);
-    }
-    g.setAttribute("aSul", new THREE.BufferAttribute(sul, 1));
-    g.computeVertexNormals();
-    geos.push(g);
-  }
-  return geos;
+
+/** cerebrum hemisphere SDF in local coords where q.z >= 0 is the lateral side */
+const cerebrum = (q: V) => {
+  let d = ellip(q, [0.0, 0.08, 0.31], [1.0, 0.66, 0.5]);
+  d = smin(d, ellip(q, [0.14, -0.34, 0.42], [0.55, 0.27, 0.25]), 0.12); // temporal lobe
+  d = smin(d, ellip(q, [-0.68, 0.0, 0.3], [0.36, 0.44, 0.38]), 0.18); // occipital pole
+  return Math.max(d, 0.018 - q[2]); // flat medial wall -> longitudinal fissure between hemispheres
+};
+
+function foldNoise(x: number, y: number, z: number, side: number) {
+  const px = x * 5.2 + side * 11.3, py = y * 5.2, pz = z * 5.2;
+  const wx = noise(px * 0.45 + 3, py * 0.45, pz * 0.45) * 1.3;
+  const wy = noise(px * 0.45, py * 0.45 + 7, pz * 0.45) * 1.3;
+  const wz = noise(px * 0.45, py * 0.45, pz * 0.45 + 13) * 1.3;
+  return noise(px + wx, py + wy, pz + wz) + 0.2 * noise((px + wx) * 2.3, (py + wy) * 2.3, (pz + wz) * 2.3);
 }
 
-/** projected size of the brain (units) for the default pose, used to fit it over the spheres */
-export const BRAIN_W = 2.0;
-export const BRAIN_H = 1.3;
+function buildHemisphere(side: number, ws: number, hs: number) {
+  const g = new THREE.SphereGeometry(1, ws, hs);
+  const pos = g.attributes.position as THREE.BufferAttribute;
+  const sul = new Float32Array(pos.count);
+  const C: V = [-0.05, 0.02, 0.3]; // ray origin inside the hemisphere (local, lateral = +z)
+  const dir = new THREE.Vector3();
+  for (let i = 0; i < pos.count; i++) {
+    dir.fromBufferAttribute(pos, i).normalize();
+    const at = (t: number): V => [C[0] + dir.x * t, C[1] + dir.y * t, C[2] + dir.z * t];
+    // march out of the SDF along the ray, then bisect to the surface
+    let t0 = 0, t1 = 0.02;
+    while (t1 < 2.5 && cerebrum(at(t1)) < 0) { t0 = t1; t1 += 0.02; }
+    for (let k = 0; k < 14; k++) { const m = (t0 + t1) / 2; if (cerebrum(at(m)) < 0) t0 = m; else t1 = m; }
+    const [x, y, z] = at((t0 + t1) / 2);
+    const lateral = Math.min(1, Math.max(0, (z - 0.05) / 0.2)); // 0 on the medial wall
+    // gyri / sulci
+    const n = foldNoise(x, y, z, side);
+    const g01 = Math.min(1, Math.abs(n) / 0.22);
+    let disp = (Math.pow(g01, 0.45) - 1) * 0.055 * (0.35 + 0.65 * lateral);
+    let groove = (1 - Math.min(1, Math.abs(n) / 0.08)) * (0.35 + 0.65 * lateral);
+    // landmark grooves: Sylvian fissure (lateral sulcus) and central sulcus
+    const syl = Math.exp(-((segDist(x, y, 0.55, -0.14, -0.3, 0.1) / 0.035) ** 2)) * lateral;
+    const cen = Math.exp(-((segDist(x, y, -0.02, 0.74, 0.22, 0.06) / 0.028) ** 2)) * lateral;
+    disp -= syl * 0.09 + cen * 0.05;
+    groove = Math.max(groove, syl, cen * 0.9);
+    const tt = (t0 + t1) / 2 + disp;
+    pos.setXYZ(i, C[0] + dir.x * tt, C[1] + dir.y * tt, (C[2] + dir.z * tt) * side);
+    sul[i] = groove;
+  }
+  if (side < 0) g.index!.array.reverse(); // mirrored -> keep triangles facing outward
+  g.setAttribute("aSul", new THREE.BufferAttribute(sul, 1));
+  g.computeVertexNormals();
+  return g;
+}
+
+function buildCerebellum(side: number) {
+  const g = new THREE.SphereGeometry(1, 160, 120);
+  const pos = g.attributes.position as THREE.BufferAttribute;
+  const sul = new Float32Array(pos.count);
+  const v = new THREE.Vector3();
+  const c = new THREE.Vector3(-0.66, -0.5, 0.22 * side), r = new THREE.Vector3(0.36, 0.22, 0.26);
+  for (let i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i);
+    // folia: fine, slightly curved, roughly horizontal ridges
+    const s = Math.sin((v.y * 0.22 + v.x * 0.07 + v.z * 0.02) * 95);
+    const gr = Math.max(0, -s) ** 3;
+    const k = 1 - gr * 0.05;
+    pos.setXYZ(i, c.x + v.x * r.x * k, c.y + v.y * r.y * k, c.z + v.z * r.z * k);
+    sul[i] = gr * 0.8;
+  }
+  g.setAttribute("aSul", new THREE.BufferAttribute(sul, 1));
+  g.computeVertexNormals();
+  return g;
+}
+
+function buildStem() {
+  const stem = new THREE.CylinderGeometry(0.15, 0.1, 0.62, 48, 8);
+  stem.rotateZ(-0.22);
+  stem.translate(-0.24, -0.68, 0);
+  const pons = new THREE.SphereGeometry(0.17, 48, 32);
+  pons.scale(1, 1.15, 1);
+  pons.translate(-0.17, -0.55, 0);
+  for (const g of [stem, pons]) g.setAttribute("aSul", new THREE.BufferAttribute(new Float32Array(g.attributes.position.count), 1));
+  return [stem, pons];
+}
+
+export function buildBrain() {
+  return [
+    buildHemisphere(1, 380, 290), buildHemisphere(-1, 220, 170),
+    buildCerebellum(1), buildCerebellum(-1),
+    ...buildStem(),
+  ];
+}
+
+/** cerebrum extent in the side view (units) and its centre, used to fit it over the spheres */
+export const BRAIN_W = 2.08;
+export const BRAIN_H = 1.36;
+export const BRAIN_CENTER: [number, number] = [-0.03, 0.06];
