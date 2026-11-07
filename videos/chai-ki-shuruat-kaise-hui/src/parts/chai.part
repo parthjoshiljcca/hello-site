@@ -1,0 +1,16 @@
+const SC=[
+ {pill:'01 · CHAI',title:'Har Din <em>Chai</em>',sub:'Subah se shaam tak',tag:'CRORES · CUPS'},
+ {pill:'02 · TWIST',title:'Pehle <em>Nahi</em> Peete The',sub:'Lagbhag 100 saal pehle tak',tag:'THE · WHY'},
+ {pill:'03 · CHINA',title:'<em>China</em> Se Shuruat',sub:'Legend: Emperor Shen Nong',tag:'LEGEND'},
+ {pill:'04 · ENGLAND',title:'British <em>Deewane</em>',sub:'Chai ka craze',tag:'ENGLAND'},
+ {pill:'05 · PROBLEM',title:'Chai Ke Badle <em>Chaandi</em>',sub:'Sirf China bechta tha',tag:'TRADE · PROBLEM'},
+ {pill:'06 · 1823',title:'<em>Assam</em> Ki Jungli Chai',sub:'Robert Bruce · Singpho log',tag:'ASSAM · 1823'},
+ {pill:'07 · GARDENS',title:'Tea <em>Gardens</em>',sub:'Assam · Darjeeling → London',tag:'1839 · LONDON'},
+ {pill:'08 · EXPORT',title:'Indians Ke Liye <em>Nahi</em>',sub:'Zyadatar chai bahar jaati thi',tag:'EXPORT'},
+ {pill:'09 · CAMPAIGN',title:'Chai Ka <em>Campaign</em>',sub:'Indian Tea Association',tag:'20TH · CENTURY'},
+ {pill:'10 · HAR JAGAH',title:'<em>Chai</em> Har Jagah',sub:'Railway · Factory · Bazaar',tag:'CHAI SIKHAO'},
+ {pill:'11 · DESI TWIST',title:'<em>Masala</em> Chai',sub:'Doodh · Cheeni · Adrak · Elaichi',tag:'APNA TAREEKA'},
+ {pill:'12 · MAZE KI BAAT',title:'Patti <em>Kam</em> Lagi!',sub:'British ko pasand nahi aaya',tag:'FUN · FACT'},
+ {pill:'13 · AAJ',title:'Chai = <em>Emotion</em>',sub:'Duniya ke top producers mein',tag:'THE · WHY'},
+];
+const HL=['chai','india','crores','sau','nahi','china','legend','emperor','pehli','england','deewane','chaandi','source','1823','assam','jungli','singpho','gardens','darjeeling','1839','london','export','20th','campaign','railway','factories','bazaaron','doodh','cheeni','adrak','elaichi','kam','emotion','aadat','kahan'];
