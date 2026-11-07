@@ -16,7 +16,7 @@ const Patila: React.FC = () => {
   }, []);
   return (
     <group>
-      <mesh geometry={geo}><meshStandardMaterial color="#cfc8c0" metalness={1} roughness={0.22} envMapIntensity={1.3} side={THREE.DoubleSide} /></mesh>
+      <mesh geometry={geo}><meshStandardMaterial color="#cfc8c0" metalness={1} roughness={0.34} envMapIntensity={1.1} side={THREE.DoubleSide} /></mesh>
       {/* side handles */}
       {[-1, 1].map((s) => (
         <mesh key={s} position={[s * 1.14, 0.22, 0]} rotation={[Math.PI / 2, 0, 0]}><torusGeometry args={[0.1, 0.022, 12, 32, Math.PI]} /><meshStandardMaterial color="#bdb6ae" metalness={1} roughness={0.3} /></mesh>
@@ -43,7 +43,7 @@ const Stove: React.FC<{ t: number }> = ({ t }) => (
 const fall = (t: number, e: string, from: [number, number, number]) => {
   const p = seg(t, ev[e] - 0.1, ev[e] + 0.55);
   const e2 = eio(p);
-  return { p, pos: [lerp(from[0], (h1(e.length) - 0.5) * 0.4, e2), lerp(from[1], SURF + 0.02, e2 * e2) + Math.sin(e2 * Math.PI) * 0.5, lerp(from[2], 0, e2)] as [number, number, number], sink: seg(t, ev[e] + 0.55, ev[e] + 0.9) };
+  return { p, pos: [lerp(from[0], (h1(e.length) - 0.5) * 0.4, e2), lerp(from[1], SURF + 0.02, e2 * e2) + Math.sin(e2 * Math.PI) * 0.35, lerp(from[2], 0, e2)] as [number, number, number], sink: seg(t, ev[e] + 0.55, ev[e] + 0.9) };
 };
 const Splash: React.FC<{ t: number; e: string }> = ({ t, e }) => {
   const p = seg(t, ev[e] + 0.5, ev[e] + 1.0);
@@ -78,7 +78,7 @@ export const Patila3D: React.FC<{ t: number }> = ({ t }) => {
   // milk carton tilts and pours
   const carton = seg(t, ev.doodh - 0.25, ev.doodh + 0.25), pour = seg(t, ev.doodh + 0.1, ev.doodh + 1.1), back2 = seg(t, ev.doodh + 1.1, ev.doodh + 1.6);
   const cx = lerp(-2.2, -0.75, eo(carton)) - back2 * 1.6;
-  const sug = fall(t, "cheeni", [1.9, 1.9, 0.3]), gin = fall(t, "adrak", [-1.9, 1.9, 0.2]), ela = fall(t, "elaichi", [1.8, 2.1, -0.2]);
+  const sug = fall(t, "cheeni", [1.45, 1.05, 0.3]), gin = fall(t, "adrak", [-1.45, 1.05, 0.2]), ela = fall(t, "elaichi", [1.4, 1.1, -0.1]);
   const done = t > ev.elaichi + 0.6;
   return (
     <>
@@ -90,7 +90,7 @@ export const Patila3D: React.FC<{ t: number }> = ({ t }) => {
           <Stove t={t} />
           <Patila />
           {/* chai surface with a gentle simmer */}
-          <mesh position={[0, SURF, 0]} rotation={[-Math.PI / 2, 0, 0]}><circleGeometry args={[1.0, 96]} /><meshStandardMaterial color={liquid} roughness={0.15} envMapIntensity={0.9} /></mesh>
+          <mesh position={[0, SURF, 0]} rotation={[-Math.PI / 2, 0, 0]}><circleGeometry args={[1.0, 96]} /><meshStandardMaterial color={liquid} roughness={0.5} envMapIntensity={0.2} /></mesh>
           {Array.from({ length: 22 }, (_, i) => {
             const ph = (t * (0.9 + h1(i) * 0.6) + h1(i + 7)) % 1;
             const an = h1(i + 1) * Math.PI * 2, r = Math.sqrt(h1(i + 2)) * 0.85;
@@ -98,21 +98,21 @@ export const Patila3D: React.FC<{ t: number }> = ({ t }) => {
           })}
           {/* milk carton + stream */}
           {carton > 0 && back2 < 1 && (
-            <group position={[cx, 1.55, 0.1]} rotation={[0, 0, -2.0 * eo(carton) + back2 * 2.0]}>
+            <group position={[cx, 1.18, 0.1]} rotation={[0, 0, -2.0 * eo(carton) + back2 * 2.0]}>
               <mesh><boxGeometry args={[0.36, 0.62, 0.36]} /><meshStandardMaterial color="#f3ece4" roughness={0.6} /></mesh>
               <mesh position={[0, 0.36, 0]}><cylinderGeometry args={[0.07, 0.07, 0.08, 24]} /><meshStandardMaterial color="#ff8a1f" emissive="#ff8a1f" emissiveIntensity={0.4} /></mesh>
             </group>
           )}
           {pour > 0 && pour < 1 && (
-            <mesh position={[-0.42, (1.25 + SURF) / 2, 0.1]} scale={[1, 1 - Math.max(0, pour - 0.85) * 6, 1]}><cylinderGeometry args={[0.035, 0.05, 1.25 - SURF, 16]} /><meshStandardMaterial color="#fbf6ee" roughness={0.15} /></mesh>
+            <mesh position={[-0.42, (0.9 + SURF) / 2, 0.1]} scale={[1, 1 - Math.max(0, pour - 0.85) * 6, 1]}><cylinderGeometry args={[0.035, 0.05, 0.9 - SURF, 16]} /><meshStandardMaterial color="#fbf6ee" roughness={0.15} /></mesh>
           )}
           {/* sugar cubes */}
           {sug.p > 0 && sug.sink < 1 && [0, 1, 2].map((i) => (
-            <mesh key={i} position={[sug.pos[0] + (i - 1) * 0.13, sug.pos[1] - sug.sink * 0.2 + i * 0.05, sug.pos[2]]} rotation={[t * 3 + i, t * 2, i]}><boxGeometry args={[0.11, 0.11, 0.11]} /><meshStandardMaterial color="#ffffff" roughness={0.5} emissive="#ffffff" emissiveIntensity={0.1} /></mesh>
+            <mesh key={i} position={[sug.pos[0] + (i - 1) * 0.19, sug.pos[1] - sug.sink * 0.2 + i * 0.05, sug.pos[2]]} rotation={[t * 3 + i, t * 2, i]}><boxGeometry args={[0.16, 0.16, 0.16]} /><meshStandardMaterial color="#ffffff" roughness={0.5} emissive="#ffffff" emissiveIntensity={0.1} /></mesh>
           ))}
-          {gin.p > 0 && gin.sink < 1 && <group position={[gin.pos[0], gin.pos[1] - gin.sink * 0.2, gin.pos[2]]} rotation={[t * 2, t * 1.4, 0.4]}><Ginger /></group>}
+          {gin.p > 0 && gin.sink < 1 && <group position={[gin.pos[0], gin.pos[1] - gin.sink * 0.2, gin.pos[2]]} rotation={[t * 2, t * 1.4, 0.4]} scale={1.5}><Ginger /></group>}
           {ela.p > 0 && ela.sink < 1 && [0, 1, 2].map((i) => (
-            <mesh key={i} position={[ela.pos[0] + (i - 1) * 0.12, ela.pos[1] - ela.sink * 0.2, ela.pos[2] + i * 0.05]} rotation={[t * 3 + i, i, t * 2]} scale={[0.45, 1, 0.45]}><sphereGeometry args={[0.1, 20, 14]} /><meshStandardMaterial color="#8db45a" roughness={0.6} /></mesh>
+            <mesh key={i} position={[ela.pos[0] + (i - 1) * 0.12, ela.pos[1] - ela.sink * 0.2, ela.pos[2] + i * 0.05]} rotation={[t * 3 + i, i, t * 2]} scale={[0.6, 1.35, 0.6]}><sphereGeometry args={[0.1, 20, 14]} /><meshStandardMaterial color="#8db45a" roughness={0.6} /></mesh>
           ))}
           {["doodh", "cheeni", "adrak", "elaichi"].map((e) => <Splash key={e} t={t} e={e} />)}
           <Steam t={t} y={SURF + 0.05} spread={0.75} height={2.0} n={110} size={0.42} a={0.6 + 0.6 * cl(lt / 2)} />

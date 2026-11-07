@@ -36,7 +36,7 @@ function state(t: number): G {
   return {
     lon: kf(t, [[SCN[3].start, 70], [ev.england + 1.5, 48], [ev.source - 0.4, 48], [T5 + 0.8, 90], [ev.y1839 - 0.4, 90], [ev.y1839 + 1.4, 45]]),
     lat: kf(t, [[SCN[3].start, 30], [ev.england + 1.5, 10], [ev.source - 0.4, 10], [T5 + 0.8, 24], [ev.y1839 - 0.4, 24], [ev.y1839 + 1.4, 12]]),
-    dist: kf(t, [[SCN[3].start, 7.2], [SCN[3].start + 1.0, 5.8], [ev.source - 0.4, 5.8], [T5 + 0.8, 3.2], [T6 + 0.3, 3.2], [ev.y1839 - 0.4, 3.6], [ev.y1839 + 1.4, 5.9]]),
+    dist: kf(t, [[SCN[3].start, 7.2], [SCN[3].start + 1.0, 5.8], [ev.source - 0.4, 5.8], [T5 + 0.8, 3.9], [T6 + 0.3, 3.9], [ev.y1839 - 0.4, 4.1], [ev.y1839 + 1.4, 5.9]]),
   };
 }
 const camPos = (g: G): [number, number, number] => [0, 0, g.dist];
@@ -164,7 +164,7 @@ const GlobeBody: React.FC<{ g: G; t: number }> = ({ g, t }) => {
       <primitive object={india} />
       <Route curve={teaCurve} p={tea} color="#ff9a3a" />
       {crateP > 0 && crateP < 1 && <Crate pos={teaCurve.getPointAt(crateP).multiplyScalar(1.03)} s={1.2} />}
-      {silver > 0 && Array.from({ length: 12 }, (_, i) => { const ph = (silver * 2.2 + i / 12) % 1; return ph < 0.97 ? <Coin key={i} pos={silverCurve.getPointAt(ph)} t={t} i={i} /> : null; })}
+      {silver > 0 && t < SCN[5].start && Array.from({ length: 12 }, (_, i) => { const ph = (silver * 2.2 + i / 12) % 1; return ph < 0.97 ? <Coin key={i} pos={silverCurve.getPointAt(ph)} t={t} i={i} /> : null; })}
       <Route curve={shipCurve} p={shipP} color="#ffb15c" k={2.0} />
       {shipP > 0.001 && shipP < 0.999 && <Ship pos={shipCurve.getPointAt(shipP)} dir={shipCurve.getTangentAt(shipP)} s={1.0} />}
       <Pin ll={CANTON} p={fin(t, "england", 0.5, -0.6)} t={t} />

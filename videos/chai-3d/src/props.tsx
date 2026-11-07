@@ -62,7 +62,7 @@ export const Kulhad: React.FC<{ liquid?: string; rot?: number }> = ({ liquid = "
       <mesh geometry={geo} material={mat} />
       <mesh position={[0, 0.6, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[0.835, 64]} />
-        <meshStandardMaterial color={liquid} roughness={0.18} metalness={0.05} envMapIntensity={0.8} />
+        <meshStandardMaterial color={liquid} roughness={0.42} metalness={0} envMapIntensity={0.25} />
       </mesh>
       {/* glowing chai rim line, the brand's orange accent */}
       <mesh position={[0, 0.605, 0]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -75,11 +75,11 @@ export const Kulhad: React.FC<{ liquid?: string; rot?: number }> = ({ liquid = "
 const lerpN = (a: number, b: number, t: number) => a + (b - a) * t;
 
 /** frame-driven steam: soft particles rising and swirling (no self-running animation) */
-export const Steam: React.FC<{ t: number; y?: number; spread?: number; height?: number; n?: number; a?: number; size?: number }> = ({ t, y = 0.6, spread = 0.45, height = 1.7, n = 90, a = 1, size = 0.32 }) => {
+export const Steam: React.FC<{ t: number; y?: number; spread?: number; height?: number; n?: number; a?: number; size?: number }> = ({ t, y = 0.6, spread = 0.45, height = 1.7, n = 160, a = 1, size = 0.85 }) => {
   const { pts, mat, geo } = useMemo(() => {
     const c = document.createElement("canvas"); c.width = c.height = 64;
     const x = c.getContext("2d")!; const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
-    g.addColorStop(0, "rgba(255,255,255,.9)"); g.addColorStop(0.5, "rgba(255,255,255,.25)"); g.addColorStop(1, "rgba(255,255,255,0)");
+    g.addColorStop(0, "rgba(255,255,255,.7)"); g.addColorStop(0.45, "rgba(255,255,255,.22)"); g.addColorStop(1, "rgba(255,255,255,0)");
     x.fillStyle = g; x.fillRect(0, 0, 64, 64);
     const geo = new THREE.BufferGeometry();
     geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(n * 3), 3));
@@ -100,6 +100,6 @@ export const Steam: React.FC<{ t: number; y?: number; spread?: number; height?: 
   }
   p.needsUpdate = true;
   cc.needsUpdate = true;
-  mat.opacity = 0.32 * a;
+  mat.opacity = 0.075 * a;
   return <primitive object={pts} />;
 };

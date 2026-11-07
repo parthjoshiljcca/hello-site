@@ -45,9 +45,11 @@ export function project(p: THREE.Vector3, pos: [number, number, number], look: [
   return { x: ((s.x + 1) / 2) * 1080, y: ((1 - s.y) / 2) * 1920 };
 }
 
+const MASK = "linear-gradient(to bottom, transparent 0px, transparent 505px, #000 585px, #000 1235px, transparent 1296px)";
 /** Full-frame transparent 3D layer with bloom (bright > 1.0 glows), composited over the 2D base video */
 export const Layer: React.FC<{ opacity: number; children: React.ReactNode; bloom?: number }> = ({ opacity, children, bloom = 1.1 }) => (
-  <div style={{ position: "absolute", inset: 0, opacity }}>
+  // masked to the illustration band so the header, title, tag and captions of the 2D base always stay readable
+  <div style={{ position: "absolute", inset: 0, opacity, WebkitMaskImage: MASK, maskImage: MASK }}>
     <ThreeCanvas width={1080} height={1920} camera={{ fov: 30, near: 0.01, far: 100, position: [0, 0, 6] }} gl={{ alpha: true, premultipliedAlpha: true, antialias: true }}>
       {children}
       <EffectComposer multisampling={4}>
