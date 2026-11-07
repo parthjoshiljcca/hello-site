@@ -37,18 +37,19 @@ function monoTag(x,y,s,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.font=
 
 const SC=[
  {pill:'CASE 01 · MYSTERY',title:'Chor <em>Kaun</em> Hai?',sub:'Ek chori · Teen suspects',tag:'SUSPENSE'},
- {pill:'01 · SHANIVAAR RAAT',title:'Mehra <em>Haveli</em>',sub:'Shaadi ki party',tag:'RAAT · PARTY'},
+ {pill:'01 · DIWALI RAAT',title:'Diwali Ki <em>Raat</em>',sub:'Mehra Haveli mein badi party',tag:'DIWALI · PARTY'},
  {pill:'02 · 10:00 PM',title:'Bijli <em>Gayi!</em>',sub:'Poora mohalla andhere mein',tag:'NO · BACKUP'},
  {pill:'03 · 10:15 PM',title:'Haar <em>Ghayab!</em>',sub:'Tijori khuli mili',tag:'CRIME · SCENE'},
  {pill:'04 · POOCHTAACH',title:'Teen <em>Suspects</em>',sub:'Inspector ke sawaal',tag:'INTERROGATION'},
  {pill:'SUSPECT A',title:'<em>Raju</em> · Cook',sub:'"Main kitchen mein tha"',tag:'ALIBI · A'},
  {pill:'SUSPECT B',title:'<em>Pinky</em> · Cousin',sub:'"Main chhat par thi"',tag:'ALIBI · B'},
- {pill:'SUSPECT C',title:'<em>Vicky</em> · Driver',sub:'"Main kamre mein so raha tha"',tag:'ALIBI · C'},
- {pill:'05 · SOCHO',title:'Ek <em>Jhooth</em> Hai',sub:'Clue isi kahaani mein chhupa hai',tag:'FIND · THE · CLUE'},
- {pill:'06 · AAPKA FAISLA',title:'Chor <em>Kaun</em> Hai?',sub:'Raju · Pinky · Vicky',tag:'A / B / C'},
- {pill:'07 · COMMENT KARO',title:'Jawaab <em>Comments</em> Mein',sub:'Reason ke saath likho',tag:'PART 2 · SOON'},
+ {pill:'SUSPECT C',title:'<em>Vicky</em> · Driver',sub:'"Main gate par patakhe dekh raha tha"',tag:'ALIBI · C'},
+ {pill:'05 · SABOOT',title:'Raju Ka <em>Rumaal</em>',sub:'Tijori ke paas mila',tag:'EVIDENCE'},
+ {pill:'06 · SOCHO',title:'Ek <em>Jhooth</em> Hai',sub:'Clue shuruaat mein hi hai',tag:'FIND · THE · CLUE'},
+ {pill:'07 · AAPKA FAISLA',title:'Chor <em>Kaun</em> Hai?',sub:'Raju · Pinky · Vicky',tag:'A / B / C'},
+ {pill:'08 · COMMENT KARO',title:'Jawaab <em>Comments</em> Mein',sub:'Reason ke saath likho',tag:'PART 2 · SOON'},
 ];
-const HL=['chori','suspects','jhooth','chor','haveli','shaadi','das','bijli','backup','pandrah','tijori','haar','ghayab','inspector','raju','pinky','vicky','mombatti','torch','ac','clue','comments','jawaab','reason','agle','socho'];
+const HL=['diwali','chaand','roshni','patakhe','gate','rumaal','shuruaat','doodh','chori','suspects','jhooth','chor','haveli','shaadi','das','bijli','backup','pandrah','tijori','haar','ghayab','inspector','raju','pinky','vicky','mombatti','torch','ac','clue','comments','jawaab','reason','agle','socho'];
 
 // ---------- mystery primitives (line art: warm-white strokes, orange glow) ----------
 const LN='rgba(243,236,228,.92)',DARK='rgba(18,12,9,.96)',GOLD='#ffb15c';
@@ -170,6 +171,13 @@ function commentBox(x,y,a,typed,t){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;
 function stickHead(x,y){ctx.beginPath();ctx.arc(x,y-10,12,0,7);gs(3,WH);ctx.beginPath();ctx.arc(x,y+26,22,Math.PI*1.1,Math.PI*1.9);gs(3,WH)}
 function panel(x,y,w,h,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;rr(x-w/2,y-h/2,w,h,26);ctx.fillStyle='rgba(16,11,8,.85)';ctx.fill();gs(2.5,'rgba(255,138,31,.45)',14);ctx.restore()}
 
+function diya(x,y,s,a,t){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;candleFlame(x,y-10*s,s*0.55,t+x);ctx.translate(x,y);ctx.scale(s,s);ctx.beginPath();ctx.moveTo(-26,-8);ctx.quadraticCurveTo(0,22,26,-8);ctx.closePath();ctx.fillStyle='rgba(150,60,20,.95)';ctx.fill();gs(3,GOLD,8);ctx.restore()}
+function burst(x,y,r,ph,a,col){if(a<=0||ph<=0||ph>=1)return;ctx.save();ctx.globalAlpha*=a*(1-ph)*(ph<0.15?ph/0.15:1);const R=r*eo(ph);for(let i=0;i<16;i++){const an=i/16*Math.PI*2;ctx.beginPath();ctx.moveTo(x+Math.cos(an)*R*0.6,y+Math.sin(an)*R*0.6+ph*30);ctx.lineTo(x+Math.cos(an)*R,y+Math.sin(an)*R+ph*30);ctx.lineCap='round';gs(4,i%2?col:'#fff3e0',16)}ctx.restore()}
+function fireworks(t,a,area){if(a<=0)return;const [x0,y0,w,h]=area;for(let k=0;k<4;k++){const per=1.6,ph=((t+k*0.43)%per)/per;const cyc=Math.floor((t+k*0.43)/per);const r=rng(cyc*7+k);burst(x0+r()*w,y0+r()*h,70+r()*60,ph,a,k%2?OR:GOLD)}}
+function gateBars(x,y,s,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);rr(-190,-150,30,300,4);ctx.fillStyle=DARK;ctx.fill();gs(4,LN);rr(160,-150,30,300,4);ctx.fill();gs(4,LN);
+ ctx.beginPath();for(let i=0;i<9;i++){const bx=-140+i*35;ctx.moveTo(bx,150);ctx.lineTo(bx,-90+Math.sin(i/8*Math.PI)*-30)}ctx.moveTo(-160,-40);ctx.lineTo(160,-40);ctx.moveTo(-160,100);ctx.lineTo(160,100);gs(4,LN);ctx.restore()}
+function rumaal(x,y,s,a,rot){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.rotate(rot);ctx.scale(s,s);ctx.beginPath();ctx.moveTo(-60,-50);ctx.quadraticCurveTo(0,-62,60,-50);ctx.quadraticCurveTo(70,0,58,50);ctx.quadraticCurveTo(0,40,-58,52);ctx.quadraticCurveTo(-70,0,-60,-50);ctx.closePath();
+ ctx.fillStyle='rgba(243,236,228,.9)';ctx.fill();gs(3,LN);ctx.setLineDash([6,6]);rr(-46,-38,92,78,6);gs(2.5,OR);ctx.setLineDash([]);txt('R',22,18,'900 30px M',OR);ctx.restore()}
 // ---------- scenes ----------
 const SUS=[['A','RAJU','chef'],['B','PINKY','hair'],['C','VICKY','cap']];
 function S0(t,lt){ // hook
@@ -179,11 +187,11 @@ function S0(t,lt){ // hook
  badge(540,1250,'SIRF EK JHOOTH',pop(t,'jhooth'),{fs:30});
  const m=fin(t,'pakad',0.5,-0.2);if(m>0){const mx=540+Math.sin((t-E('pakad'))*2.4)*320;magnifier(mx,950,115,m,t)}
 }
-function S1(t,lt){ // haveli party
- const a=eo(seg(lt,0,0.7));nightMoon(900,620,38,a);for(let i=0;i<8;i++){const r=rng(i+3);star(80+r()*500,570+r()*90,4+r()*5,a*(0.5+0.5*Math.sin(t*3+i)))}
- haveli(540,1010,1.12,a,1,t);monoTag(250,640,'SHANIVAAR · RAAT',fin(t,'shanivaar',0.4,0));
- const pa=fin(t,'shaadi',0.5,-0.1);for(let i=0;i<6;i++){const ph=(t*0.35+i/6)%1;note(200+i*140+Math.sin(t+i)*20,1150-ph*420,1,pa*Math.sin(ph*Math.PI))}
- badge(540,1250,'SHAADI KI PARTY',pop(t,'shaadi'),{fs:30});
+function S1(t,lt){ // diwali party (amavasya: no moon)
+ const a=eo(seg(lt,0,0.7));for(let i=0;i<10;i++){const r=rng(i+3);star(80+r()*920,560+r()*90,4+r()*5,a*(0.5+0.5*Math.sin(t*3+i)))}
+ fireworks(t,fin(t,'diwali',0.6,0),[160,560,760,120]);haveli(540,1010,1.12,a,1,t);
+ for(let i=0;i<9;i++)diya(150+i*97.5,1205,0.9,pop(t,'diwali',0.4,i*0.05),t);
+ monoTag(540,640,'DIWALI · RAAT',fin(t,'diwali',0.4,0.2));badge(540,1270,'BADI PARTY',pop(t,'party'),{fs:28});
 }
 function S2(t,lt){ // blackout
  const k=seg(t,E('bijli')-0.15,E('bijli')+0.55);const L=k<=0?1:k>=1?0:(Math.sin(k*46)>0.2?0.85:0.05)*(1-k);
@@ -212,37 +220,43 @@ function alibiLayout(t,lt,i,ev){const [L,n,k]=SUS[i];const a=eo(seg(lt,0,0.5));
  letter(290,690,46,L,pop(t,ev,0.45,-0.25),true);person(290,980,1.05,a,k,true);monoTag(290,1150,n+' · '+['COOK','COUSIN','DRIVER'][i],a);
  panel(770,960,440,520,a);}
 function S5(t,lt){ alibiLayout(t,lt,0,'raju');
- monoTag(770,745,'KITCHEN',fin(t,'kitchen',0.4,0));candle(680,1060,1.0,pop(t,'mombatti',0.45,-0.1),t);stovePot(860,1080,0.95,fin(t,'khaana',0.45,-0.1),t);
+ monoTag(770,745,'KITCHEN',fin(t,'kitchen',0.4,0));candle(680,1060,1.0,pop(t,'mombatti',0.45,-0.1),t);stovePot(860,1080,0.95,fin(t,'doodh',0.45,-0.1),t);
 }
 function S6(t,lt){ alibiLayout(t,lt,1,'pinky');
- monoTag(770,745,'CHHAT',fin(t,'chhat',0.4,0));nightMoon(880,830,30,fin(t,'chhat',0.5,0));railing(1090,570,970,fin(t,'chhat',0.5,0));
- const tp=fin(t,'torch',0.4,-0.1);const ph=pop(t,'torch',0.45,-0.4);beam(720,940,-0.35,330,0.35,tp);phone(720,1010,110,190,cl(ph),()=>{ctx.fillStyle='rgba(255,138,31,.15)';ctx.fillRect(-60,-100,120,200)});
- bubble(870,950,1,pop(t,'dost',0.45,-0.1),t);
+ monoTag(770,745,'CHHAT',fin(t,'chhat',0.4,0));railing(1090,570,970,fin(t,'chhat',0.5,0));
+ const m=fin(t,'chaand',0.6,-0.1);nightMoon(860,860,46,m);if(m>0){ctx.save();ctx.globalAlpha*=m*0.5;const g=ctx.createRadialGradient(860,860,0,860,860,260);g.addColorStop(0,'rgba(220,230,255,.35)');g.addColorStop(1,'rgba(220,230,255,0)');ctx.fillStyle=g;ctx.fillRect(560,700,420,520);ctx.restore()}
+ const ph=pop(t,'phone',0.45,-0.2);phone(680,1010,100,175,cl(ph),()=>{ctx.fillStyle='rgba(255,138,31,.18)';ctx.fillRect(-60,-100,120,200);stickHead(0,-10)});
+ bubble(800,1000,0.85,pop(t,'dost',0.45,-0.1),t);
 }
 function S7(t,lt){ alibiLayout(t,lt,2,'vicky');
- monoTag(770,745,'KAMRA',fin(t,'kamre',0.4,0));bed(770,1120,0.95,fin(t,'kamre',0.5,0));
- acUnit(770,840,0.95,pop(t,'ac',0.45,-0.3),t,fin(t,'ac',0.5,0.1));zzz(840,1060,t,fin(t,'so',0.4,0));
+ monoTag(770,745,'MAIN GATE',fin(t,'gate',0.4,0));fireworks(t,fin(t,'patakhe',0.4,-0.1),[620,800,300,120]);gateBars(770,1080,0.95,fin(t,'gate',0.5,-0.1));
 }
-function S8(t,lt){ // think: one is lying
- const a=eo(seg(lt,0,0.5));clockAt(540,640,56,15,a);monoTag(540,725,'10:00 – 10:15 PM',a);
- const icons=[(x,y,p)=>candle(x,y+10,0.75,p,t),(x,y,p)=>{beam(x,y-40,0,160,0.3,p);phone(x,y+20,80,140,p)},(x,y,p)=>acUnit(x,y,0.48,p,t,1)];
+function S8(t,lt){ // evidence: rumaal near tijori
+ const a=eo(seg(lt,0,0.5));safe(540,960,0.9,a,1);const r=pop(t,'rumaal',0.5,-0.2);rumaal(700,1150,1.1*cl(r),cl(r),-0.25);
+ const m=fin(t,'raju3',0.5,-0.2);if(m>0)magnifier(lerp(380,700,eio(m)),lerp(800,1150,eio(m)),100,m,t);
+ badge(540,1270,'RAJU KA RUMAAL!',pop(t,'rumaal',0.45,0.4),{fs:28});
+}
+function S9(t,lt){ // think: one is lying
+ const a=eo(seg(lt,0,0.5));
+ const icons=[(x,y,p)=>candle(x,y+10,0.75,p,t),(x,y,p)=>phone(x,y+10,80,140,p,()=>stickHead(0,0)),(x,y,p)=>{fireworks(t,p,[x-90,y-110,180,60]);gateBars(x,y+30,0.42,p)}];
  SUS.forEach(([L,n,k],i)=>{const x=200+i*340;const p=pop(t,'socho',0.45,-0.2+i*0.1);panel(x,1010,300,420,cl(p));person(x,930,0.6,cl(p),k,false);letter(x-110,830,26,L,cl(p),false);icons[i](x,1110,cl(p));monoTag(x,1245,n,cl(p))});
- const j=pop(t,'jhooth2',0.45,-0.1);if(j>0){ctx.save();ctx.globalAlpha*=cl(j)*(0.75+0.25*Math.sin(t*6));txt('1 JHOOTH',540,800,'900 40px M',OR,'center',24);ctx.restore()}
+ const j=pop(t,'jhooth2',0.45,-0.1);if(j>0){ctx.save();ctx.globalAlpha*=cl(j)*(0.75+0.25*Math.sin(t*6));txt('1 JHOOTH',540,765,'900 40px M',OR,'center',24);ctx.restore()}
  const m=fin(t,'clue',0.5,-0.2);if(m>0){const mx=540+Math.sin((t-E('clue'))*1.8)*340;magnifier(mx,1090,95,m,t)}
+ monoTag(540,690,'HINT: SHURUAAT YAAD KARO',fin(t,'shuruaat',0.4,-0.1));
 }
-function S9(t,lt){ // A/B/C
+function S10(t,lt){ // A/B/C
  const ev=['raju2','pinky2','vicky2'];const st=E('vicky2')+0.6;const hi=t>st?Math.floor((t-st)*2.6)%3:-1;
  SUS.forEach(([L,n,k],i)=>optCard(540,720+i*190,760,150,pop(t,ev[i],0.45,-0.15),L,n,k,hi===i||(t>=E(ev[i])&&t<E(ev[i])+0.5)));
  qm(150,620,90,fin(t,'chor2',0.4,-0.2),t);qm(930,640,90,fin(t,'chor2',0.4,0),t*1.2);
  badge(540,1255,'AAPKA JAWAAB?',pop(t,'vicky2',0.45,0.5),{fs:30});
 }
-function S10(t,lt){ // comment
+function S11(t,lt){ // comment
  const a=eo(seg(lt,0,0.5));commentBox(540,760,a,seg(t,E('jawaab'),E('jawaab')+1.8),t);
  SUS.forEach(([L],i)=>letter(380+i*160,950,40,L,pop(t,'reason',0.45,i*0.1),Math.floor(t*2.2)%3===i));
  const c=fin(t,'comments',0.4,-0.1);if(c>0){const by=1085+Math.abs(Math.sin(t*4))*-20;arrow(540,by-50,540,by+40,c,OR,7)}
  const ag=pop(t,'agle',0.5,-0.1);badge(540,1240,'COMMENT KARO',pop(t,'comments',0.45,0)*(1-cl(ag)),{fs:32});badge(540,1240,'JAWAAB · PART 2 MEIN',ag,{fs:30});
 }
-const SCN=[S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10];
+const SCN=[S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11];
 // ---------- extra primitives ----------
 function gear(x,y,r,rot,teeth=16,fill='#2a201a'){ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.beginPath();for(let i=0;i<teeth*2;i++){const a=i/(teeth*2)*Math.PI*2;const R=i%2?r*0.8:r;ctx.lineTo(Math.cos(a)*R,Math.sin(a)*R)}ctx.closePath();ctx.fillStyle=fill;ctx.fill();gs(3,'rgba(243,236,228,.85)');ctx.beginPath();ctx.arc(0,0,r*0.3,0,7);gs(3,OR,8);ctx.restore()}
 function star(x,y,r,a){ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.beginPath();for(let i=0;i<8;i++){const rr2=i%2?r*.28:r;const an=i/8*Math.PI*2;ctx.lineTo(Math.cos(an)*rr2,Math.sin(an)*rr2)}ctx.closePath();ctx.fillStyle='#ffb15c';ctx.shadowColor=OR;ctx.shadowBlur=20;ctx.fill();ctx.restore()}

@@ -61,16 +61,17 @@ for j,c in enumerate(chunks):
     nxt=chunks[j+1]['t0'] if j+1<len(chunks) else TOT
     c['t1']=nxt if (j+1<len(chunks) and chunks[j+1]['s']==c['s']) else min(nxt,sent[c['s']]['end']+0.6)
 EV={'chori':(0,'chori'),'suspects':(0,'suspects'),'jhooth':(0,'jhooth'),'pakad':(1,'pakad'),'chor1':(1,'chor'),
-'shanivaar':(2,'Shanivaar'),'haveli':(2,'haveli'),'shaadi':(2,'shaadi'),'party':(2,'party'),
+'diwali':(2,'Diwali'),'haveli':(2,'haveli'),'party':(2,'party'),
 'das':(3,'das'),'bijli':(3,'bijli'),'backup':(4,'backup'),
 'pandrah':(5,'Pandrah'),'light':(5,'light'),'tijori':(5,'tijori'),'dadi':(6,'Dadi'),'haar':(6,'haar'),'ghayab':(6,'ghayab'),
 'inspector':(7,'Inspector'),'teen':(7,'teen'),'poochtaach':(7,'poochtaach'),
-'raju':(8,'Raju'),'kitchen':(8,'kitchen'),'mombatti':(8,'mombatti'),'khaana':(8,'khaana'),
-'pinky':(9,'Pinky'),'chhat':(9,'chhat'),'torch':(9,'torch'),'dost':(9,'dost'),
-'vicky':(10,'Vicky'),'kamre':(10,'kamre'),'ac':(10,'AC'),'so':(10,'so'),
-'socho':(11,'socho'),'jhooth2':(11,'jhooth'),'clue':(12,'clue'),'chhupa':(12,'chhupa'),
-'chor2':(13,'chor'),'raju2':(13,'Raju'),'pinky2':(13,'Pinky'),'vicky2':(13,'Vicky'),
-'jawaab':(14,'jawaab'),'reason':(14,'reason'),'comments':(14,'comments'),'sahi':(15,'Sahi'),'agle':(15,'agle')}
+'raju':(8,'Raju'),'kitchen':(8,'kitchen'),'mombatti':(8,'mombatti'),'doodh':(8,'doodh'),
+'pinky':(9,'Pinky'),'chhat':(9,'chhat'),'chaand':(9,'chaand'),'phone':(9,'phone'),'dost':(9,'dost'),
+'vicky':(10,'Vicky'),'gate':(10,'gate'),'patakhe':(10,'patakhe'),
+'tijori2':(11,'tijori'),'raju3':(11,'Raju'),'rumaal':(11,'rumaal'),
+'socho':(12,'socho'),'jhooth2':(12,'jhooth'),'clue':(13,'clue'),'shuruaat':(13,'shuruaat'),
+'chor2':(14,'chor'),'raju2':(14,'Raju'),'pinky2':(14,'Pinky'),'vicky2':(14,'Vicky'),
+'jawaab':(15,'jawaab'),'reason':(15,'reason'),'comments':(15,'comments'),'sahi':(16,'Sahi'),'agle':(16,'agle')}
 ev={}
 for k,(i,kw) in EV.items():
     ws=sent[i]['words'];j=[n for n,w in enumerate(ws) if w.lower().startswith(kw.lower())];assert j,(k,kw);ev[k]=sent[i]['wt'][j[0]]
