@@ -60,10 +60,10 @@ for k in range(5): add(pop(1100+k*120,0.07),0.45+k*0.15,0.12,(k-2)*0.2)
 s=St[1]; add(click(),s+0.1,0.35,0.5); add(ignite(),s+0.33,0.35); add(pourn(1.05),s+0.6,0.45,0.2)
 # flame hiss + boil bubbles
 a,b=St[1]+0.35,St[5]+2.95
-h=lp(hp(noise(b-a),0.2),0.5)*env(int((b-a)*SR),0.4,0.4); add(h,a,0.035)
+h=lp(hp(noise(b-a),0.2),0.5)*env(int((b-a)*SR),0.4,0.4); add(h,a,0.01)
 ba,bb=St[1]+1.6,St[5]+3.0;t=ba
 while t<bb:
-    amp=min(1,(t-ba)/1.3); add(bubble(),t,0.07*amp,rs.uniform(-.5,.5)); t+=rs.uniform(0.025,0.11)
+    amp=min(1,(t-ba)/1.3); add(bubble(),t,0.018*amp,rs.uniform(-.5,.5)); t+=rs.uniform(0.06,0.2)
 s=St[2]
 for d in [0.55,0.75,0.95]: add(plop(330),s+d+0.45,0.32,rs.uniform(-.3,.3))
 for d in [1.5,1.7]: add(plop(520),s+d+0.45,0.28,0.2)
@@ -77,7 +77,7 @@ for d in [2.45,2.65,2.85]: add(plop(600),s+d,0.22)
 add(pop(1000),s+0.6,0.12,-0.5); add(pop(1250),s+2.0,0.12,0.5)
 s=St[5]
 for a0 in [0.35,1.55]:
-    n=lp(noise(1.1),0.03);add(n*np.sin(np.linspace(0,np.pi,len(n)))*3,s+a0,0.35)
+    n=lp(noise(1.1),0.03);add(n*np.sin(np.linspace(0,np.pi,len(n)))*3,s+a0,0.12)
 add(pop(900),s+0.6,0.14,-0.5); add(pop(1050),s+1.8,0.14,-0.5)
 add(click(),s+2.85,0.4,0.5); n=lp(noise(0.4),0.1);add(n*np.exp(-np.arange(len(n))/SR*10),s+2.9,0.4); add(pop(800),s+2.9,0.12,0.5)
 s=St[6]; add(pourn(2.1),s+0.7,0.4,0.1); add(ding(),s+3.3,0.22); add(shimmer(1.6),s+3.1,0.35); add(pop(1200),s+3.3,0.12)
@@ -103,13 +103,13 @@ while t<30:
     m=min(int(0.05*SR),N-i);hh=hp(noise(m/SR),0.7)*np.exp(-np.arange(m)/SR*90)*(0.07 if k%2 else 0.04); drum[i:i+m]+=hh
     t+=beat/2;k+=1
 drum*=np.minimum(1,np.maximum(0,(T-0.3)/1.0))
-bgm=mus+drum*0.6
+bgm=mus+drum*0.35
 # duck
-ve=np.abs(voice);ve=lp(ve,0.0008);ve=ve/ve.max();duck=1-0.55*np.minimum(1,ve*3)
-bgm*=duck*0.75
+ve=np.abs(voice);ve=lp(ve,0.0008);ve=ve/ve.max();duck=1-0.7*np.minimum(1,ve*4)
+bgm*=duck*0.28
 bgm*=np.minimum(1,(30-T)/1.2)  # fade out
 fx_fade=np.minimum(1,(30-T)/0.5)
-Lm=voice*1.15+bgm+L*fx_fade;Rm=voice*1.15+bgm+R*fx_fade
+Lm=voice*1.3+bgm+L*fx_fade*0.4;Rm=voice*1.3+bgm+R*fx_fade*0.4
 st=np.stack([Lm,Rm],1);st=st/np.max(np.abs(st))*0.92
-w=wave.open('mix.wav','wb');w.setnchannels(2);w.setsampwidth(2);w.setframerate(SR);w.writeframes((st*32767).astype(np.int16).tobytes());w.close()
+w=wave.open('mix3.wav','wb');w.setnchannels(2);w.setsampwidth(2);w.setframerate(SR);w.writeframes((st*32767).astype(np.int16).tobytes());w.close()
 print('done')

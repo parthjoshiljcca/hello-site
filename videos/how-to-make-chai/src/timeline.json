@@ -2,50 +2,202 @@
  {
   "start": 0,
   "voice": 0.3,
-  "vdur": 2.339,
-  "end": 3.639,
-  "text": "Perfect chai banana hai? Bas tees second do!"
+  "vdur": 2.36,
+  "end": 3.56,
+  "text": "Perfect chai banani hai? Bas tees second do!",
+  "words": [
+   "Perfect",
+   "chai",
+   "banani",
+   "hai?",
+   "Bas",
+   "tees",
+   "second",
+   "do!"
+  ],
+  "wt": [
+   0.3,
+   0.644,
+   0.867,
+   1.17,
+   1.679,
+   1.88,
+   2.125,
+   2.46
+  ]
  },
  {
-  "start": 3.639,
-  "voice": 3.939,
-  "vdur": 2.659,
-  "end": 7.648,
-  "text": "Pehle, pan mein ek cup paani ubaalo."
+  "start": 3.56,
+  "voice": 3.86,
+  "vdur": 2.027,
+  "end": 7.188,
+  "text": "Pehle pan mein ek cup paani ubaalo.",
+  "words": [
+   "Pehle",
+   "pan",
+   "mein",
+   "ek",
+   "cup",
+   "paani",
+   "ubaalo."
+  ],
+  "wt": [
+   3.86,
+   4.194,
+   4.425,
+   4.707,
+   4.887,
+   5.118,
+   5.451
+  ]
  },
  {
-  "start": 7.648,
-  "voice": 7.948,
-  "vdur": 2.552,
-  "end": 11.501,
-  "text": "Ab daalo kuti hui adrak, aur do elaichi."
+  "start": 7.188,
+  "voice": 7.488,
+  "vdur": 2.7,
+  "end": 11.188,
+  "text": "Ab isme kuti hui adrak aur do elaichi daalo.",
+  "words": [
+   "Ab",
+   "isme",
+   "kuti",
+   "hui",
+   "adrak",
+   "aur",
+   "do",
+   "elaichi",
+   "daalo."
+  ],
+  "wt": [
+   7.488,
+   7.679,
+   7.979,
+   8.279,
+   8.524,
+   8.879,
+   9.124,
+   9.315,
+   9.779
+  ]
  },
  {
-  "start": 11.501,
-  "voice": 11.801,
-  "vdur": 2.869,
-  "end": 16.069,
-  "text": "Phir ek chammach chai patti, aur do minute ubaalo."
+  "start": 11.188,
+  "voice": 11.488,
+  "vdur": 2.916,
+  "end": 15.803,
+  "text": "Phir ek chammach chai patti daalkar do minute ubaalo.",
+  "words": [
+   "Phir",
+   "ek",
+   "chammach",
+   "chai",
+   "patti",
+   "daalkar",
+   "do",
+   "minute",
+   "ubaalo."
+  ],
+  "wt": [
+   11.488,
+   11.762,
+   11.936,
+   12.41,
+   12.684,
+   13.008,
+   13.431,
+   13.606,
+   13.98
+  ]
  },
  {
-  "start": 16.069,
-  "voice": 16.369,
-  "vdur": 3.232,
-  "end": 20.602,
-  "text": "Ab aadha cup doodh, aur cheeni, swaad anusaar."
+  "start": 15.803,
+  "voice": 16.103,
+  "vdur": 2.674,
+  "end": 19.977,
+  "text": "Ab aadha cup doodh aur swaad anusaar cheeni daalo.",
+  "words": [
+   "Ab",
+   "aadha",
+   "cup",
+   "doodh",
+   "aur",
+   "swaad",
+   "anusaar",
+   "cheeni",
+   "daalo."
+  ],
+  "wt": [
+   16.103,
+   16.272,
+   16.585,
+   16.802,
+   17.115,
+   17.332,
+   17.645,
+   18.054,
+   18.416
+  ]
  },
  {
-  "start": 20.602,
-  "voice": 20.902,
-  "vdur": 2.639,
-  "end": 24.64,
-  "text": "Jab chai do baar ubhar aaye, gas band karo."
+  "start": 19.977,
+  "voice": 20.277,
+  "vdur": 3.115,
+  "end": 24.492,
+  "text": "Jab chai do baar ubal aaye, toh gas band kar do.",
+  "words": [
+   "Jab",
+   "chai",
+   "do",
+   "baar",
+   "ubal",
+   "aaye,",
+   "toh",
+   "gas",
+   "band",
+   "kar",
+   "do."
+  ],
+  "wt": [
+   20.277,
+   20.54,
+   20.862,
+   21.067,
+   21.389,
+   21.711,
+   22.267,
+   22.482,
+   22.698,
+   22.961,
+   23.177
+  ]
  },
  {
-  "start": 24.64,
-  "voice": 24.94,
-  "vdur": 2.981,
+  "start": 24.492,
+  "voice": 24.792,
+  "vdur": 3.582,
   "end": 30.0,
-  "text": "Chhaano, cup mein daalo... aur garma garam chai taiyaar!"
+  "text": "Chhaano, cup mein daalo, aur garma garam chai taiyaar!",
+  "words": [
+   "Chhaano,",
+   "cup",
+   "mein",
+   "daalo,",
+   "aur",
+   "garma",
+   "garam",
+   "chai",
+   "taiyaar!"
+  ],
+  "wt": [
+   24.792,
+   25.704,
+   25.917,
+   26.177,
+   26.774,
+   26.996,
+   27.316,
+   27.636,
+   27.906
+  ]
  }
 ]

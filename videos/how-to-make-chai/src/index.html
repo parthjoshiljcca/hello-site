@@ -60,12 +60,12 @@ const ctx=document.getElementById('c').getContext('2d');
 
 const SC=[
  {pill:'00 · INTRO',title:'Perfect <em>Chai</em><br>Kaise Banaye',sub:'30 seconds · 6 steps',tag:'CHAI · RECIPE',hl:['chai','tees']},
- {pill:'01 · PAANI',title:'Paani <em>Ubaalo</em>',sub:'1 cup paani · medium flame',tag:'PAANI · 1 CUP',hl:['paani','ubaalo.']},
- {pill:'02 · MASALA',title:'Adrak + <em>Elaichi</em>',sub:'Kuti hui adrak · 2 elaichi',tag:'ADRAK · ELAICHI',hl:['adrak,','elaichi.']},
- {pill:'03 · CHAI PATTI',title:'Patti Daalo, <em>2 Min</em>',sub:'1 chammach chai patti',tag:'BOIL · 2 MINUTE',hl:['patti,','minute']},
- {pill:'04 · DOODH',title:'Doodh + <em>Cheeni</em>',sub:'½ cup doodh · swaad anusaar',tag:'DOODH · CHEENI',hl:['doodh,','cheeni,']},
+ {pill:'01 · PAANI',title:'Paani <em>Ubaalo</em>',sub:'1 cup paani · medium flame',tag:'PAANI · 1 CUP',hl:['paani','ubaalo']},
+ {pill:'02 · MASALA',title:'Adrak + <em>Elaichi</em>',sub:'Kuti hui adrak · 2 elaichi',tag:'ADRAK · ELAICHI',hl:['adrak','elaichi']},
+ {pill:'03 · CHAI PATTI',title:'Patti Daalo, <em>2 Min</em>',sub:'1 chammach chai patti',tag:'BOIL · 2 MINUTE',hl:['patti','minute']},
+ {pill:'04 · DOODH',title:'Doodh + <em>Cheeni</em>',sub:'½ cup doodh · swaad anusaar',tag:'DOODH · CHEENI',hl:['doodh','cheeni']},
  {pill:'05 · UBAAL',title:'Do Baar <em>Ubaal</em>',sub:'Ubhar aaye → gas band',tag:'UBAAL × 2',hl:['baar','band']},
- {pill:'06 · SERVE',title:'Chai <em>Taiyaar!</em>',sub:'Chhaano · cup mein daalo',tag:'GARMA GARAM',hl:['garma','garam','taiyaar!']},
+ {pill:'06 · SERVE',title:'Chai <em>Taiyaar!</em>',sub:'Chhaano · cup mein daalo',tag:'GARMA GARAM',hl:['garma','garam','taiyaar']},
 ];
 let S=[];// scene starts
 // ---------- grain ----------
@@ -326,7 +326,7 @@ function scene(i,t,lt,dur){
 const $=id=>document.getElementById(id);
 let cur=-1;const waveEls=[];
 function setup(){for(let i=0;i<13;i++){const e=document.createElement('i');$('wave').appendChild(e);waveEls.push(e)}}
-function clean(w){return w.toLowerCase()}
+function clean(w){return w.toLowerCase().replace(/[^a-z]/g,'')}
 function domScene(i,t,lt,dur){
  const s=D.sc[i],c=SC[i];
  if(cur!==i){cur=i;$('pill').firstChild.textContent=c.pill;$('title').innerHTML=c.title;$('sub').textContent=c.sub;$('tag').firstChild.textContent=c.tag;
