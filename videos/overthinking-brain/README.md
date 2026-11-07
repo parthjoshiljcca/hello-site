@@ -6,3 +6,11 @@ Takes the finished `public/overthinking.mp4` and covers the two orange wireframe
 - **Brain** (`src/brainGeometry.ts`): an anatomical side view. The cerebrum hemispheres come from an SDF (frontal, parietal, occipital and temporal lobes, and a flat medial wall giving the longitudinal fissure), found by marching rays out from each centre. The Sylvian fissure and central sulcus are cut in as landmark grooves. Gyri come from domain-warped Perlin noise. Below sit the striped cerebellum and the brain stem.
 - **Shader** (`src/Brain3D.tsx`): burnt-orange tissue with dark grooves (ambient occlusion from groove depth), lit folds, an orange rim, and brand-orange (#ff8a1f, linear) "thought" pulses travelling through the grooves. Bloom comes from `@react-three/postprocessing`. A transparent canvas sits over the original video.
 - **Render:** only the segment frames are rendered, each with one warm-up frame (`--concurrency=1`, `--gl=swangle` without a GPU). They are spliced frame-exactly back into the original, and the audio is copied untouched.
+
+## Edges and fades
+- The segments run until the spheres are fully gone: A 4–206, B 514–781, C 1085–1153, D 1680–1907. Each edge is measured from the line energy inside the sphere box (`tools/fade.py`).
+- The brain stays **opaque**, so the spheres never show through. It fades by blending its colour into the background, sampled per frame in a ring just outside the spheres (`tools/extend.py`, the `a` and `bg` fields in `path.json`).
+- The final zoom (frames 1896–1907) follows the measured zoom curve of the glow sphere, so the video ends with a dive into the brain.
+
+## Tools
+Run in this order: `tools/track2.py` (detection), `path.py` (smooth path), `fade.py` (edge fades), `extend.py` (final `src/data/path.json`), then render the segments and run `splice.py`, which replaces those frames and keeps the original audio.

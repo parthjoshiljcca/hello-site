@@ -14,7 +14,7 @@ void main(){
 }`;
 // colours are LINEAR (the composer converts to sRGB): brand orange #ff8a1f = (1.0, 0.25, 0.014). Bloom picks up anything above 1.0
 const frag = /* glsl */ `
-uniform float uTime; uniform float uAlpha; uniform float uActivity;
+uniform float uTime; uniform float uFade; uniform float uActivity; uniform vec3 uBg;
 varying vec3 vN; varying vec3 vP; varying float vSul;
 void main(){
   vec3 N = normalize(vN);
@@ -36,22 +36,24 @@ void main(){
   float spark = pow(max(w1 * w2, 0.0), 6.0);
   float glow = vSul * (0.10 + 0.35 * w1 * uActivity + 2.6 * spark * uActivity);
   col += OR * glow;
-  gl_FragColor = vec4(col, uAlpha);
+  // stay opaque (the spheres must never show through); fade by blending into the local background
+  gl_FragColor = vec4(mix(uBg, col, uFade), 1.0);
 }`;
 
-export type BrainPose = { cx: number; cy: number; w: number; h: number; s: number; a: number };
+export type BrainPose = { cx: number; cy: number; w: number; h: number; s: number; a: number; bg: number[] };
 
 const Brain: React.FC<{ pose: BrainPose; t: number }> = ({ pose, t }) => {
   const { geos, mat } = useMemo(() => {
     const geos = buildBrain();
     const mat = new THREE.ShaderMaterial({
-      vertexShader: vert, fragmentShader: frag, transparent: true, toneMapped: false,
-      uniforms: { uTime: { value: 0 }, uAlpha: { value: 1 }, uActivity: { value: 1 } },
+      vertexShader: vert, fragmentShader: frag, toneMapped: false,
+      uniforms: { uTime: { value: 0 }, uFade: { value: 1 }, uActivity: { value: 1 }, uBg: { value: new THREE.Vector3() } },
     });
     return { geos, mat };
   }, []);
   mat.uniforms.uTime.value = t;
-  mat.uniforms.uAlpha.value = pose.a;
+  mat.uniforms.uFade.value = pose.a;
+  (mat.uniforms.uBg.value as THREE.Vector3).set(pose.bg[0], pose.bg[1], pose.bg[2]);
   // scale (pixels per unit) so the brain covers the spheres' widest extent with a margin
   const k = Math.max((pose.w * 1.12) / BRAIN_W, (pose.h * 1.22) / BRAIN_H) * pose.s;
   const yaw = 0.2 * Math.sin(t * 0.55) + 0.05 * Math.sin(t * 1.3);

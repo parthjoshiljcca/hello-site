@@ -2,13 +2,13 @@ import { AbsoluteFill, OffthreadVideo, staticFile, useCurrentFrame, useVideoConf
 import { Brain3D, type BrainPose } from "./Brain3D";
 import path from "./data/path.json";
 
-type Row = { f: number; cy: number; w: number; h: number; s: number; a: number };
+type Row = { f: number; cy: number; w: number; h: number; s: number; a: number; bg: number[] };
 const SEGS = Object.values(path) as Row[][];
 /** brain pose for this frame, or null when the spheres are not on screen */
 const poseAt = (frame: number): BrainPose | null => {
   for (const seg of SEGS) {
     const r = seg[frame - seg[0].f];
-    if (r) return { cx: 540, cy: r.cy, w: r.w, h: r.h, s: r.s, a: r.a };
+    if (r) return { cx: 540, cy: r.cy, w: r.w, h: r.h, s: r.s, a: r.a, bg: r.bg };
   }
   return null;
 };
