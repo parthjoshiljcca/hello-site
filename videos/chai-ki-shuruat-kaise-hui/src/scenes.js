@@ -291,7 +291,9 @@ function S12(t,lt){ // today: emotion
  if(em>0){kulhad(540,1040,1.6,em,t,{steam:false});const pr=1+0.06*Math.sin(t*5);heart(540,790,2.6*back(em)*pr,em,'rgba(255,138,31,.35)');
   steam(540,950,1.4,t,em*0.8);badge(540,1250,'EK EMOTION',pop(t,'emotion',0.5,0.2),{fs:30})}
 }
-const SCN=[S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12];
+// scenes whose illustration is rendered in 3D by ../chai-3d (Remotion); in the base render they are left empty
+const S3D=new Set([0,3,4,5,6,10]);
+const SCN=[S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12].map((f,i)=>window.BLANK3D&&S3D.has(i)?(()=>{}):f);
 // ---------- DOM ----------
 const $=id=>document.getElementById(id);
 let cur=-1,curChunk=-1;const waveEls=[];
