@@ -1,0 +1,48 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:M;src:url(fonts/Montserrat-500.ttf);font-weight:500}
+@font-face{font-family:M;src:url(fonts/Montserrat-700.ttf);font-weight:700}
+@font-face{font-family:M;src:url(fonts/Montserrat-800.ttf);font-weight:800}
+@font-face{font-family:M;src:url(fonts/Montserrat-900.ttf);font-weight:900}
+@font-face{font-family:J;src:url(fonts/JetBrainsMono-Medium.ttf)}
+html,body{margin:0;background:#0a0807;overflow:hidden}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:M}
+canvas{position:absolute;left:0;top:0}
+.abs{position:absolute}
+#hdrL,#hdrR{top:88px;font-family:J;font-size:30px;letter-spacing:2px;color:#5d534b}
+#hdrL{left:64px}#hdrL b{color:#ff8a1f;font-weight:400}
+#hdrR{right:64px}
+#pill{top:190px;left:0;width:100%;text-align:center}
+#pill span{display:inline-block;font-family:J;font-size:28px;letter-spacing:5px;color:#ff8a1f;border:2px solid rgba(255,138,31,.75);border-radius:40px;padding:12px 34px;box-shadow:0 0 24px rgba(255,138,31,.25), inset 0 0 18px rgba(255,138,31,.12);background:rgba(255,138,31,.06)}
+#title{top:268px;left:40px;width:1000px;text-align:center;font-weight:900;font-size:96px;line-height:1.06;color:#f6efe7;letter-spacing:-1px;text-shadow:0 4px 30px rgba(0,0,0,.6)}
+#title em{font-style:normal;color:#ff8a1f;text-shadow:0 0 34px rgba(255,138,31,.55)}
+#sub{top:0;left:0;width:100%;text-align:center;font-weight:500;font-size:38px;color:#9a8e83}
+#tag{left:0;width:100%;text-align:center;top:1318px}
+#tag span{display:inline-block;font-family:J;font-size:24px;letter-spacing:4px;color:#ff9b3d;border:1.5px solid rgba(255,138,31,.6);border-radius:8px;padding:8px 20px;background:rgba(255,138,31,.08)}
+#cap{top:1420px;left:50px;width:980px;text-align:center;transform:perspective(1000px) rotateX(16deg);transform-origin:50% 100%;transform-style:preserve-3d}
+.w{display:inline-block;font-weight:800;font-size:72px;line-height:1.22;margin:0 11px;color:#f6efe7;transform-origin:50% 80%;
+ text-shadow:0 1px 0 #d8cdc1,0 2px 0 #c4b8ab,0 3px 0 #ada195,0 4px 0 #978b80,0 5px 0 #81766b,0 6px 0 #6b6157,0 7px 0 #554c44,0 8px 0 #403832,0 14px 18px rgba(0,0,0,.85)}
+.w.o{color:#ff8a1f;text-shadow:0 1px 0 #f07c14,0 2px 0 #e06f0f,0 3px 0 #cc620b,0 4px 0 #b55608,0 5px 0 #9e4a06,0 6px 0 #873e05,0 7px 0 #703304,0 8px 0 #5a2803,0 14px 18px rgba(0,0,0,.85),0 0 40px rgba(255,138,31,.55)}
+#bar{left:48px;top:1736px;width:984px;height:112px;border-radius:56px;border:2px solid rgba(255,138,31,.35);background:rgba(20,14,10,.78);box-shadow:0 0 40px rgba(255,138,31,.12)}
+#logo{position:absolute;left:22px;top:20px;width:72px;height:72px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffa94d,#ff7a00);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:46px;color:#1a0f06;box-shadow:0 0 22px rgba(255,138,31,.6)}
+#bn{position:absolute;left:114px;top:22px;font-weight:800;font-size:34px;color:#f6efe7}
+#bh{position:absolute;left:114px;top:62px;font-weight:500;font-size:24px;color:#8a7f75}
+#wave{position:absolute;right:44px;top:30px;height:52px;display:flex;align-items:center;gap:6px}
+#wave i{display:block;width:7px;border-radius:4px;background:#ff8a1f}
+#time{display:none;position:absolute;right:36px;top:37px;font-family:J;font-size:30px;color:#f6efe7;letter-spacing:3px}
+#prog{left:0;top:1912px;height:8px;background:linear-gradient(90deg,#ff5e00,#ffb15c);box-shadow:0 0 14px #ff8a1f}
+</style></head>
+<body><div id="stage">
+<canvas id="c" width="1080" height="1920"></canvas>
+<div id="hdrL" class="abs">THE WHY SPACES · <b>MYSTERY</b></div>
+<div id="hdrR" class="abs">@thewhyspaces</div>
+<div id="pill" class="abs"><span></span></div>
+<div id="title" class="abs"></div>
+<div id="sub" class="abs"></div>
+<div id="tag" class="abs"><span></span></div>
+<div id="cap" class="abs"></div>
+<div id="bar" class="abs"><div id="logo">?</div><div id="bn">The Why Spaces</div><div id="bh">@thewhyspaces</div><div id="wave"></div><div id="time">00:00 / 00:00</div></div>
+<div id="prog" class="abs"></div>
+</div>
+<script>
