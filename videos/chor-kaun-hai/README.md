@@ -1,6 +1,6 @@
 # Chor Kaun Hai? Case 01 (interactive Hinglish suspense)
 
-Final: `chor-kaun-hai.mp4` (1080x1920, 30 fps, about 62 s of content plus The Why Spaces credit)
+Final: `chor-kaun-hai.mp4` (1080x1920, 30 fps, about 60 s of content plus The Why Spaces credit)
 
 This is an interactive whodunit in the locked 2D style from `../STYLE.md`. The audience hears the case and picks **A / B / C** in the comments with a reason. The answer is held back for Part 2.
 
@@ -25,7 +25,7 @@ This is an interactive whodunit in the locked 2D style from `../STYLE.md`. The a
 
 ## Production
 - Narration: Sarvam `bulbul:v3`, speaker kabir, `hi-IN`, pace 1.2, with one call per scene (`src/groups.json`). Scenes were checked with `saarika:v2.5`.
-- The Sarvam credits ran out mid-way. Scene 8 (Vicky) had about 4.6 s of junk audio after the sentence. Its end was located with local faster-whisper and it was trimmed at 4.04 s.
+- Scene 2 (Diwali line) had about 2.3 s of TTS gibberish after the sentence; it was regenerated clean (2.84 s). The Sarvam credits ran out mid-way. Scene 8 (Vicky) had about 4.6 s of junk audio after the sentence. Its end was located with local faster-whisper and it was trimmed at 4.04 s.
 - Mix: the voice is in front. The music keeps the locked 112 bpm structure but uses a minor progression (Am–F–Dm–E). SFX include heartbeats, ticks, a power-down, a creak, thuds and crackers.
 - Encode: crf 23 / maxrate 6M (instead of 21 / 9M) to keep the file under GitHub's 50 MB recommendation.
 - `src/scenes.js` is built from `parts/base.part`, `parts/mystery.part`, `parts/prims.part` and `parts/dom.part`.
