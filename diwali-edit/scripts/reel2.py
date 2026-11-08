@@ -42,9 +42,11 @@ def run(cmd):
     r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode: print(r.stderr[-3000:]); sys.exit(1)
 
+SKIP = os.environ.get("SKIP_SEGS") == "1"  # reuse already-rendered shots + logo
 with open(f"{SEG}/list.txt", "w") as lf:
     for i, (st, en, src, sin, sp, cx, cy, z0, z1, kicks, wide) in enumerate(shots):
         out = f"{SEG}/s{i:02d}.mp4"; lf.write(f"file '{out}'\n")
+        if SKIP: continue
         nf = round(en * FPS) - round(st * FPS)
         chain = [f"trim=start={sin}:duration={(en - st) * sp + 0.3:.3f}", "setpts=PTS-STARTPTS"]
         if sp != 1.0:
@@ -79,7 +81,7 @@ run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", f"{SEG}/
 
 # logo reveal
 logo = f"{SEG}/logo.mp4"
-run(["python3", "-I", f"{S}/logo.py", LOGO_SRC, str(W), str(H), str(LOGO_DUR), logo])
+SKIP or run(["python3", "-I", f"{S}/logo.py", LOGO_SRC, str(W), str(H), str(LOGO_DUR), logo])
 
 # audio: the reference's splice rebuilt from the clean song (39.448s intro -> 61.26s from the 5.13s cut on)
 SPLICE = 5.13
@@ -91,9 +93,9 @@ audio_f = (f"[1:a]atrim=start=39.448:duration={SPLICE},asetpts=PTS-STARTPTS,afad
 GRADE = ("colorbalance=rs=-0.02:bs=0.03:rm=-0.05:gm=-0.01:bm=0.04:rh=-0.04:bh=0.04,"
          "eq=contrast=1.05:brightness=0.03:saturation=0.90:gamma=1.06,vignette=angle=PI/8,noise=alls=2:allf=t+u")
 if VERT:
-    pos = dict(fin=("1.0", 0.47), diw=("1.0", 0.72), brand=("1.0", 0.935))
+    pos = dict(fin=("1.0", 0.47), diw=("0.92", 0.72), brand=("1.0", 0.935))
 else:
-    pos = dict(fin=("1.25", 0.46), diw=("1.1", 0.80), brand=("1.0", 0.95))
+    pos = dict(fin=("1.25", 0.46), diw=("0.95", 0.80), brand=("1.0", 0.95))
 
 def txt(idx, key, t_in, t_out, f_in, f_out):
     sc, _ = pos[key]
@@ -117,7 +119,7 @@ fc = ";".join([
 burn = f"{S}/burn_{MODE}.mov"
 run(["ffmpeg", "-y", "-v", "error", "-i", f"{SEG}/rough.mp4", "-i", f"{S}/song.wav", "-i", logo, "-i", burn,
      "-loop", "1", "-t", str(TOTAL), "-i", f"{S}/t_finally.png",
-     "-loop", "1", "-t", str(TOTAL), "-i", f"{S}/t_diwali.png",
+     "-loop", "1", "-t", str(TOTAL), "-i", f"{S}/t_diwali_fancy.png",
      "-loop", "1", "-t", str(TOTAL), "-i", f"{S}/t_brand.png",
      "-filter_complex", fc, "-map", "[v]", "-map", "[aout]", "-r", str(FPS),
      "-c:v", "libx264", "-crf", "17", "-preset", "slow", "-pix_fmt", "yuv420p",

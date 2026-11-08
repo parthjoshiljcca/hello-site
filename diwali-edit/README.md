@@ -11,15 +11,16 @@ The same edit in two aspect ratios, set to *Shubhaarambh* (Kai Po Che):
 - **Music**: the reference reel's splice, rebuilt from the full-quality song. The intro uses song 39.45–44.58 s, then from the 5.13 s cut it continues at 61.26 s. The song keeps playing under the logo and fades out at the end.
 - **Cuts** land on the reference's cut points: flicker cuts at 2.07–2.93 s, the drop at 3.10 s, then 4.10, 5.13, 7.10, 8.90, 10.90, 12.75 and 14.97 s. Every cut and strong beat gets a zoom punch.
 - **Intro**: a soft film-burn light leak with a circular iris reveal, and *"IT'S FINALLY / THAT TIME OF THE YEAR"*.
-- **From the drop**: *॥ दिवाली ॥* plus a small *SpArsh · Divine Art Studio* credit.
+- **From the drop**: a decorative *॥ दिवाली ॥* title (Amita calligraphic Devanagari, gold gradient, maroon outline, warm glow) plus a small *SpArsh · Divine Art Studio* credit.
 - **Logo reveal (17.07 s → end)**: the SpArsh signature writes itself on with a glowing pen tip and sparks. The warm neon glow blooms on the song's hit at 76 s, a light sweep crosses the logo, and *DIVINE ART STUDIO* rises in.
 - **Grade**: brighter and more natural. Whites are cooler, saturation is lower and midtones are lifted, so the warm AI footage stops looking orange. Vignette and grain are very light.
 - The source clips' AI-generator watermark stays out of frame.
 
 ## Scripts (`scripts/`)
 - `assets.py`: text PNGs, rendered with PIL + raqm so the Devanagari shapes correctly, and the burn/iris overlay.
+- `fancy_title.py`: the decorative ॥ दिवाली ॥ title.
 - `logo.py`: the logo reveal.
 - `reel2.py`: renders either aspect ratio (`v` or `h`).
 - `music.py` / `edit.py`: the earlier synthesized-music cinematic cut, kept for reference.
 
-You need ffmpeg, numpy, Pillow with raqm, and the Cinzel, Mukta and Luckiest Guy fonts.
+You need ffmpeg, numpy, Pillow with raqm, and the Cinzel, Amita and Luckiest Guy fonts.
