@@ -31,7 +31,7 @@ tm = tm[y0:y1, x0:x1]
 tag_mask = np.asarray(Image.fromarray((tm * 255).astype(np.uint8)).resize((lw, lh), Image.NEAREST)).astype(np.float32) / 255
 A_sig, A_tag = A * (1 - tag_mask), A * tag_mask
 
-ox, oy = (W - lw) // 2, int(H * (0.45 if H > W else 0.47)) - lh // 2
+ox, oy = (W - lw) // 2, int(H * (0.42 if H > W else 0.38)) - lh // 2
 
 def full(layer):
     out = np.zeros((H, W) + layer.shape[2:], np.float32); out[oy:oy + lh, ox:ox + lw] = layer; return out
@@ -49,6 +49,32 @@ yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
 d = np.sqrt(((xx - W / 2) / W) ** 2 + ((yy - (oy + lh / 2)) / H) ** 2 * (H / W) ** 2 * 1.0)
 bg = np.dstack([np.full((H, W), v) for v in (0.12, 0.10, 0.085)]) + (np.clip(d / 0.7, 0, 1) ** 1.5)[..., None] * np.array([0.17, 0.155, 0.14])
 GLOW = np.array([1.0, 0.62, 0.12])
+
+# "Happy Diwali" wish: gold script with outline + glow, placed under the logo
+def make_wish():
+    from PIL import ImageDraw, ImageFont
+    fpath = sys.argv[6] if len(sys.argv) > 6 else "GreatVibes-Regular.ttf"
+    tw = W * (0.66 if H > W else 0.40)
+    size = 200
+    fnt = ImageFont.truetype(fpath, size)
+    bb = ImageDraw.Draw(Image.new("L", (8, 8))).textbbox((0, 0), "Happy Diwali", font=fnt)
+    size = int(size * tw / (bb[2] - bb[0])); fnt = ImageFont.truetype(fpath, size)
+    m = Image.new("L", (W, H), 0); dr = ImageDraw.Draw(m)
+    bb = dr.textbbox((0, 0), "Happy Diwali", font=fnt)
+    tx = (W - (bb[2] - bb[0])) // 2 - bb[0]
+    ty = oy + lh + int(H * (0.035 if H > W else 0.05)) - bb[1]
+    dr.text((tx, ty), "Happy Diwali", font=fnt, fill=255)
+    so = Image.new("L", (W, H), 0); ImageDraw.Draw(so).text((tx, ty), "Happy Diwali", font=fnt, fill=255, stroke_width=max(2, size // 40), stroke_fill=255)
+    a = np.asarray(m).astype(np.float32) / 255; ao = np.asarray(so).astype(np.float32) / 255
+    y0, y1 = ty + bb[1], ty + bb[3]
+    v = np.clip((yy - y0) / max(y1 - y0, 1), 0, 1)[..., None]
+    rgb = np.where(v < 0.45, np.array([1.0, 0.93, 0.66]) + (np.array([0.98, 0.77, 0.30]) - np.array([1.0, 0.93, 0.66])) * (v / 0.45),
+                   np.array([0.98, 0.77, 0.30]) + (np.array([0.80, 0.47, 0.10]) - np.array([0.98, 0.77, 0.30])) * ((v - 0.45) / 0.55))
+    glow = blur(ao, 18 * W / 1080)
+    return a, ao, rgb, glow, (y0 + y1) / 2
+
+WA, WO, WRGB, WGLOW, WY = make_wish()
+WISH_T = 3.05
 
 def ease(x): x = np.clip(x, 0, 1); return x * x * (3 - 2 * x)
 
@@ -76,6 +102,18 @@ for f in range(nf):
     band = np.exp(-(((xx - ox) + 0.5 * (yy - oy)) / lw - (ease((t - 3.0) / 0.9) * 1.6 - 0.3)) ** 2 / 0.004)
     logo_rgb = FC * (1 + 0.9 * band[..., None])
     frame = frame * (1 - alpha[..., None]) + np.clip(logo_rgb, 0, 1.4) * alpha[..., None]
+    # Happy Diwali rises in after the bloom
+    wt = ease((t - WISH_T) / 0.8)
+    if wt > 0:
+        sh = int((1 - wt) * 30 * H / 1920)
+        a_w, a_o, g_w = (np.roll(x, sh, axis=0) * wt for x in (WA, WO, WGLOW))
+        frame = frame + g_w[..., None] * GLOW * 0.55
+        frame = frame * (1 - a_o[..., None]) + np.array([0.30, 0.08, 0.03]) * a_o[..., None]   # maroon outline
+        frame = frame * (1 - a_w[..., None]) + np.roll(WRGB, sh, axis=0) * (1 + 0.6 * band[..., None]) * a_w[..., None]
+    if WISH_T <= t < WISH_T + 1 / FPS * 4:   # spark burst as the wish appears
+        for _ in range(35):
+            ang = rng.uniform(0, 2 * np.pi); sp = rng.uniform(150, 520) * W / 1080
+            parts.append([W / 2 + rng.uniform(-0.3, 0.3) * W, WY, np.cos(ang) * sp, np.sin(ang) * sp - 120, rng.uniform(0.5, 1.2), t])
     # pen tip + sparks while writing
     if W0 < t < W1 + 0.05:
         px = min(int(p / 1.04 * lw), lw - 1); cx, cy = ox + px, oy + cent[px]

@@ -12,7 +12,7 @@ The same edit in two aspect ratios, set to *Shubhaarambh* (Kai Po Che):
 - **Cuts** land on the reference's cut points: flicker cuts at 2.07–2.93 s, the drop at 3.10 s, then 4.10, 5.13, 7.10, 8.90, 10.90, 12.75 and 14.97 s. Every cut and strong beat gets a zoom punch.
 - **Intro**: a soft film-burn light leak with a circular iris reveal, and *"IT'S FINALLY / THAT TIME OF THE YEAR"*.
 - **From the drop**: a decorative *॥ दिवाली ॥* title (Amita calligraphic Devanagari, gold gradient, maroon outline, warm glow) plus a small *SpArsh · Divine Art Studio* credit.
-- **Logo reveal (17.07 s → end)**: the SpArsh signature writes itself on with a glowing pen tip and sparks. The warm neon glow blooms on the song's hit at 76 s, a light sweep crosses the logo, and *DIVINE ART STUDIO* rises in.
+- **Logo reveal (17.07 s → end)**: the SpArsh signature writes itself on with a glowing pen tip and sparks. The warm neon glow blooms on the song's hit at 76 s, a light sweep crosses the logo, and *DIVINE ART STUDIO* rises in. Then a gold script *Happy Diwali* rises in under the logo with a spark burst.
 - **Grade**: brighter and more natural. Whites are cooler, saturation is lower and midtones are lifted, so the warm AI footage stops looking orange. Vignette and grain are very light.
 - The source clips' AI-generator watermark stays out of frame.
 
