@@ -54,17 +54,19 @@ GLOW = np.array([1.0, 0.62, 0.12])
 def make_wish():
     from PIL import ImageDraw, ImageFont
     fpath = sys.argv[6] if len(sys.argv) > 6 else "GreatVibes-Regular.ttf"
+    TXT = sys.argv[7] if len(sys.argv) > 7 else "Happy Diwali"
     tw = W * (0.66 if H > W else 0.40)
     size = 200
-    fnt = ImageFont.truetype(fpath, size)
-    bb = ImageDraw.Draw(Image.new("L", (8, 8))).textbbox((0, 0), "Happy Diwali", font=fnt)
-    size = int(size * tw / (bb[2] - bb[0])); fnt = ImageFont.truetype(fpath, size)
+    RQ = ImageFont.Layout.RAQM
+    fnt = ImageFont.truetype(fpath, size, layout_engine=RQ)
+    bb = ImageDraw.Draw(Image.new("L", (8, 8))).textbbox((0, 0), TXT, font=fnt)
+    size = int(size * tw / (bb[2] - bb[0])); fnt = ImageFont.truetype(fpath, size, layout_engine=RQ)
     m = Image.new("L", (W, H), 0); dr = ImageDraw.Draw(m)
-    bb = dr.textbbox((0, 0), "Happy Diwali", font=fnt)
+    bb = dr.textbbox((0, 0), TXT, font=fnt)
     tx = (W - (bb[2] - bb[0])) // 2 - bb[0]
     ty = oy + lh + int(H * (0.035 if H > W else 0.05)) - bb[1]
-    dr.text((tx, ty), "Happy Diwali", font=fnt, fill=255)
-    so = Image.new("L", (W, H), 0); ImageDraw.Draw(so).text((tx, ty), "Happy Diwali", font=fnt, fill=255, stroke_width=max(2, size // 40), stroke_fill=255)
+    dr.text((tx, ty), TXT, font=fnt, fill=255)
+    so = Image.new("L", (W, H), 0); ImageDraw.Draw(so).text((tx, ty), TXT, font=fnt, fill=255, stroke_width=max(2, size // 40), stroke_fill=255)
     a = np.asarray(m).astype(np.float32) / 255; ao = np.asarray(so).astype(np.float32) / 255
     y0, y1 = ty + bb[1], ty + bb[3]
     v = np.clip((yy - y0) / max(y1 - y0, 1), 0, 1)[..., None]
