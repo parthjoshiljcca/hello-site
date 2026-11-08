@@ -64,15 +64,15 @@ TIMELINE = [
 CUTS = [t for t, _ in TIMELINE] + [18.36]
 SHOTS = [shot for _, shot in TIMELINE]
 
-# Jaipur-reference look, matched to the reel's measured stats (brightness,
-# shadow/highlight levels, saturation, warmth): soft matte pastel, rolled-off
-# highlights, low saturation, neutral-warm balance; a touch brighter than
-# the reel so it never reads dark.
-GRADE = ("colortemperature=temperature=8000:mix=1,"
-         "eq=saturation=0.64,"
-         "curves=all='0/0.045 0.15/0.21 0.35/0.5 0.6/0.715 0.85/0.8 1/0.83',"
-         "colorbalance=rm=0.01:bm=-0.01:rh=-0.01:bh=0.015,"
-         "unsharp=5:5:0.4:5:5:0.0")
+# Colourful look: first neutralise the clips' orange cast (colour temperature
+# + balance), then bring every colour up so reds, pinks, greens, blues and
+# yellows each read clearly, with natural skin, clean whites and a bright,
+# gently contrasted image.
+GRADE = ("colortemperature=temperature=8600:mix=1,"
+         "colorbalance=rm=-0.03:bm=0.03:rh=-0.02:bh=0.025,"
+         "eq=contrast=1.07:saturation=1.4:brightness=0.03:gamma=1.1,"
+         "curves=all='0/0.015 0.25/0.24 0.5/0.535 0.75/0.8 1/0.99',"
+         "unsharp=5:5:0.5:5:5:0.0")
 
 def run(cmd):
     subprocess.run(cmd, check=True)
