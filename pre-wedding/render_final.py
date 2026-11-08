@@ -76,7 +76,7 @@ TIMELINE = [
     (9.37, S(BLOOM, 7.5, R(1.4, 0.5, 0.3))),   # veil twirl, ramped
     (10.47, S(HAVELI, 5.0, 0.95)),              # that glance in the haveli
     (11.50, S(CASUAL, 9.3)),                    # burst: walking close
-    (11.77, S(GHAT, 9.2)),                      # burst: the ghats, wide
+    (11.77, S(GHAT, 9.45)),                      # burst: the ghats, wide
     (12.07, S(HAVELI, 9.0)),                    # burst: down the lane
     (12.33, S(STAIRS, 9.3)),                    # burst: the couple at the palace
     (12.57, S(HAVELI, 3.5, 0.85)),              # glasses come off
