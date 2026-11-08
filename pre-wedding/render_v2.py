@@ -25,6 +25,8 @@ STAIRS = src("17-23-02")    # palace staircase, red lehenga, arches at sunset
 GLAM = src("17-29-53")      # black-tie night, glass skydeck
 BLOOM = src("17-35-11")     # pastel flower garden
 GHAT = src("17-35-34")      # ghats with floating diyas
+CASUAL = src("18-30-40")    # casual seaside promenade: walks, close-ups
+# black-outfit clip (GLAM): only the couple's twirl (6.5-7.9s) is used
 
 # Cut points are taken frame-exact from the Raanjhana reference reel itself
 # (same song), so every cut lands where the reference cuts: rapid flicker
@@ -36,17 +38,17 @@ INTRO_CUTS = [0.0, 0.27, 0.60, 0.73, 0.87, 1.10, 1.33, 1.57, 1.80, 2.07, 2.40,
               6.37, 6.50, 6.77, 6.97]
 # source moments chosen inside each clip's clean takes (avoiding the
 # generator's own dissolves between takes)
-INTRO_POOL = [(GHAT, 0.2), (STAIRS, 0.1), (BLOOM, 0.3), (GLAM, 0.3), (SUNSET, 0.2),
+INTRO_POOL = [(GHAT, 0.2), (STAIRS, 0.1), (BLOOM, 0.3), (CASUAL, 0.4), (SUNSET, 0.2),
               (STAIRS, 1.6), (BLOOM, 6.9), (BLOOM, 2.2), (GHAT, 2.6), (ARCHES, 0.5),
               (STAIRS, 5.6), (BLOOM, 4.4), (GHAT, 9.5), (GHAT, 4.6), (BLOOM, 5.4),
               (STAIRS, 7.6), (GLAM, 6.6), (GHAT, 9.3), (STAIRS, 1.6), (BLOOM, 7.6),
-              (GLAM, 8.4), (BLOOM, 8.7), (GHAT, 6.2), (STAIRS, 4.6), (GLAM, 4.4),
-              (BLOOM, 2.8), (GHAT, 1.0), (STAIRS, 2.0), (GLAM, 0.8), (BLOOM, 1.0),
+              (CASUAL, 5.6), (BLOOM, 8.7), (GHAT, 6.2), (STAIRS, 4.6), (CASUAL, 2.4),
+              (BLOOM, 2.8), (GHAT, 1.0), (STAIRS, 2.0), (CASUAL, 3.8), (BLOOM, 1.0),
               (GHAT, 3.0), (STAIRS, 8.6), (GLAM, 7.2), (BLOOM, 9.0), (GHAT, 7.6),
-              (STAIRS, 6.4), (GLAM, 9.0)]
+              (STAIRS, 6.4), (CASUAL, 9.4)]
 FLICKER = [11.50, 11.67, 11.77, 11.93, 12.07, 12.17, 12.33, 12.47]
 FLICKER_POOL = [(STAIRS, 7.8), (GLAM, 7.0), (BLOOM, 5.6), (GHAT, 6.4),
-                (STAIRS, 8.8), (GLAM, 8.6), (BLOOM, 9.2), (GHAT, 2.8)]
+                (STAIRS, 8.8), (CASUAL, 6.0), (BLOOM, 9.2), (GHAT, 2.8)]
 
 def S(clip, ss, speed=1.0, z0=1.14, z1=1.19):
     # (clip, src_start, speed, focus_x, b&w, white-flash-in, zoom_from, zoom_to)
@@ -69,7 +71,7 @@ for t, shot in [
         (13.80, S(GHAT, 6.0, 0.9, z1=1.21)),     # hands by the water
         (14.93, S(GARDEN, 6.4, z1=1.21)),        # [v1] hands held
         (15.97, S(STAIRS, 7.5, 0.46, z1=1.24)),  # verse: meeting at the arches
-        (21.33, S(GLAM, 8.25, 0.39, z1=1.23)),   # skyline, slow
+        (21.33, S(CASUAL, 7.05, 0.43, z1=1.22)), # hand in hand by the sea, slow
         (25.67, S(GHAT, 2.4, 0.5, z1=1.22)),     # saree in the wind, slow
         (28.87, S(BLOOM, 0.0, 0.55, z1=1.22)),   # garden walk, slow
         (32.00, S(BLOOM, 2.0, 0.75, z1=1.20)),   # groom under the flower arch, slow
@@ -90,6 +92,7 @@ def run(cmd):
 
 def segment(i, shot, dur, W, H, path):
     clip, ss, speed, fx, bw, flash, z0, z1 = shot
+    assert ss + dur * speed <= 10.02, f"shot {i} runs past the end of its clip"
     n = round(dur * FPS)
     cw = min(1280, round(720 * W / H)) // 2 * 2
     x = int(min(max(fx * 1280 - cw / 2, 0), 1280 - cw))
