@@ -205,6 +205,14 @@ def titles(W, H, d):
     credit.alpha_composite(top, ((W - top.size[0]) // 2, y0))
     credit.alpha_composite(name, ((W - name.size[0]) // 2, y0 + top.size[1] + gap))
     line = divider(int(520 * s))
+    # "Coming Soon" card on black
+    cs_txt = gold_text("Coming Soon", ImageFont.truetype(f"{FONTS}/vibes.ttf", int(150 * s)))
+    cs_line = divider(int(420 * s))
+    coming = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    cy0 = (H - cs_txt.size[1] - cs_line.size[1]) // 2
+    coming.alpha_composite(cs_txt, ((W - cs_txt.size[0]) // 2, cy0))
+    coming.alpha_composite(cs_line, ((W - cs_line.size[0]) // 2, cy0 + cs_txt.size[1] - int(6 * s)))
+    coming.save(f"{d}/coming.png")
     shade = Image.new("L", (W, H), 0)
     sw, sh = int(names.size[0] * 1.25), int((names.size[1] + days.size[1]) * 1.9)
     ImageDraw.Draw(shade).ellipse([(W - sw) // 2, H // 2 - sh // 2 - int(30 * s),
@@ -262,17 +270,24 @@ def build(orient):
                f"drawbox=x=0:y=ih-{bar}:w=iw:h={bar}:color=black:t=fill[o4];")
     else:
         fc += "[o3]null[o4];"
-    E = 1.7  # black end card
+    # end cards on black: optional "Coming Soon" card, then the credit card
+    coming = orient == "16x9" or os.environ.get("COMING") == "1"
+    CS = 1.8 if coming else 0.0
+    E = CS + 1.7
     fc += (f"[o4]fade=in:st=0:d=0.25,fade=out:st={T-0.6}:d=0.6,"
            f"tpad=stop_mode=add:stop_duration={E}:color=black[o5];"
-           f"[5:v]format=rgba,fade=in:st={T+0.15}:d=0.5:alpha=1,"
+           f"[7:v]format=rgba,fade=in:st={T+0.15}:d=0.5:alpha=1,"
+           f"fade=out:st={T+CS-0.4}:d=0.35:alpha=1[cs];"
+           f"[5:v]format=rgba,fade=in:st={T+CS+0.15}:d=0.5:alpha=1,"
            f"fade=out:st={T+E-0.45}:d=0.4:alpha=1[c];"
-           f"[o5][c]overlay=0:0:format=auto,format=yuv420p[vout];"
-           # song: the Raanjhana reference track, as-is, gentle fade at the end
-           f"[1:a]atrim={A}:{A + T + 0.6},asetpts=PTS-STARTPTS,afade=in:st=0:d=0.15,"
-           f"afade=out:st={T-1.2}:d=1.8,apad=whole_dur={T+E},"
+           f"[o5][cs]overlay=0:0:format=auto[o6];"
+           f"[o6][c]overlay=0:0:format=auto,format=yuv420p[vout];"
+           # song: the Raanjhana reference track, carried under the end cards
+           f"[1:a]atrim={A}:{A + T + CS + 0.6},asetpts=PTS-STARTPTS,afade=in:st=0:d=0.15,"
+           f"afade=out:st={T+CS-1.2}:d=1.8,apad=whole_dur={T+E},"
            f"aformat=sample_rates=48000:channel_layouts=stereo[aout]")
-    out = os.path.join(OUT, f"Ravi_Sakshi_Teaser_15s_{orient}.mp4")
+    name = "Teaser_ComingSoon" if coming else "Teaser_15s"
+    out = os.path.join(OUT, f"Ravi_Sakshi_{name}_{orient}.mp4")
     run(["ffmpeg", "-v", "error", "-y",
          "-f", "concat", "-safe", "0", "-i", f"{d}/list.txt",
          "-i", REF,
@@ -281,6 +296,7 @@ def build(orient):
          "-loop", "1", "-t", str(T + E), "-i", f"{d}/days.png",
          "-loop", "1", "-t", str(T + E), "-i", f"{d}/credit.png",
          "-loop", "1", "-t", str(T + E), "-i", f"{d}/shade.png",
+         "-loop", "1", "-t", str(T + E), "-i", f"{d}/coming.png",
          "-filter_complex", fc, "-map", "[vout]", "-map", "[aout]",
          "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-maxrate", "14M", "-bufsize", "28M", "-r", str(FPS),
          "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", "-t", str(T + E), out])
