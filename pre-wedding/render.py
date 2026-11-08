@@ -106,6 +106,13 @@ def gold_text(text, font, track=0):
     fill = grad.convert("RGBA"); fill.putalpha(mask)
     return Image.alpha_composite(out, fill).crop(out.getbbox())
 
+def plain_text(text, font):
+    """Small, quiet credit: soft off-white, no glow, semi-transparent."""
+    l, t, r, b = font.getbbox(text)
+    im = Image.new("RGBA", (r - l + 4, b - t + 4), (0, 0, 0, 0))
+    ImageDraw.Draw(im).text((2 - l, 2 - t), text, font=font, fill=(225, 220, 210, 150))
+    return im
+
 def divider(width):
     h = 30
     im = Image.new("RGBA", (width, h), (0, 0, 0, 0))
@@ -124,7 +131,7 @@ def titles(W, H, d):
     s = W / 1920 if W > H else W / 1080 * 0.92
     names = gold_text("Ravi & Sakshi", ImageFont.truetype(f"{FONTS}/vibes.ttf", int(170 * s)))
     days = gold_text("10 DAYS TO GO", ImageFont.truetype(f"{FONTS}/cinzel.ttf", int(54 * s)), track=int(16 * s))
-    credit = gold_text("Edit by : Parth Joshi", ImageFont.truetype(f"{FONTS}/corm.ttf", int(30 * s)), track=1)
+    credit = plain_text("Edit by : Parth Joshi", ImageFont.truetype(f"{FONTS}/corm.ttf", int(21 * s)))
     line = divider(int(520 * s))
     for name, im in [("names", names), ("days", days), ("credit", credit), ("line", line)]:
         im.save(f"{d}/{name}.png")
@@ -149,8 +156,9 @@ def build(orient):
     ny = cy - nh + 30
     ly = cy + 40
     dy = ly + lh + 22
-    # 16:9: credit sits inside the bottom letterbox bar; 9:16: low in frame
-    cyy = H - bar + (bar - ch) // 2 if bar else H - ch - 220
+    # small credit tucked in the bottom-right corner
+    cx = W - cw - (40 if bar else 36)
+    cyy = H - bar + (bar - ch) // 2 if bar else H - ch - 60
 
     def a(st, du):  # fade-in alpha for overlays
         return f"fade=in:st={st}:d={du}:alpha=1"
@@ -172,7 +180,7 @@ def build(orient):
                f"drawbox=x=0:y=ih-{bar}:w=iw:h={bar}:color=black:t=fill[o4];")
     else:
         fc += "[o3]null[o4];"
-    fc += f"[o4][c]overlay=x=(W-w)/2:y={cyy}[o5];"
+    fc += f"[o4][c]overlay=x={cx}:y={cyy}[o5];"
     fc += (f"[o5]fade=in:st=0:d=0.6,fade=out:st={T-1.3}:d=1.3,format=yuv420p[vout];"
            # song: play the reference track, then a beat-aligned loop back into its
            # quiet bridge for the reveal, fading out under the credit
