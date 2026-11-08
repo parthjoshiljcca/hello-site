@@ -56,14 +56,14 @@ TIMELINE = [
     (2.07, S(CASUAL, 2.3)),             # her, on the promenade
     (2.40, S(LAKE, 3.5)),               # chai by the lake
     (2.77, S(STAIRS, 5.5)),             # bride close-up
-    (3.13, S(BLOOM, 2.4)),              # groom under the flower arch
+    (3.13, S(BLOOM, 2.6)),              # groom under the flower arch
     (3.37, S(BLOOM, 4.3)),              # floral jewellery
     (3.73, S(LAKE, 4.8)),               # she laughs, hair tucked back
     (4.47, S(CASUAL, 3.8)),             # checks his watch
     (4.80, S(STAIRS, 3.8)),             # sherwani detail
     (5.07, S(ARCHES, 0.5)),             # [v1] corridor of arches
     (5.30, S(BLOOM, 3.8)),              # embroidery
-    (5.53, S(STAIRS, 6.4)),             # dupatta detail
+    (5.53, S(STAIRS, 6.55)),             # dupatta detail
     (5.77, S(CASUAL, 4.95)),            # hair tucked back
     (6.00, S(LAKE, 4.27)),              # his laugh
     (6.27, S(GHAT, 7.6)),               # glance by the diyas
@@ -71,24 +71,24 @@ TIMELINE = [
     (6.77, S(BLOOM, 6.8)),              # hand reaching out
     (6.97, S(LAKE, 2.5)),               # the café
     # chorus: one cut per bar, speed ramps on the twirls
-    (7.17, S(STAIRS, 4.5, 0.55)),               # groom smiles
+    (7.17, S(STAIRS, 4.55, 0.52)),               # groom smiles
     (8.30, S(GLAM, 6.5, R(1.6, 0.5, 0.35))),    # twirl: whip into slow-mo
-    (9.37, S(BLOOM, 7.45, R(1.5, 0.5, 0.3))),   # veil twirl, ramped
-    (10.47, S(GHAT, 4.5, 0.9)),                 # faces by the diyas
+    (9.37, S(BLOOM, 7.5, R(1.4, 0.5, 0.3))),   # veil twirl, ramped
+    (10.47, S(GHAT, 4.6, 0.85)),                 # faces by the diyas
     (11.50, S(CASUAL, 9.3)),                    # burst: walking close
     (11.77, S(GHAT, 9.2)),                      # burst: the ghats, wide
     (12.07, S(HAVELI, 9.0)),                    # burst: down the lane
     (12.33, S(BLOOM, 8.6)),                     # burst: sunset, hand in hand
     (12.57, S(HAVELI, 3.5, 0.85)),              # glasses come off
-    (13.80, S(CASUAL, 5.5, 0.95)),              # close, by the sea
-    (14.93, S(GHAT, 6.0)),                      # hands by the water
+    (13.80, S(CASUAL, 5.75, 0.75)),              # close, by the sea
+    (14.93, S(GHAT, 6.42, 0.36)),                      # hands by the water
     # verse: slow motion, every moment new
-    (15.97, S(STAIRS, 7.5, 0.5, z1=1.22)),      # walking to each other
-    (18.65, S(LAKE, 8.0, 0.6, z1=1.22)),        # side by side at the railing
+    (15.97, S(STAIRS, 7.5, 0.41, z1=1.22)),      # walking to each other
+    (18.65, S(LAKE, 8.15, 0.55, z1=1.22)),        # side by side at the railing
     (21.33, S(ARCHES, 4.6, 0.6, 1.12, 1.20)),   # [v1] bride on the balcony
-    (23.50, S(CASUAL, 7.05, 0.6, z1=1.21)),     # hand in hand by the sea
+    (23.50, S(CASUAL, 7.15, 0.6, z1=1.21)),     # hand in hand by the sea
     (25.67, S(GHAT, 2.4, 0.5, z1=1.22)),        # saree in the wind
-    (28.87, S(LAKE, 6.0, 0.6, z1=1.21)),        # lakeside walk
+    (28.87, S(LAKE, 6.1, 0.5, z1=1.21)),        # lakeside walk
     (32.00, S(STAIRS, 1.5, 0.6, z1=1.21)),      # dupatta twirl
     (34.00, S(BLOOM, 5.25, 0.65, z1=1.21)),     # together in the garden
     (35.60, S(SUNSET, 0.0, 0.6, z1=1.22)),      # [v1] dupatta at sunset
@@ -99,9 +99,12 @@ SHOTS = [shot for _, shot in TIMELINE]
 
 # final look: bright and clean, natural warm skin, gentle cinematic curve,
 # light sharpening. No glow, no darkening, no heavy saturation.
-GRADE = ("colorbalance=rs=-0.02:bs=0.02:rm=-0.01:bm=0.01:rh=0.02:bh=-0.015,"
-         "eq=contrast=1.03:saturation=0.9:brightness=0.03:gamma=1.07,"
-         "curves=all='0/0.025 0.25/0.25 0.5/0.535 0.75/0.79 1/0.985',"
+# colortemperature neutralises the clips' strong orange cast (measured R-B
+# drops from ~41 to ~19 on sample frames) while keeping skin warm.
+GRADE = ("colortemperature=temperature=7600:mix=0.9,"
+         "colorbalance=rm=-0.02:bm=0.025:rh=-0.01:bh=0.015,"
+         "eq=contrast=1.04:saturation=0.88:brightness=0.03:gamma=1.06,"
+         "curves=all='0/0.02 0.25/0.25 0.5/0.53 0.75/0.785 1/0.985',"
          "unsharp=5:5:0.55:5:5:0.0")
 
 def run(cmd):
