@@ -1,22 +1,25 @@
-# Diwali edit — SpArsh Divine Art Studio
+# Diwali edit: SpArsh Divine Art Studio
 
-Two cuts of the four studio clips:
+The same edit in two aspect ratios, set to *Shubhaarambh* (Kai Po Che):
 
-| File | Format | Sound | Length |
-|---|---|---|---|
-| `diwali_reel_9x16.mp4` | 1080×1920, 30 fps (Reels/Shorts) | Reference edit's soundtrack | 17.8 s |
-| `diwali_cinematic_16x9.mp4` | 1920×1080, 24 fps, 2.39:1 letterbox | Original synthesized 120 BPM dhol/sitar track | 37 s |
+| File | Format | Length |
+|---|---|---|
+| `diwali_reel_9x16.mp4` | 1080×1920, 30 fps (Reels/Shorts) | 22.6 s |
+| `diwali_reel_16x9.mp4` | 1920×1080, 30 fps (YouTube/landscape) | 22.6 s |
 
-## Reel (matched to the reference)
-- **Cuts** land on the reference's cut points: flicker cuts at 2.07 / 2.17 / 2.33 / 2.83 / 2.93 s, then the drop at 3.10 s and cuts at 4.10, 5.13, 7.10, 8.90, 10.90, 12.75 and 14.97 s. Every cut and strong beat gets a zoom punch.
-- **Intro**: film-burn light leak with a circular iris reveal, plus *"IT'S FINALLY / THAT TIME OF THE YEAR"* in bold yellow with a 3D drop shadow.
-- **From the drop**: *॥ दिवाली ॥* in white, centered low in the frame. A small *SpArsh · Divine Art Studio* credit sits where the reference has its handle.
-- **Story**: decorating, then rangoli and diyas, then the sparkler celebration, then a slow push-in and fade to black.
+## How it's cut
+- **Music**: the reference reel's splice, rebuilt from the full-quality song. The intro uses song 39.45–44.58 s, then from the 5.13 s cut it continues at 61.26 s. The song keeps playing under the logo and fades out at the end.
+- **Cuts** land on the reference's cut points: flicker cuts at 2.07–2.93 s, the drop at 3.10 s, then 4.10, 5.13, 7.10, 8.90, 10.90, 12.75 and 14.97 s. Every cut and strong beat gets a zoom punch.
+- **Intro**: a soft film-burn light leak with a circular iris reveal, and *"IT'S FINALLY / THAT TIME OF THE YEAR"*.
+- **From the drop**: *॥ दिवाली ॥* plus a small *SpArsh · Divine Art Studio* credit.
+- **Logo reveal (17.07 s → end)**: the SpArsh signature writes itself on with a glowing pen tip and sparks. The warm neon glow blooms on the song's hit at 76 s, a light sweep crosses the logo, and *DIVINE ART STUDIO* rises in.
+- **Grade**: brighter and more natural. Whites are cooler, saturation is lower and midtones are lifted, so the warm AI footage stops looking orange. Vignette and grain are very light.
+- The source clips' AI-generator watermark stays out of frame.
 
-## Cinematic cut
-- Intro → build (cuts tighten 2 beats → 1 → ½ → ¼) → **drop on the rangoli** → groove → riser into slow motion and a half beat of black → **second drop on the celebration** → *Happy Diwali* title card.
-- Warm/teal grade, film grain, vignette, slow-motion with frame interpolation, flash cuts and beat-pulse zooms.
+## Scripts (`scripts/`)
+- `assets.py`: text PNGs, rendered with PIL + raqm so the Devanagari shapes correctly, and the burn/iris overlay.
+- `logo.py`: the logo reveal.
+- `reel2.py`: renders either aspect ratio (`v` or `h`).
+- `music.py` / `edit.py`: the earlier synthesized-music cinematic cut, kept for reference.
 
-Both cuts keep the source clips' AI-generator watermark out of frame.
-
-`scripts/` holds the generators: `music.py` builds the soundtrack, `edit.py` makes the 16:9 cut, `assets.py` makes the text and film-burn overlays, and `reel.py` makes the 9:16 reel. You need ffmpeg, numpy, Pillow with raqm, and the Cinzel, Great Vibes, Mukta and Luckiest Guy fonts.
+You need ffmpeg, numpy, Pillow with raqm, and the Cinzel, Mukta and Luckiest Guy fonts.

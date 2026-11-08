@@ -4,6 +4,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 S = sys.argv[1]
 W, H = 1080, 1920
+BW, BH = (int(sys.argv[2]), int(sys.argv[3])) if len(sys.argv) > 3 else (W, H)
+BURN_OUT = sys.argv[4] if len(sys.argv) > 4 else f"{S}/burn.mov"
 F = f"{S}/fonts"
 
 def text_png(path, lines, font, size, fill, shadow=None, extrude=0, extrude_col=None, glow=0, gap=1.08):
@@ -35,7 +37,7 @@ text_png(f"{S}/t_brand.png", ["SpArsh · Divine Art Studio"], f"{F}/Cinzel.ttf",
 
 # ---------- film burn + iris overlay (0 - 3.1 s @ 30 fps), rendered small then upscaled ----------
 fps, dur = 30, 3.1
-w, h = 270, 480
+w, h = BW // 4, BH // 4
 yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
 xn, yn = xx / w, yy / h * (h / w)  # square units
 rng = np.random.default_rng(3)
@@ -55,15 +57,15 @@ def iris_radius(t):
     return 2.0
 
 blobs = [dict(c=np.array(rng.uniform(0, 1, 2)) * [1, h / w], v=rng.uniform(-0.25, 0.25, 2), r=rng.uniform(0.25, 0.6),
-              col=np.array(col)) for col in [(255, 120, 40), (235, 60, 30), (255, 214, 170), (255, 180, 120), (120, 40, 20)]]
+              col=np.array(col)) for col in [(255, 170, 120), (240, 120, 110), (255, 230, 205), (255, 205, 170), (170, 110, 90)]]
 proc = subprocess.Popen(["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgba", "-s", f"{w}x{h}",
-                         "-r", str(fps), "-i", "-", "-vf", f"scale={W}:{H}:flags=bicubic,gblur=sigma=6",
-                         "-c:v", "png", "-pix_fmt", "rgba", f"{S}/burn.mov"], stdin=subprocess.PIPE)
-cx, cy = 0.5, 0.42 * h / w
+                         "-r", str(fps), "-i", "-", "-vf", f"scale={BW}:{BH}:flags=bicubic,gblur=sigma=6",
+                         "-c:v", "png", "-pix_fmt", "rgba", BURN_OUT], stdin=subprocess.PIPE)
+cx, cy = 0.5 * w / w, (0.42 if BH > BW else 0.5) * h / w
 for f in range(int(dur * fps)):
     t = f / fps
     b = float(burn_amount(t))
-    col = np.zeros((h, w, 3), np.float32) + np.array([245, 205, 180], np.float32)
+    col = np.zeros((h, w, 3), np.float32) + np.array([250, 228, 212], np.float32)
     for bl in blobs:
         c = bl["c"] + bl["v"] * t * 3
         d2 = (xn - c[0]) ** 2 + (yn - c[1]) ** 2
