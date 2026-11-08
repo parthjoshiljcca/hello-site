@@ -26,50 +26,64 @@ GLAM = src("17-29-53")      # black-tie night, glass skydeck
 BLOOM = src("17-35-11")     # pastel flower garden
 GHAT = src("17-35-34")      # ghats with floating diyas
 
-# Cut points follow the Raanjhana reel and its song: soft rapid intro
-# (0-8s), chorus cutting on every bar (8-17s), slow-motion quiet verse
-# (17-37s), then the title reveal while the song fades out.
-CUTS = [0.0, 1.37, 2.02, 2.55, 3.09, 3.62, 4.16, 4.69, 5.22, 5.74, 6.27, 6.80,
-        8.08, 9.10, 10.15, 11.22, 12.12, 13.19, 14.26, 15.33, 16.37,
-        17.76, 20.60, 23.15, 25.73, 28.30, 30.58, 32.60, 34.62, 37.00, 42.00]
-# (clip, src_start, speed, focus_x, b&w, white-flash-in, zoom_from, zoom_to)
-SHOTS = [
-    (GHAT, 0.2, 1.0, .5, False, False, 1.10, 1.16),    # ghats at dusk
-    (STAIRS, 0.0, 1.0, .5, False, True, 1.10, 1.14),   # groom on the stairs
-    (BLOOM, 0.3, 1.0, .5, False, False, 1.10, 1.14),   # bride in the garden
-    (GLAM, 0.3, 1.0, .5, False, True, 1.10, 1.14),     # groom by the car
-    (SUNSET, 0.0, 1.0, .5, False, False, 1.12, 1.16),  # [v1] dupatta at sunset
-    (STAIRS, 1.0, 1.0, .5, False, True, 1.10, 1.14),   # dupatta twirl
-    (GLAM, 2.0, 1.0, .5, False, False, 1.10, 1.14),    # bride down the corridor
-    (BLOOM, 2.0, 1.0, .5, False, True, 1.10, 1.14),    # groom under flower arch
-    (GHAT, 2.2, 1.0, .5, False, False, 1.10, 1.14),    # saree in the wind
-    (ARCHES, 0.5, 1.0, .5, False, True, 1.10, 1.14),   # [v1] corridor of arches
-    (STAIRS, 5.0, 1.0, .5, False, False, 1.12, 1.16),  # bride close-up
-    (BLOOM, 4.0, 0.8, .5, False, False, 1.10, 1.16),   # floral jewellery detail
-    (STAIRS, 4.1, 1.0, .5, False, True, 1.10, 1.16),   # chorus: groom smiles
-    (GLAM, 6.0, 1.0, .5, False, False, 1.10, 1.14),    # twirl on the skydeck
-    (BLOOM, 7.0, 1.0, .5, False, False, 1.10, 1.14),   # veil twirl
-    (GHAT, 5.0, 1.0, .5, False, False, 1.10, 1.16),    # faces by the diyas
-    (STAIRS, 7.0, 1.0, .5, False, False, 1.10, 1.14),  # walking to each other
-    (GLAM, 7.2, 1.0, .5, False, False, 1.10, 1.16),    # skyline embrace
-    (BLOOM, 5.0, 1.0, .5, False, False, 1.10, 1.16),   # garden close-up
-    (GARDEN, 6.4, 1.0, .5, False, False, 1.12, 1.18),  # [v1] hands held
-    (GHAT, 6.0, 0.8, .5, False, False, 1.10, 1.16),    # hands by the water
-    (STAIRS, 7.6, 0.8, .5, False, False, 1.10, 1.18),  # verse: meeting at arches
-    (GLAM, 2.0, 0.38, .5, False, False, 1.10, 1.16),    # corridor, slow
-    (GHAT, 2.0, 0.7, .5, False, False, 1.10, 1.16),    # saree in the wind, slow
-    (BLOOM, 0.0, 0.7, .5, False, False, 1.10, 1.16),   # garden walk, slow
-    (STAIRS, 1.0, 0.6, .5, False, False, 1.12, 1.18),  # dupatta twirl, slow
-    (GLAM, 4.0, 0.5, .5, False, False, 1.10, 1.16),    # first glance
-    (BLOOM, 3.0, 0.5, .5, False, False, 1.10, 1.16),   # groom close-up
-    (GHAT, 6.0, 0.45, .5, False, False, 1.14, 1.22),   # hands, slow
-    (BLOOM, 8.0, 0.4, .5, False, False, 1.10, 1.20),   # sunset hand in hand: reveal
-]
+# Cut points are taken frame-exact from the Raanjhana reference reel itself
+# (same song), so every cut lands where the reference cuts: rapid flicker
+# intro (0-7.2s), a cut on every bar of the chorus with a flicker burst at
+# 11.5s, long slow-motion shots through the quiet verse, then the reveal.
+INTRO_CUTS = [0.0, 0.27, 0.60, 0.73, 0.87, 1.10, 1.33, 1.57, 1.80, 2.07, 2.40,
+              2.53, 2.77, 3.00, 3.13, 3.27, 3.37, 3.60, 3.73, 4.47, 4.57, 4.70,
+              4.80, 5.07, 5.17, 5.30, 5.40, 5.53, 5.67, 5.77, 5.90, 6.00, 6.27,
+              6.37, 6.50, 6.77, 6.97]
+# source moments chosen inside each clip's clean takes (avoiding the
+# generator's own dissolves between takes)
+INTRO_POOL = [(GHAT, 0.2), (STAIRS, 0.1), (BLOOM, 0.3), (GLAM, 0.3), (SUNSET, 0.2),
+              (STAIRS, 1.6), (GLAM, 2.2), (BLOOM, 2.2), (GHAT, 2.6), (ARCHES, 0.5),
+              (STAIRS, 5.6), (BLOOM, 4.4), (GLAM, 3.2), (GHAT, 4.6), (BLOOM, 5.4),
+              (STAIRS, 7.6), (GLAM, 6.6), (GHAT, 9.3), (STAIRS, 1.6), (BLOOM, 7.6),
+              (GLAM, 8.4), (BLOOM, 8.7), (GHAT, 6.2), (STAIRS, 4.6), (GLAM, 4.4),
+              (BLOOM, 2.8), (GHAT, 1.0), (STAIRS, 2.0), (GLAM, 0.8), (BLOOM, 1.0),
+              (GHAT, 3.0), (STAIRS, 8.6), (GLAM, 7.2), (BLOOM, 9.0), (GHAT, 7.6),
+              (STAIRS, 6.4), (GLAM, 9.0)]
+FLICKER = [11.50, 11.67, 11.77, 11.93, 12.07, 12.17, 12.33, 12.47]
+FLICKER_POOL = [(STAIRS, 7.8), (GLAM, 7.0), (BLOOM, 5.6), (GHAT, 6.4),
+                (STAIRS, 8.8), (GLAM, 8.6), (BLOOM, 9.2), (GHAT, 2.8)]
 
-# soft, airy, low-saturation grade (no punchy colour)
-GRADE = ("eq=contrast=0.96:saturation=0.68:brightness=0.015:gamma=1.03,"
-         "colorbalance=rs=0.015:bs=-0.01:rh=0.02:bh=-0.025,"
-         "curves=all='0/0.05 0.3/0.31 0.7/0.71 1/0.95'")
+def S(clip, ss, speed=1.0, z0=1.14, z1=1.19):
+    # (clip, src_start, speed, focus_x, b&w, white-flash-in, zoom_from, zoom_to)
+    # zoom >= 1.14 also keeps the generator watermark out of frame
+    return (clip, ss, speed, .5, False, False, z0, z1)
+
+CUTS, SHOTS = [], []
+for t, (c, ss) in zip(INTRO_CUTS, INTRO_POOL):
+    CUTS.append(t); SHOTS.append(S(c, ss))
+for t, shot in [
+        (7.17, S(STAIRS, 4.5, 0.55, z1=1.21)),  # chorus: groom smiles
+        (8.30, S(GLAM, 6.6)),                    # twirl on the skydeck
+        (9.37, S(BLOOM, 7.5, 0.7)),              # veil twirl
+        (10.47, S(GHAT, 4.5, 0.9, z1=1.21))]:    # faces by the diyas
+    CUTS.append(t); SHOTS.append(shot)
+for t, (c, ss) in zip(FLICKER, FLICKER_POOL):
+    CUTS.append(t); SHOTS.append(S(c, ss))
+for t, shot in [
+        (12.57, S(BLOOM, 5.25, 0.85, z1=1.21)),  # garden close-up
+        (13.80, S(GHAT, 6.0, 0.9, z1=1.21)),     # hands by the water
+        (14.93, S(GARDEN, 6.4, z1=1.21)),        # [v1] hands held
+        (15.97, S(STAIRS, 7.5, 0.46, z1=1.24)),  # verse: meeting at the arches
+        (21.33, S(GLAM, 8.25, 0.39, z1=1.23)),   # skyline, slow
+        (25.67, S(GHAT, 2.4, 0.5, z1=1.22)),     # saree in the wind, slow
+        (28.87, S(BLOOM, 0.0, 0.55, z1=1.22)),   # garden walk, slow
+        (32.00, S(GLAM, 2.0, 0.5)),              # corridor, slow
+        (34.00, S(STAIRS, 1.6, 0.6, z1=1.21)),   # dupatta twirl, slow
+        (35.60, S(SUNSET, 0.0, 0.6, z1=1.22)),   # [v1] dupatta at sunset
+        (37.93, S(BLOOM, 8.5, 0.36, z1=1.22))]:  # sunset, hand in hand: reveal
+    CUTS.append(t); SHOTS.append(shot)
+CUTS.append(42.00)
+
+# bright, clean, neutral grade: cools the clips' orange cast, lifts exposure,
+# keeps colour soft (no heavy saturation, no dark vignette)
+GRADE = ("colorbalance=rs=-0.05:bs=0.04:rm=-0.05:gm=0.0:bm=0.04:rh=-0.03:bh=0.03,"
+         "eq=contrast=0.95:saturation=0.78:brightness=0.035:gamma=1.10,"
+         "curves=all='0/0.045 0.5/0.54 1/0.985'")
 
 def run(cmd):
     subprocess.run(cmd, check=True)
@@ -153,9 +167,16 @@ def divider(width):
 def titles(W, H, d):
     s = W / 1920 if W > H else W / 1080 * 0.92
     names = gold_text("Ravi & Sakshi", ImageFont.truetype(f"{FONTS}/vibes.ttf", int(170 * s)))
-    days = gold_text("10 DAYS TO GO", ImageFont.truetype(f"{FONTS}/cinzel.ttf", int(54 * s)), track=int(16 * s))
+    days = gold_text("10 DAYS TO GO", ImageFont.truetype(f"{FONTS}/cinzel.ttf", int(60 * s)), track=int(16 * s))
     credit = plain_text("Edit by : Parth Joshi", ImageFont.truetype(f"{FONTS}/corm.ttf", int(21 * s)))
     line = divider(int(520 * s))
+    shade = Image.new("L", (W, H), 0)
+    sw, sh = int(names.size[0] * 1.25), int((names.size[1] + days.size[1]) * 1.9)
+    ImageDraw.Draw(shade).ellipse([(W - sw) // 2, H // 2 - sh // 2 - int(30 * s),
+                                   (W + sw) // 2, H // 2 + sh // 2 - int(30 * s)], fill=120)
+    shade = shade.filter(ImageFilter.GaussianBlur(int(90 * s)))
+    sh_im = Image.new("RGBA", (W, H), (20, 16, 12, 0)); sh_im.putalpha(shade)
+    sh_im.save(f"{d}/shade.png")
     for name, im in [("names", names), ("days", days), ("credit", credit), ("line", line)]:
         im.save(f"{d}/{name}.png")
     return names.size, days.size, credit.size, line.size
@@ -166,7 +187,8 @@ def build(orient):
     parts = []
     for i, shot in enumerate(SHOTS):
         p = f"{d}/s{i:02d}.mp4"
-        if not os.path.exists(p): segment(i, shot, CUTS[i + 1] - CUTS[i], W, H, p)
+        dur = (round(CUTS[i + 1] * FPS) - round(CUTS[i] * FPS)) / FPS  # frame-exact
+        segment(i, shot, dur, W, H, p)
         parts.append(p)
     with open(f"{d}/list.txt", "w") as fh:
         fh.writelines(f"file '{p}'\n" for p in parts)
@@ -174,27 +196,29 @@ def build(orient):
 
     T = CUTS[-1]
     R = CUTS[-2]  # reveal shot start
-    bar = 100 if orient == "16x9" else 0
+    bar = 0  # no letterbox: open, airy frame like the reference
     cy = H // 2 - (40 if orient == "16x9" else 60)
     ny = cy - nh + 30
     ly = cy + 40
     dy = ly + lh + 22
     # small credit tucked in the bottom-right corner
     cx = W - cw - (40 if bar else 36)
-    cyy = H - bar + (bar - ch) // 2 if bar else H - ch - 60
+    cyy = H - bar + (bar - ch) // 2 if bar else H - ch - 34
 
     def a(st, du):  # fade-in alpha for overlays
         return f"fade=in:st={st}:d={du}:alpha=1"
     fc = (
         f"[0:v]setpts=PTS-STARTPTS[v0];"
         # darken + soften during the reveal so the gold type breathes
-        f"[v0]eq=brightness='-0.13*clip((t-{R+0.2})/1.4,0,1)':eval=frame,"
-        f"vignette=angle=PI/5,noise=alls=5:allf=t[v1];"
+        f"[v0]eq=brightness='-0.04*clip((t-{R+0.2})/1.4,0,1)':eval=frame,"
+        f"noise=alls=3:allf=t[v1];"
+        f"[6:v]format=rgba,{a(R+0.2, 1.4)}[sh];"
+        f"[v1][sh]overlay=0:0:format=auto[v1s];"
         f"[2:v]format=rgba,{a(R+0.5, 1.3)}[n];"
         f"[3:v]format=rgba,{a(R+1.3, 1.0)}[l];"
         f"[4:v]format=rgba,{a(R+1.7, 1.1)}[d];"
         f"[5:v]format=rgba,{a(R+2.4, 1.0)}[c];"
-        f"[v1][n]overlay=x=(W-w)/2:y='{ny}+18*exp(-max(t-{R+0.5},0)*1.2)':format=auto[o1];"
+        f"[v1s][n]overlay=x=(W-w)/2:y='{ny}+18*exp(-max(t-{R+0.5},0)*1.2)':format=auto[o1];"
         f"[o1][l]overlay=x=(W-w)/2:y={ly}[o2];"
         f"[o2][d]overlay=x=(W-w)/2:y={dy}[o3];"
     )
@@ -217,6 +241,7 @@ def build(orient):
          "-loop", "1", "-t", str(T), "-i", f"{d}/line.png",
          "-loop", "1", "-t", str(T), "-i", f"{d}/days.png",
          "-loop", "1", "-t", str(T), "-i", f"{d}/credit.png",
+         "-loop", "1", "-t", str(T), "-i", f"{d}/shade.png",
          "-filter_complex", fc, "-map", "[vout]", "-map", "[aout]",
          "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-maxrate", "14M", "-bufsize", "28M", "-r", str(FPS),
          "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", "-t", str(T), out])
