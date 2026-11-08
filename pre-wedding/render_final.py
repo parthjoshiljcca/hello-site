@@ -59,7 +59,7 @@ TIMELINE = [
     (3.13, S(BLOOM, 2.6)),              # groom under the flower arch
     (3.37, S(BLOOM, 4.3)),              # floral jewellery
     (3.73, S(LAKE, 4.8)),               # she laughs, hair tucked back
-    (4.47, S(CASUAL, 3.8)),             # checks his watch
+    (4.47, S(CASUAL, 3.75, 0.75)),             # checks his watch
     (4.80, S(STAIRS, 3.8)),             # sherwani detail
     (5.07, S(ARCHES, 0.5)),             # [v1] corridor of arches
     (5.30, S(BLOOM, 3.8)),              # embroidery
@@ -74,13 +74,13 @@ TIMELINE = [
     (7.17, S(STAIRS, 4.55, 0.52)),               # groom smiles
     (8.30, S(GLAM, 6.5, R(1.6, 0.5, 0.35))),    # twirl: whip into slow-mo
     (9.37, S(BLOOM, 7.5, R(1.4, 0.5, 0.3))),   # veil twirl, ramped
-    (10.47, S(GHAT, 4.6, 0.85)),                 # faces by the diyas
+    (10.47, S(HAVELI, 5.0, 0.95)),              # that glance in the haveli
     (11.50, S(CASUAL, 9.3)),                    # burst: walking close
     (11.77, S(GHAT, 9.2)),                      # burst: the ghats, wide
     (12.07, S(HAVELI, 9.0)),                    # burst: down the lane
-    (12.33, S(BLOOM, 8.6)),                     # burst: sunset, hand in hand
+    (12.33, S(STAIRS, 9.3)),                    # burst: the couple at the palace
     (12.57, S(HAVELI, 3.5, 0.85)),              # glasses come off
-    (13.80, S(CASUAL, 5.75, 0.75)),              # close, by the sea
+    (13.80, S(CASUAL, 5.75, 0.62)),              # close, by the sea
     (14.93, S(GHAT, 6.42, 0.36)),                      # hands by the water
     # verse: slow motion, every moment new
     (15.97, S(STAIRS, 7.5, 0.41, z1=1.22)),      # walking to each other
@@ -92,7 +92,7 @@ TIMELINE = [
     (32.00, S(STAIRS, 1.5, 0.6, z1=1.21)),      # dupatta twirl
     (34.00, S(BLOOM, 5.25, 0.65, z1=1.21)),     # together in the garden
     (35.60, S(SUNSET, 0.0, 0.6, z1=1.22)),      # [v1] dupatta at sunset
-    (37.93, S(STAIRS, 9.25, HOLD(0.4), z1=1.20)),  # the couple at the palace: reveal
+    (37.93, S(BLOOM, 8.5, 0.36, z1=1.18)),      # sunset, hand in hand: reveal (keeps moving)
 ]
 CUTS = [t for t, _ in TIMELINE] + [42.00]
 SHOTS = [shot for _, shot in TIMELINE]
