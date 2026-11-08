@@ -477,9 +477,14 @@ const R3D=(function(){
    const on=Math.hypot(px,pz-30)*.11+Math.abs(px)*.04+rnd()*.4;for(let k=0;k<4;k++)L.push({p:[px+(k%2?1:-1)*w*.6,h+.03,pz+(k<2?1:-1)*d*.6],s:.75,on,c:[1,.5,.12]});L.push({p:[px,h*.45,pz+d/2+.02],s:.85,on:on+.2,c:[1,.55,.15]})}
   const hb=new THREE.InstancedMesh(new THREE.BoxGeometry(1,1,1),new THREE.MeshStandardMaterial({color:0x6a4a34,roughness:.8}),hs.length);const hr=new THREE.InstancedMesh(new THREE.ConeGeometry(.75,.6,4),new THREE.MeshStandardMaterial({color:0x8a3a1a,roughness:.7}),hs.length);
   const M=new THREE.Matrix4(),q=new THREE.Quaternion(),q2=new THREE.Quaternion().setFromEuler(new THREE.Euler(0,Math.PI/4,0));hs.forEach(([x,z,w,h,d],i)=>{M.compose(new THREE.Vector3(x,h/2,z),q,new THREE.Vector3(w,h,d));hb.setMatrixAt(i,M);M.compose(new THREE.Vector3(x,h+.3,z),q2,new THREE.Vector3(w*.95,1,d*.95));hr.setMatrixAt(i,M)});sc.add(hb,hr);
-  const pm=new THREE.MeshStandardMaterial({color:0x9a7a5a,roughness:.6}),pg=new THREE.MeshStandardMaterial({color:0xffb15c,metalness:.8,roughness:.3});const pal=new THREE.Group();const pb=new THREE.Mesh(new THREE.BoxGeometry(7,2.5,5),pm);pb.position.y=1.25;pal.add(pb);
-  [[-2.6,0],[2.6,0],[0,1]].forEach(([x,c])=>{const tw=new THREE.Mesh(new THREE.CylinderGeometry(.6,.7,c?5:3.6,8),pm);tw.position.set(x,c?2.5:1.8,0);pal.add(tw);const dm=new THREE.Mesh(new THREE.SphereGeometry(c?.9:.7,16,10,0,Math.PI*2,0,Math.PI/2),pg);dm.position.set(x,c?5:3.6,0);pal.add(dm)});pal.position.z=-8;sc.add(pal);
-  for(let i=0;i<60;i++)L.push({p:[-3.5+i/60*7,2.52,-5.48],s:.6,on:1.6+Math.abs(i/60-.5)*1.5,c:[1,.6,.25]});for(let z=-4;z<30;z+=.55)[-1.25,1.25].forEach(x=>L.push({p:[x,.05,z],s:.9,on:(30-z)*.05,c:[1,.5,.12]}));
+  const pm=new THREE.MeshStandardMaterial({color:0x9a7a5a,roughness:.6}),pg=new THREE.MeshStandardMaterial({color:0xffb15c,metalness:.8,roughness:.3});const pal=new THREE.Group();
+  const add=(geo,m,x,y,z,ry=0)=>{const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);o.rotation.y=ry;pal.add(o);return o};
+  add(new THREE.BoxGeometry(9,2.2,5),pm,0,1.1,0);add(new THREE.BoxGeometry(9.4,.25,5.4),pg,0,2.3,0);
+  [[0,1.15],[-2.9,.8],[2.9,.8]].forEach(([x,k])=>{[[2.6,.7],[2.0,.6],[1.4,.55],[.85,.5]].forEach(([w,h],i)=>{add(new THREE.BoxGeometry(w*k,h*k,w*k),i%2?pg:pm,x,2.4+(.35+i*.6)*k,0)});add(new THREE.ConeGeometry(.5*k,1.2*k,4),pg,x,2.4+3.0*k,0,Math.PI/4);add(new THREE.ConeGeometry(.08,.5,8),pg,x,2.4+3.85*k,0)});
+  for(const x of[-4.2,-1.5,1.5,4.2]){add(new THREE.BoxGeometry(.7,.6,.7),pm,x,2.75,2.2);add(new THREE.ConeGeometry(.5,.5,4),pg,x,3.3,2.2,Math.PI/4)}
+  const arch=new THREE.Mesh(new THREE.TorusGeometry(.9,.12,8,24,Math.PI),pg);arch.position.set(0,1.0,2.52);pal.add(arch);
+  pal.position.z=-8;sc.add(pal);
+  for(let i=0;i<60;i++)L.push({p:[-4.5+i/60*9,2.45,-5.25],s:.6,on:1.6+Math.abs(i/60-.5)*1.5,c:[1,.6,.25]});for(let z=-4;z<30;z+=.55)[-1.25,1.25].forEach(x=>L.push({p:[x,.05,z],s:.9,on:(30-z)*.05,c:[1,.5,.12]}));
   const LP=pts(L);LP.material.uniforms.uGain.value=3.2;sc.add(LP);
   S[7]={sc,cam,mats:[LP.material],tOff:0,up(t,lt,dur){const t0=E('laakhon')-.4;LP.material.uniforms.uTime.value=t-t0;const k=eio(cl(lt/dur));cam.position.set(lerp(8,3,k),lerp(15,8,k),lerp(42,32,k));cam.lookAt(0,lerp(0,1.5,k),lerp(8,-4,k));
    const g=seg(t,t0,t0+5);sc.children[0].intensity=.12+g*.18;warm.intensity=g*5},own:true}}

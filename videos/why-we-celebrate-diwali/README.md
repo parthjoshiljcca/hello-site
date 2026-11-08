@@ -12,7 +12,7 @@ The video is built in the locked Why Spaces style from `../STYLE.md` and `../sty
 4. **Sach Ki Jeet.** **3D** ten-headed Ravan, hit by a golden arrow that shatters him.
 5. **Ayodhya Wapsi.** **3D** Pushpak Vimaan in flight.
 6. **Kartik Amavasya.** Moon-phase strip from poornima to amavasya; no moon.
-7. **Laakhon Diye.** **3D** Ayodhya lights up in a wave along Ram's path.
+7. **Laakhon Diye.** **3D** Ayodhya lights up in a wave along Ram's path, around a temple-style palace with stepped shikharas.
 8. **Deep + Aavali.** Diya + qataar = DEEPAVALI.
 9. **Maa Lakshmi.** **3D** lotus opens while gold coins fall.
 10. **Teen Seekh.** The book's three life lessons, as cards.
