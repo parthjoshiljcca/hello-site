@@ -37,8 +37,8 @@ INTRO_CUTS = [0.0, 0.27, 0.60, 0.73, 0.87, 1.10, 1.33, 1.57, 1.80, 2.07, 2.40,
 # source moments chosen inside each clip's clean takes (avoiding the
 # generator's own dissolves between takes)
 INTRO_POOL = [(GHAT, 0.2), (STAIRS, 0.1), (BLOOM, 0.3), (GLAM, 0.3), (SUNSET, 0.2),
-              (STAIRS, 1.6), (GLAM, 2.2), (BLOOM, 2.2), (GHAT, 2.6), (ARCHES, 0.5),
-              (STAIRS, 5.6), (BLOOM, 4.4), (GLAM, 3.2), (GHAT, 4.6), (BLOOM, 5.4),
+              (STAIRS, 1.6), (BLOOM, 6.9), (BLOOM, 2.2), (GHAT, 2.6), (ARCHES, 0.5),
+              (STAIRS, 5.6), (BLOOM, 4.4), (GHAT, 9.5), (GHAT, 4.6), (BLOOM, 5.4),
               (STAIRS, 7.6), (GLAM, 6.6), (GHAT, 9.3), (STAIRS, 1.6), (BLOOM, 7.6),
               (GLAM, 8.4), (BLOOM, 8.7), (GHAT, 6.2), (STAIRS, 4.6), (GLAM, 4.4),
               (BLOOM, 2.8), (GHAT, 1.0), (STAIRS, 2.0), (GLAM, 0.8), (BLOOM, 1.0),
@@ -72,7 +72,7 @@ for t, shot in [
         (21.33, S(GLAM, 8.25, 0.39, z1=1.23)),   # skyline, slow
         (25.67, S(GHAT, 2.4, 0.5, z1=1.22)),     # saree in the wind, slow
         (28.87, S(BLOOM, 0.0, 0.55, z1=1.22)),   # garden walk, slow
-        (32.00, S(GLAM, 2.0, 0.5)),              # corridor, slow
+        (32.00, S(BLOOM, 2.0, 0.75, z1=1.20)),   # groom under the flower arch, slow
         (34.00, S(STAIRS, 1.6, 0.6, z1=1.21)),   # dupatta twirl, slow
         (35.60, S(SUNSET, 0.0, 0.6, z1=1.22)),   # [v1] dupatta at sunset
         (37.93, S(BLOOM, 8.5, 0.36, z1=1.22))]:  # sunset, hand in hand: reveal
