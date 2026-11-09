@@ -70,31 +70,34 @@ def B(k): return round(0.16 + 0.488 * k, 3)
 def BW(clip, ss, speed=1.0, fx=0.5, z0=1.14, z1=1.19):
     return (clip, ss, speed, fx, True, False, z0, z1)
 
+# Only today's scenes and yesterday's second batch (staircase palace, pastel
+# garden, ghats, twirl); the first batch (blue sherwani) is left out because
+# the faces don't match.
 # (clip, src_start, focus_x for the 9:16 crop)
-FLICKER = [(GHAT, 0.3, .5), (LAKE, 0.3, .3), (BAZAAR, 0.4, .5), (SPICE, 0.5, .5), (BOAT, 3.2, .5),
-           (STAIRS, 0.2, .5), (COURT, 1.0, .25), (STEPWELL, 9.3, .65), (BEACH, 3.8, .5), (HAVELI, 2.3, .5),
-           (BLOOM, 0.4, .5), (CASUAL, 2.4, .5), (LAKE, 3.6, .5), (GARDEN, 0.4, .45), (ARCHES, 0.6, .5),
-           (SPICE, 6.2, .5), (BOAT, 0.3, .5), (BLOOM, 4.4, .5), (STAIRS, 5.6, .5), (LAKE, 4.85, .5),
-           (HAVELI, 9.0, .5), (GHATWALK, 0.6, .4)]
+FLICKER = [(GHAT, 0.3, .5), (STAIRS, 0.2, .5), (BAZAAR, 8.3, .42), (SPICE, 3.6, .45), (BOAT, 3.2, .5),
+           (BLOOM, 0.4, .5), (COURT, 1.0, .25), (STEPWELL, 9.3, .65), (BEACH, 3.8, .5), (GHAT, 9.45, .55),
+           (BLOOM, 2.4, .5), (DOVES, 0.5, .5), (SPICE, 6.2, .5), (STAIRS, 3.85, .5), (GHATWALK, 0.6, .4),
+           (BLOOM, 4.4, .5), (STAIRS, 5.6, .5), (GHAT, 6.4, .5), (COURT, 9.4, .6), (DOVES, 8.3, .5),
+           (STAIRS, 9.3, .5), (BLOOM, 6.85, .55)]
 _T = [(0.0, V(FLICKER[0][0], FLICKER[0][1], 1.0, FLICKER[0][2]))]
 _T += [(round(B(0) + i * 0.488 / 3, 3), V(c, ss, 1.0, fx)) for i, (c, ss, fx) in enumerate(FLICKER[1:])]
 _T += [
-    (B(7), V(SUNSET, 6.55, 0.7, 0.5, 1.12, 1.20)),   # silhouette under the palace arch
-    (B(11), V(STAIRS, 7.5, 0.6, 0.6, 1.14, 1.21)),   # walking to each other in the arches
+    (B(7), V(STAIRS, 7.5, 0.6, 0.6, 1.14, 1.21)),    # walking to each other in the arches
+    (B(11), V(GHAT, 2.4, 0.6, 0.5, 1.14, 1.21)),     # saree in the wind on the ghat
     (B(15), V(COURT, 3.8, 0.7, 0.4, 1.14, 1.21)),    # under the haveli arch
-    (B(19), V(HAVELI, 6.3, 0.7, 0.5, 1.14, 1.21)),   # hand in hand down the lane
+    (B(19), V(BAZAAR, 0.3, 0.7, 0.42, 1.14, 1.21)),  # down the bazaar lane
     (B(23), V(BLOOM, 7.5, 0.4, 0.55, 1.14, 1.21)),   # veil twirl, slow
     (B(27), V(STEPWELL, 0.5, 0.9)),                  # down the stepwell
     (B(29), V(DOVES, 2.0)),                          # doves take off
-    (B(31), V(TERRACE, 2.4)),                        # the terrace
+    (B(31), V(SPICE, 0.3, 0.9, 0.55)),               # tasting at the spice stall
     (B(33), V(BEACH, 7.3)),                          # the ring
     (B(35), V(GHATWALK, 4.9, 1.0, 0.6)),             # close at sunrise
     (B(37), V(STAIRS, 1.5, R(1.4, 0.5, 0.35))),      # dupatta twirl, ramped
     (B(39), V(BAZAAR, 5.1, 1.0, 0.6)),               # her smile in the lane
     (B(41), V(COURT, 7.3)),                          # hands in the courtyard
-    (B(43), V(HAVELI, 5.0, 1.0, 0.6)),               # that glance
+    (B(43), V(BOAT, 0.1, 1.0, 0.45)),                # close on the boat
     (B(45), V(DOVES, 4.3, 0.7)),                     # among the doves
-    (B(49), V(TERRACE, 7.2, 0.7)),                   # a tender moment
+    (B(49), V(STEPWELL, 4.3, 0.7, 0.55)),            # close on the steps
     (B(53), V(BLOOM, 8.5, 0.7)),                     # sunset in the garden
     (B(57), V(GHATWALK, 8.0, 0.5, 0.45, 1.14, 1.21)),  # hand in hand at sunrise: names
 ]
