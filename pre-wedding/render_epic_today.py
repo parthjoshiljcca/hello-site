@@ -71,44 +71,44 @@ def U(k): return round(0.245 + 0.246 * k, 3)
 def FL(clip, ss, speed=1.0, fx=0.5, z0=1.14, z1=1.19):  # white flash into the shot
     return (clip, ss, speed, fx, False, True, z0, z1)
 
-# Today's nine scenes only, every take used exactly once (no repeats).
+# Today's scenes only, every take used once; from the aarti clip only the
+# closing close-up (for the names). The song plays once (no extension) and the
+# end cards sit inside it, so the teaser is ~16s.
 _T = [
-    (0.0, V(AARTI, 0.2)),                                 # the aarti lamp, smoke rising
-    (U(1), V(BEACH, 0.3)),                                # water at sunset
-    (U(2), V(DOVES, 0.4)),                                # doves on the balcony
-    (U(3), V(BAZAAR, 0.4, 1.0, 0.42)),                    # bazaar lane
+    (0.0, V(DOVES, 0.4)),                                 # doves on the balcony
+    (U(1), V(BAZAAR, 0.4, 1.0, 0.42)),                    # bazaar lane
+    (U(2), V(COURT, 1.0, 1.0, 0.25)),                     # haveli courtyard
+    (U(3), V(STEPWELL, 0.5)),                             # the stepwell
     (U(4), V(DOVES, 2.2)),                                # doves take off
     (U(6), V(GHATWALK, 0.5, 1.0, 0.4)),                   # morning walk on the ghat
     (U(8), V(SPICE, 0.4, 1.0, 0.55)),                     # spice stall
-    (U(10), V(STEPWELL, 0.5)),                            # down the stepwell
-    (U(12), V(COURT, 1.0, 1.0, 0.25)),                    # haveli courtyard
-    (U(14), FL(AARTI, 3.4, 0.8)),                         # HIT: the aarti
-    (U(17), V(BEACH, 3.6)),                               # HIT: sunset on the shore
-    (U(19), V(BAZAAR, 5.2, 1.0, 0.6)),                    # her smile in the lane
+    (U(10), V(BOAT, 3.1)),                                # together on the boat
+    (U(12), V(BEACH, 3.6)),                               # sunset on the shore
+    (U(14), FL(DOVES, 4.4, 0.9)),                         # HIT: among the doves
+    (U(17), V(BAZAAR, 5.2, 1.0, 0.6)),                    # HIT: her smile in the lane
+    (U(19), V(STEPWELL, 4.4, 1.0, 0.55)),                 # HIT: close on the steps
     (U(21), V(BOAT, 0.2, 1.0, 0.45)),                     # close on the boat
-    (U(23), V(STEPWELL, 4.4, 1.0, 0.55)),                 # close on the steps
-    (U(25), V(COURT, 3.9, 1.0, 0.4)),                     # under the arch
-    (U(27), V(GHATWALK, 4.9, 0.9, 0.6)),                  # close at sunrise
+    (U(23), V(COURT, 3.9, 1.0, 0.4)),                     # under the arch
+    (U(25), V(GHATWALK, 4.9, 1.0, 0.6)),                  # close at sunrise
+    (U(27), V(SPICE, 5.9, 0.9)),                          # the market street
     (U(30), FL(BEACH, 7.4)),                              # HIT, burst: the ring
     (U(31), V(SPICE, 3.6, 1.0, 0.45)),                    # burst: sharing a bowl
     (U(32), V(STEPWELL, 6.9, 1.0, 0.45)),                 # burst: hands on the steps
     (U(33), V(COURT, 7.4)),                               # burst: hands in the courtyard
     (U(34), V(BAZAAR, 8.2, 1.0, 0.42)),                   # burst: hands in the lane
     (U(35), V(DOVES, 8.1)),                               # burst: hands on the balcony
-    (U(36), V(BOAT, 3.1)),                                # together on the boat
-    (U(38), FL(DOVES, 4.4, 0.9)),                         # HIT: among the doves
-    (U(41), V(STEPWELL, 9.1, 1.0, 0.3)),                  # HIT: close on the steps
-    (U(43), V(SPICE, 5.9, 0.9)),                          # the market street
-    (U(46), FL(GHATWALK, 8.0, 0.9, 0.45)),                # HIT: hand in hand at sunrise
-    (U(49), V(COURT, 8.9, 0.9, 0.7)),                     # HIT: close in the courtyard
-    (U(53), V(AARTI, 7.45, 0.6, 0.72, 1.14, 1.22)),        # close-up at the aarti: names
+    (U(36), V(STEPWELL, 9.1, 1.0, 0.3)),                  # close on the steps
+    (U(38), FL(GHATWALK, 8.0, 0.9, 0.45)),                # HIT: hand in hand at sunrise
+    (U(41), V(COURT, 8.9, 1.0, 0.7)),                     # HIT: close in the courtyard
+    (U(43), V(BEACH, 0.3, 0.9)),                          # the water at sunset
+    (U(46), V(AARTI, 7.45, 0.6, 0.72, 1.14, 1.22)),       # HIT: the close-up: names
 ]
 # 9:16 swaps: the black-outfit twirl can't hold both of them in a vertical
 # frame (it would read as a solo shot), so the vertical cut uses another take.
 ALT_9x16 = {}
 
 TIMELINE = [(round(t - A, 2), shot) for t, shot in _T]
-TEASER_END = U(59)  # picture ends on the big hit at 14.76s; then the end cards
+TEASER_END = U(51)  # picture ends on the hit at 12.79s; end cards run to the song's end
 CUTS = [t for t, _ in TIMELINE] + [TEASER_END]
 SHOTS = [shot for _, shot in TIMELINE]
 
@@ -313,22 +313,19 @@ def build(orient):
         fc += "[o3]null[o4];"
     # end cards on black: optional "Coming Soon" card, then the credit card
     coming = True
-    CS = 2.9   # Save the Date card on the big hit
-    E = CS + 2.1  # then the small credit card
+    CS = round(U(59) - T, 3)   # Save the Date card until the hit at 14.76s
+    E = round(15.95 - T, 3)    # then the small credit card until the song ends
     fc += (f"[o4]fade=in:st=0:d=0.25,fade=out:st={T-0.6}:d=0.6,"
            f"tpad=stop_mode=add:stop_duration={E}:color=black[o5];"
            f"[7:v]format=rgba,fade=in:st={T+0.15}:d=0.5:alpha=1,"
            f"fade=out:st={T+CS-0.35}:d=0.3:alpha=1[cs];"
-           f"[5:v]format=rgba,fade=in:st={T+CS+0.15}:d=0.5:alpha=1,"
-           f"fade=out:st={T+E-0.45}:d=0.4:alpha=1[c];"
+           f"[5:v]format=rgba,fade=in:st={T+CS+0.05}:d=0.3:alpha=1,"
+           f"fade=out:st={T+E-0.35}:d=0.3:alpha=1[c];"
            f"[o5][cs]overlay=0:0:format=auto[o6];"
            f"[o6][c]overlay=0:0:format=auto,format=yuv420p[vout];"
-           # song: runs to U(62), then crossfades (on the grid, 16 units back) into its
-           # last section so music carries the end cards, and fades out at the end
-           f"[1:a]atrim=0:{U(62)},asetpts=PTS-STARTPTS[a1];"
-           f"[1:a]atrim={U(45)}:15.95,asetpts=PTS-STARTPTS[a2];"
-           f"[a1][a2]acrossfade=d=0.246:c1=tri:c2=tri,afade=in:st=0:d=0.15,"
-           f"afade=out:st={T+E-2.7}:d=2.6,apad=whole_dur={T+E},atrim=0:{T+E},"
+           # song: plays once, as-is, fading out over its last 1.3s
+           f"[1:a]atrim=0:{T+E},asetpts=PTS-STARTPTS,afade=in:st=0:d=0.15,"
+           f"afade=out:st={T+E-1.3}:d=1.3,apad=whole_dur={T+E},"
            f"aformat=sample_rates=48000:channel_layouts=stereo[aout]")
     name = "Epic_Teaser_Today"
     out = os.path.join(OUT, f"Ravi_Sakshi_{name}_{orient}.mp4")
