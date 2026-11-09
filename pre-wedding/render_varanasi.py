@@ -8,6 +8,8 @@ usage: render.py <uploads_dir> <fonts_dir> <work_dir> <out_dir> [16x9|9x16 ...]
 """
 import glob, os, subprocess, sys
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from title_style import names_title, credit_card
 
 UP, FONTS, WORK, OUT = sys.argv[1:5]
 ORIENTS = sys.argv[5:] or ["16x9"]
@@ -74,7 +76,7 @@ _T = [
     # intro
     (0.00, BW(DOVES, 0.0, 0.7, 0.5, 1.14, 1.22)),     # doves on the balcony (b&w)
     (G(2), V(GHAT, 0.0, 0.9, 0.5, 1.14, 1.22)),       # the ghats at dusk
-    (G(4), BW(BOAT, 3.0, 0.9, 0.45, 1.14, 1.20)),     # on the boat (b&w)
+    (G(4), BW(BOAT, 3.0, 0.8, 0.45, 1.14, 1.20)),     # on the boat (b&w)
     (G(6), V(GHATWALK, 0.3, 0.9, 0.4, 1.14, 1.20)),   # morning walk, colour comes in
     # verse
     (G(8), V(DOVES, 2.0, 0.9, 0.5, 1.14, 1.20)),      # the doves take off
@@ -88,7 +90,7 @@ _T = [
     (G(19), V(COURT, 3.8, 0.9)),                      # under the arch
     (G(21), V(HAVELI, 2.15)),                         # she waits by the painted door
     (G(22), V(LAKE, 3.5, 0.55)),                      # chai by the lake
-    (G(23), V(LAKE, 6.1, 0.85)),                      # lakeside walk
+    (G(23), V(LAKE, 6.1, 0.75)),                      # lakeside walk
     (G(25), V(CASUAL, 4.9, 0.48)),                    # hair tucked back
     (G(26), V(BEACH, 3.5, 0.8)),                      # sunset on the shore
     (G(29), V(HAVELI, 6.3, 0.9)),                     # hand in hand down the lane (build)
@@ -122,11 +124,11 @@ _T = [
     (G(51), V(STAIRS, 5.55)),                         # bride close-up
     (Hb(51), V(BLOOM, 2.3)),                          # groom under the flower arch
     (G(52), V(HAVELI, 9.0, 0.95)),                    # down the lane, wide
-    (G(53), V(CASUAL, 9.3, 0.65)),                    # walking close
+    (G(53), V(CASUAL, 9.28, 0.55)),                    # walking close
     (G(54), V(TERRACE, 7.2)),                         # a tender moment
     (G(55), V(BLOOM, 4.3)),                           # floral jewellery
     (Hb(55), V(STAIRS, 6.45)),                        # dupatta detail
-    (G(56), V(GHAT, 7.6, 0.85)),                      # glance by the diyas
+    (G(56), V(BLOOM, 0.2)),                           # she walks through the garden
     (G(57), V(LAKE, 2.3, 0.95)),                      # the café
     (G(58), V(STAIRS, 4.55, 0.55)),                   # groom smiles
     # outro
@@ -248,16 +250,12 @@ def divider(width):
 
 def titles(W, H, d):
     s = W / 1920 if W > H else W / 1080 * 0.92
-    names = gold_text("Ravi & Sakshi", ImageFont.truetype(f"{FONTS}/vibes.ttf", int(170 * s)))
+    # titles in the "Hamari Prem Kahani" artwork style (gold calligraphy,
+    # heart flourish, lotus divider) -- see title_style.py
+    names = names_title(f"{FONTS}/parisienne.ttf", s * (1.0 if W > H else 0.8))
     days = gold_text("10 DAYS TO GO", ImageFont.truetype(f"{FONTS}/cinzel.ttf", int(60 * s)), track=int(16 * s))
     # closing card on black: "Designed & Directed by / Parth D. Joshi"
-    top = gold_text("A Film By", ImageFont.truetype(f"{FONTS}/corm.ttf", int(40 * s)), track=2)
-    name = gold_text("PARTH D. JOSHI", ImageFont.truetype(f"{FONTS}/cinzel.ttf", int(64 * s)), track=int(14 * s))
-    credit = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    gap = int(16 * s)
-    y0 = (H - top.size[1] - gap - name.size[1]) // 2
-    credit.alpha_composite(top, ((W - top.size[0]) // 2, y0))
-    credit.alpha_composite(name, ((W - name.size[0]) // 2, y0 + top.size[1] + gap))
+    credit = credit_card(f"{FONTS}/parisienne.ttf", W, H, s * (1.0 if W > H else 0.8))
     line = divider(int(520 * s))
     # "Coming Soon" card on black
     # "Save the Date" card on black
