@@ -255,7 +255,14 @@ def titles(W, H, d):
     names = names_title(f"{FONTS}/parisienne.ttf", s * (1.0 if W > H else 0.8))
     days = gold_text("10 DAYS TO GO", ImageFont.truetype(f"{FONTS}/cinzel.ttf", int(60 * s)), track=int(16 * s))
     # closing card on black: "Designed & Directed by / Parth D. Joshi"
-    credit = credit_card(f"{FONTS}/parisienne.ttf", W, H, s * (1.0 if W > H else 0.8))
+    # credit card: simple and small, centred ("A Film By" / "PARTH D. JOSHI")
+    top = gold_text("A Film By", ImageFont.truetype(f"{FONTS}/corm.ttf", int(40 * s)), track=2)
+    name = gold_text("PARTH D. JOSHI", ImageFont.truetype(f"{FONTS}/cinzel.ttf", int(64 * s)), track=int(14 * s))
+    credit = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    gap = int(16 * s)
+    y0 = (H - top.size[1] - gap - name.size[1]) // 2
+    credit.alpha_composite(top, ((W - top.size[0]) // 2, y0))
+    credit.alpha_composite(name, ((W - name.size[0]) // 2, y0 + top.size[1] + gap))
     line = divider(int(520 * s))
     # "Coming Soon" card on black
     # "Save the Date" card on black
