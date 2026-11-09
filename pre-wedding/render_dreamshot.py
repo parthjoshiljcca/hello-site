@@ -77,7 +77,7 @@ def BW(clip, ss, speed=1.0, fx=0.5, z0=1.14, z1=1.19):
 FLICKER = [(GHAT, 0.3, .5), (STAIRS, 0.2, .5), (BAZAAR, 8.3, .42), (SPICE, 3.6, .45), (BOAT, 3.2, .5),
            (BLOOM, 0.4, .5), (COURT, 1.0, .25), (STEPWELL, 9.3, .65), (BEACH, 3.8, .5), (GHAT, 9.45, .55),
            (BLOOM, 2.4, .5), (DOVES, 0.5, .5), (SPICE, 6.2, .5), (STAIRS, 3.85, .5), (GHATWALK, 0.6, .4),
-           (BLOOM, 4.4, .5), (STAIRS, 5.6, .5), (GHAT, 6.4, .5), (COURT, 9.4, .6), (DOVES, 8.3, .5),
+           (BLOOM, 4.4, .5), (STAIRS, 5.6, .5), (GHAT, 6.4, .5), (COURT, 9.4, .72), (DOVES, 8.3, .5),
            (STAIRS, 9.3, .5), (BLOOM, 6.85, .55)]
 _T = [(0.0, V(FLICKER[0][0], FLICKER[0][1], 1.0, FLICKER[0][2]))]
 _T += [(round(B(0) + i * 0.488 / 3, 3), V(c, ss, 1.0, fx)) for i, (c, ss, fx) in enumerate(FLICKER[1:])]
