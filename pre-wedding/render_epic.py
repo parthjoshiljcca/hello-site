@@ -102,15 +102,14 @@ _T = [
     (U(46), FL(GHAT, 2.4, 0.8)),                          # HIT: saree in the wind
     (U(49), V(COURT, 8.9, 1.0, 0.7)),                     # HIT: close in the courtyard
     (U(51), V(STEPWELL, 4.4, 1.0, 0.55)),                 # HIT: close on the steps
-    (U(53), V(SPICE, 6.0)),                               # market street
-    (U(55), V(BLOOM, 8.5, 0.65, 0.5, 1.14, 1.22)),        # sunset, hand in hand: names
+    (U(53), V(BLOOM, 8.5, 0.65, 0.5, 1.14, 1.22)),        # sunset, hand in hand: names
 ]
 # 9:16 swaps: the black-outfit twirl can't hold both of them in a vertical
 # frame (it would read as a solo shot), so the vertical cut uses another take.
 ALT_9x16 = {9: V(BLOOM, 6.8, 0.8, 0.6)}   # her hand reaching out in the garden
 
 TIMELINE = [(round(t - A, 2), shot) for t, shot in _T]
-TEASER_END = 15.95  # picture ends with the song; then the credit card
+TEASER_END = U(59)  # picture ends on the big hit at 14.76s; then the end cards
 CUTS = [t for t, _ in TIMELINE] + [TEASER_END]
 SHOTS = [shot for _, shot in TIMELINE]
 
@@ -232,8 +231,8 @@ def titles(W, H, d):
     days = gold_text("10 DAYS TO GO", ImageFont.truetype(f"{FONTS}/cinzel.ttf", int(60 * s)), track=int(16 * s))
     # closing card on black: "Designed & Directed by / Parth D. Joshi"
     # credit card: simple and small, centred ("A Film By" / "PARTH D. JOSHI")
-    top = gold_text("A Film By", ImageFont.truetype(f"{FONTS}/corm.ttf", int(40 * s)), track=2)
-    name = gold_text("PARTH D. JOSHI", ImageFont.truetype(f"{FONTS}/cinzel.ttf", int(64 * s)), track=int(14 * s))
+    top = gold_text("A Film By", ImageFont.truetype(f"{FONTS}/corm.ttf", int(30 * s)), track=2)
+    name = gold_text("PARTH D. JOSHI", ImageFont.truetype(f"{FONTS}/cinzel.ttf", int(44 * s)), track=int(10 * s))
     credit = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     gap = int(16 * s)
     y0 = (H - top.size[1] - gap - name.size[1]) // 2
@@ -314,9 +313,9 @@ def build(orient):
     else:
         fc += "[o3]null[o4];"
     # end cards on black: optional "Coming Soon" card, then the credit card
-    coming = False
-    CS = 0.0  # no Save the Date card in this film
-    E = 2.8
+    coming = True
+    CS = 2.9   # Save the Date card on the big hit
+    E = CS + 2.1  # then the small credit card
     fc += (f"[o4]fade=in:st=0:d=0.25,fade=out:st={T-0.6}:d=0.6,"
            f"tpad=stop_mode=add:stop_duration={E}:color=black[o5];"
            f"[7:v]format=rgba,fade=in:st={T+0.15}:d=0.5:alpha=1,"
@@ -325,9 +324,12 @@ def build(orient):
            f"fade=out:st={T+E-0.45}:d=0.4:alpha=1[c];"
            f"[o5][cs]overlay=0:0:format=auto[o6];"
            f"[o6][c]overlay=0:0:format=auto,format=yuv420p[vout];"
-           # song: the Raanjhana reference track, carried under the end cards
-           f"[1:a]atrim={A}:{A + T + E},asetpts=PTS-STARTPTS,afade=in:st=0:d=0.15,"
-           f"afade=out:st={T+E-1.6}:d=1.5,apad=whole_dur={T+E},"
+           # song: runs to U(62), then crossfades (on the grid, 16 units back) into its
+           # last section so music carries the end cards, and fades out at the end
+           f"[1:a]atrim=0:{U(62)},asetpts=PTS-STARTPTS[a1];"
+           f"[1:a]atrim={U(45)}:15.95,asetpts=PTS-STARTPTS[a2];"
+           f"[a1][a2]acrossfade=d=0.246:c1=tri:c2=tri,afade=in:st=0:d=0.15,"
+           f"afade=out:st={T+E-2.7}:d=2.6,apad=whole_dur={T+E},atrim=0:{T+E},"
            f"aformat=sample_rates=48000:channel_layouts=stereo[aout]")
     name = "Epic_Teaser"
     out = os.path.join(OUT, f"Ravi_Sakshi_{name}_{orient}.mp4")
