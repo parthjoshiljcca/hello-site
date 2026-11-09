@@ -200,7 +200,7 @@ def titles(W, H, d):
     names = gold_text("Ravi & Sakshi", ImageFont.truetype(f"{FONTS}/vibes.ttf", int(170 * s)))
     days = gold_text("10 DAYS TO GO", ImageFont.truetype(f"{FONTS}/cinzel.ttf", int(60 * s)), track=int(16 * s))
     # closing card on black: "Designed & Directed by / Parth D. Joshi"
-    top = gold_text("Designed & Directed by", ImageFont.truetype(f"{FONTS}/corm.ttf", int(40 * s)), track=2)
+    top = gold_text("A Film By", ImageFont.truetype(f"{FONTS}/corm.ttf", int(40 * s)), track=2)
     name = gold_text("PARTH D. JOSHI", ImageFont.truetype(f"{FONTS}/cinzel.ttf", int(64 * s)), track=int(14 * s))
     credit = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     gap = int(16 * s)
