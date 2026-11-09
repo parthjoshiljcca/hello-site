@@ -44,22 +44,25 @@ HOLD = lambda speed: ("hold", speed)              # play slowed, then hold the f
 # Jaipur-reference cut: its own song and cut points. Long, slow opening
 # shots, a quick flash burst at 5.0-6.5s, dreamy close-ups, and a long
 # closing shot with the names. Every take is used once.
+# Shots chosen to be different from the Raanjhana final edit: takes it never
+# used (the first four scenes' garden, terrace, arches and sunset silhouette)
+# and takes it only flashed for a few frames, here given room as full shots.
 TIMELINE = [
-    (0.00, S(LAKE, 0.2, 0.6, 1.12, 1.20)),        # lake palace, he walks in
-    (1.60, S(LAKE, 6.1, 0.5, 1.14, 1.22)),        # walking together by the lake
-    (5.00, S(HAVELI, 9.0)),                       # flash: down the lane
-    (5.20, S(STAIRS, 9.3)),                       # flash: at the palace
-    (5.36, S(BLOOM, 6.8)),                        # flash: hand reaching out
-    (5.72, S(CASUAL, 4.95)),                      # flash: hair tucked back
-    (5.96, S(GHAT, 9.45)),                        # flash: the ghats
-    (6.16, S(STAIRS, 1.6)),                       # flash: dupatta
-    (6.52, S(HAVELI, 5.0, 0.6, z1=1.21)),         # that glance, slow
-    (8.12, S(BLOOM, 7.5, 0.6, z1=1.20)),          # veil twirl, slow
-    (9.28, S(CASUAL, 5.75, 0.6, z1=1.20)),        # close, by the sea
-    (10.28, S(STAIRS, 7.5, 0.5, z1=1.22)),        # walking to each other
-    (12.28, S(LAKE, 2.3, 0.5, z1=1.20)),          # the café
-    (14.20, S(HAVELI, 3.5, 0.6, z1=1.20)),        # glasses come off
-    (15.16, S(BLOOM, 8.5, 0.45, 1.14, 1.22)),     # sunset, hand in hand: names
+    (0.00, S(STAIRS, 0.1, 0.6, 1.12, 1.20)),      # he comes down the palace stairs
+    (1.60, S(HAVELI, 6.3, 0.6, 1.14, 1.22)),      # hand in hand down the haveli lane
+    (5.00, S(GARDEN, 0.3)),                       # flash: garden, first meeting
+    (5.20, S(STAIRS, 5.6)),                       # flash: bride close-up
+    (5.36, S(ARCHES, 8.0)),                       # flash: groom through the arches
+    (5.72, S(LAKE, 3.6)),                         # flash: chai by the lake
+    (5.96, S(GHAT, 0.5)),                         # flash: the ghats
+    (6.16, S(GARDEN, 8.8)),                       # flash: her smile
+    (6.52, S(BLOOM, 2.1, 0.6, z1=1.21)),          # groom under the flower arch
+    (8.12, S(BLOOM, 0.0, 0.7, z1=1.20)),          # she walks through the garden
+    (9.28, S(GARDEN, 6.4, 0.7, z1=1.20)),         # hands held in the garden
+    (10.28, S(TERRACE, 2.4, 0.6, z1=1.21)),       # hand in hand on the terrace
+    (12.28, S(HAVELI, 2.15, 0.6, z1=1.20)),       # she waits by the painted door
+    (14.20, S(TERRACE, 7.2, 0.7, z1=1.20)),       # a tender moment
+    (15.16, S(SUNSET, 6.55, 0.75, 1.12, 1.20)),    # silhouette under the arch: names
 ]
 CUTS = [t for t, _ in TIMELINE] + [18.36]
 SHOTS = [shot for _, shot in TIMELINE]
