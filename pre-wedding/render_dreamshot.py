@@ -70,15 +70,17 @@ def B(k): return round(0.16 + 0.488 * k, 3)
 def BW(clip, ss, speed=1.0, fx=0.5, z0=1.14, z1=1.19):
     return (clip, ss, speed, fx, True, False, z0, z1)
 
-FLICKER = [(GHAT, 0.3), (LAKE, 0.3), (BAZAAR, 0.4), (SPICE, 0.5), (BOAT, 3.2), (STAIRS, 0.2),
-           (COURT, 1.0), (STEPWELL, 9.3), (BEACH, 3.8), (HAVELI, 2.3), (BLOOM, 0.4), (CASUAL, 2.4),
-           (LAKE, 3.6), (GARDEN, 0.4), (ARCHES, 0.6), (SPICE, 6.2), (BOAT, 0.3), (BLOOM, 4.4),
-           (STAIRS, 5.6), (LAKE, 4.85), (HAVELI, 9.0), (GHATWALK, 0.6)]
-_T = [(0.0, V(FLICKER[0][0], FLICKER[0][1]))]
-_T += [(round(B(0) + i * 0.488 / 3, 3), V(c, ss)) for i, (c, ss) in enumerate(FLICKER[1:])]
+# (clip, src_start, focus_x for the 9:16 crop)
+FLICKER = [(GHAT, 0.3, .5), (LAKE, 0.3, .3), (BAZAAR, 0.4, .5), (SPICE, 0.5, .5), (BOAT, 3.2, .5),
+           (STAIRS, 0.2, .5), (COURT, 1.0, .25), (STEPWELL, 9.3, .65), (BEACH, 3.8, .5), (HAVELI, 2.3, .5),
+           (BLOOM, 0.4, .5), (CASUAL, 2.4, .5), (LAKE, 3.6, .5), (GARDEN, 0.4, .45), (ARCHES, 0.6, .5),
+           (SPICE, 6.2, .5), (BOAT, 0.3, .5), (BLOOM, 4.4, .5), (STAIRS, 5.6, .5), (LAKE, 4.85, .5),
+           (HAVELI, 9.0, .5), (GHATWALK, 0.6, .4)]
+_T = [(0.0, V(FLICKER[0][0], FLICKER[0][1], 1.0, FLICKER[0][2]))]
+_T += [(round(B(0) + i * 0.488 / 3, 3), V(c, ss, 1.0, fx)) for i, (c, ss, fx) in enumerate(FLICKER[1:])]
 _T += [
     (B(7), V(SUNSET, 6.55, 0.7, 0.5, 1.12, 1.20)),   # silhouette under the palace arch
-    (B(11), V(STAIRS, 7.5, 0.6, 0.5, 1.14, 1.21)),   # walking to each other in the arches
+    (B(11), V(STAIRS, 7.5, 0.6, 0.6, 1.14, 1.21)),   # walking to each other in the arches
     (B(15), V(COURT, 3.8, 0.7, 0.4, 1.14, 1.21)),    # under the haveli arch
     (B(19), V(HAVELI, 6.3, 0.7, 0.5, 1.14, 1.21)),   # hand in hand down the lane
     (B(23), V(BLOOM, 7.5, 0.4, 0.55, 1.14, 1.21)),   # veil twirl, slow
@@ -213,10 +215,12 @@ def titles(W, H, d):
     s = W / 1920 if W > H else W / 1080 * 0.92
     # titles in the "Hamari Prem Kahani" artwork style (gold calligraphy,
     # heart flourish, lotus divider) -- see title_style.py
-    names = names_title(f"{FONTS}/parisienne.ttf", s * (1.0 if W > H else 0.8))
+    names = names_title(f"{FONTS}/parisienne.ttf", s if W > H else 1.0)
+    if names.size[0] > W * 0.9:  # keep the whole block (heart to swirl) inside the frame
+        names = names_title(f"{FONTS}/parisienne.ttf", W * 0.9 / names.size[0])
     days = gold_text("10 DAYS TO GO", ImageFont.truetype(f"{FONTS}/cinzel.ttf", int(60 * s)), track=int(16 * s))
     # closing card on black: "Designed & Directed by / Parth D. Joshi"
-    credit = credit_card(f"{FONTS}/parisienne.ttf", W, H, s * (1.0 if W > H else 0.8))
+    credit = credit_card(f"{FONTS}/parisienne.ttf", W, H, s * (1.0 if W > H else 1.3))
     line = divider(int(520 * s))
     # "Coming Soon" card on black
     # "Save the Date" card on black
