@@ -97,11 +97,11 @@ _T = [
     (U(35), V(DOVES, 8.1)),                               # burst: hands on the balcony
     (U(36), V(BOAT, 3.1)),                                # together on the boat
     (U(38), FL(DOVES, 4.4, 0.9)),                         # HIT: among the doves
-    (U(41), V(STEPWELL, 9.1, 1.0, 0.6)),                  # HIT: close on the steps
+    (U(41), V(STEPWELL, 9.1, 1.0, 0.3)),                  # HIT: close on the steps
     (U(43), V(SPICE, 5.9, 0.9)),                          # the market street
     (U(46), FL(GHATWALK, 8.0, 0.9, 0.45)),                # HIT: hand in hand at sunrise
     (U(49), V(COURT, 8.9, 0.9, 0.7)),                     # HIT: close in the courtyard
-    (U(53), V(AARTI, 7.45, 0.6, 0.5, 1.14, 1.22)),        # close-up at the aarti: names
+    (U(53), V(AARTI, 7.45, 0.6, 0.72, 1.14, 1.22)),        # close-up at the aarti: names
 ]
 # 9:16 swaps: the black-outfit twirl can't hold both of them in a vertical
 # frame (it would read as a solo shot), so the vertical cut uses another take.
@@ -284,7 +284,7 @@ def build(orient):
     R = CUTS[-2]  # reveal shot start
     bar = 0  # no letterbox: open, airy frame like the reference
     cy = H // 2 - (40 if orient == "16x9" else 60)
-    ny = H // 2 - nh // 2 - 10  # v3: names only, centred
+    ny = int(H * 0.74) - nh // 2  # lower third, clear of the faces in the aarti close-up  # v3: names only, centred
     ly = cy + 40
     dy = ly + lh + 22
     # small credit tucked in the bottom-right corner
