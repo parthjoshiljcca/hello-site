@@ -105,6 +105,10 @@ _T = [
     (U(53), V(SPICE, 6.0)),                               # market street
     (U(55), V(BLOOM, 8.5, 0.65, 0.5, 1.14, 1.22)),        # sunset, hand in hand: names
 ]
+# 9:16 swaps: the black-outfit twirl can't hold both of them in a vertical
+# frame (it would read as a solo shot), so the vertical cut uses another take.
+ALT_9x16 = {9: V(BLOOM, 6.8, 0.8, 0.6)}   # her hand reaching out in the garden
+
 TIMELINE = [(round(t - A, 2), shot) for t, shot in _T]
 TEASER_END = 15.95  # picture ends with the song; then the credit card
 CUTS = [t for t, _ in TIMELINE] + [TEASER_END]
@@ -267,6 +271,8 @@ def build(orient):
     d = os.path.join(WORK, orient); os.makedirs(d, exist_ok=True)
     parts = []
     for i, shot in enumerate(SHOTS):
+        if orient == "9x16":
+            shot = ALT_9x16.get(i, shot)
         p = f"{d}/s{i:02d}.mp4"
         dur = (round(CUTS[i + 1] * FPS) - round(CUTS[i] * FPS)) / FPS  # frame-exact
         if not (os.environ.get("REUSE") and os.path.exists(p)):  # REUSE=1 keeps rendered shots
