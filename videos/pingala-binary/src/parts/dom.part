@@ -1,3 +1,7 @@
+// cinematic 2D camera per scene: push-in / pull-out / pan left / pan right, eased, with a slight roll drift and an entry settle
+function CAM2D(i,lt,dur){const u=eio(cl(lt/dur));const ent=1-eo(seg(lt,0,0.6));const k=i%4;let z,x=0,y=0;
+ if(k===0)z=lerp(1.0,1.09,u);else if(k===1)z=lerp(1.09,1.0,u);else{z=1.06;x=(k===2?1:-1)*lerp(-34,34,u)}
+ y=lerp(10,-10,u);z+=0.05*ent;const r=(i%2?1:-1)*0.006*Math.sin(u*Math.PI);return{z,x,y,r}}
 // ---------- DOM ----------
 const $=id=>document.getElementById(id);
 let cur=-1,curChunk=-1;const waveEls=[];
@@ -9,7 +13,7 @@ function render(t){
  const s=D.scenes[i],lt=t-s.start,dur=s.end-s.start;
  bg(t);
  const a=seg(lt,0,0.3)*(1-seg(lt,dur-0.25,dur));
- ctx.save();ctx.globalAlpha=a;const z=1+0.03*lt/dur;ctx.translate(540,990);ctx.scale(z,z);ctx.translate(-540,-990);
+ ctx.save();ctx.globalAlpha=a;const cm=CAM2D(i,lt,dur);ctx.translate(540,990);ctx.rotate(cm.r);ctx.scale(cm.z,cm.z);ctx.translate(-540+cm.x,-990+cm.y);
  SCN[i](t,lt,dur);ctx.restore();ctx.globalAlpha=1;
  grain(f);
  // header DOM

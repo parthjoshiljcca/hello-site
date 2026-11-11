@@ -140,7 +140,27 @@ while t<TOT:
     t+=beat/4;k+=1
 drum*=np.minimum(1,np.maximum(0,(T-0.2)/0.6))
 bgm=mus+drum*0.35
-# risers into each scene + sub boom
+# ---------- cinematic layer ----------
+from scipy.signal import fftconvolve
+def braam(d=2.6):
+    u=tt(d);env=np.minimum(1,u/0.12)*np.exp(-u*1.3)
+    saw=lambda f:2*((f*u)%1)-1
+    x=(saw(55)+saw(82.4)*0.7+saw(110.5)*0.4);x=lp(lp(x,0.06),0.06)
+    return (x*1.6+np.sin(2*np.pi*41*u)*0.9)*env
+def impact():
+    u=tt(1.6);sub=np.sin(2*np.pi*np.cumsum(32+90*np.exp(-u*14))/SR)*np.exp(-u*3.2)
+    hit=hp(noise(1.6),0.2)*np.exp(-u*28)*0.8
+    return sub*1.2+hit
+def swoop(d=2.0,up=True):
+    n=noise(d);x=np.linspace(0,1,len(n));env=np.sin(np.pi*x)**1.2*(x if up else 1-x)**0.3
+    y=0;out=np.empty_like(n);a=0.006+0.22*(x if up else 1-x)**2
+    for i in range(len(n)): y+=a[i]*(n[i]-y);out[i]=y
+    return out*env*2.2
+def shimmerTail(d=2.5):
+    u=tt(d);s=np.zeros_like(u)
+    for f in [1320,1760,2217,2640]: s+=np.sin(2*np.pi*f*u)*np.exp(-u*1.5)*0.25
+    return s
+# scene transitions: soft riser + sub thump (as before) ...
 def riser(d=0.9):
     n=noise(d);x=np.linspace(0,1,len(n));y=0;out=np.empty_like(n);a=0.01+0.4*x**2
     for i in range(len(n)): y+=a[i]*(n[i]-y);out[i]=y
@@ -148,12 +168,29 @@ def riser(d=0.9):
 for s in scn[1:]:
     add(riser(),s['start']-0.85,0.10)
     u=tt(0.5);add(np.sin(2*np.pi*np.cumsum(40+60*np.exp(-u*20))/SR)*np.exp(-u*6),s['start']+0.05,0.35)
+# ... plus cinematic hits on the story beats and swoops synced to the 3D camera moves
+add(impact(),0.05,0.5);add(swoop(2.4,False),0.1,0.18)                       # chip: crane dive from top-down
+add(braam(),ev['y1703']-0.1,0.16)
+add(swoop(1.4),ev['y1900']-1.2,0.14);add(impact(),ev['y1900'],0.42)          # 1900 saal pehle
+add(braam(3.0),ev['pingala']-0.05,0.22);add(shimmerTail(),ev['pingala']+0.2,0.08)
+add(impact(),ev['kavita'],0.3)
+add(swoop(1.8),scn[9]['start']-0.4,0.16);add(impact(),ev['solah'],0.4)       # prastaar orbit
+add(braam(),ev['solah2'],0.14);add(shimmerTail(),ev['power']+0.3,0.07)
+add(swoop(2.0),scn[14]['start']-0.3,0.16);add(braam(3.0),ev['meru'],0.2);add(impact(),ev['pascal'],0.42)  # meru crane
+add(braam(3.2),ev['digital']-0.3,0.18);add(impact(),ev['duniya']+0.4,0.3)
+# reverb send on the whole SFX bus (short hall)
+ir_t=tt(1.8);ir=rs.standard_normal(len(ir_t))*np.exp(-ir_t*3.2);ir=lp(ir,0.3);ir/=np.sqrt(np.sum(ir**2))
+L=L+0.35*fftconvolve(L,ir)[:N];R=R+0.35*fftconvolve(R,ir[::-1].copy())[:N]
 ve=np.abs(voice);ve=lp(ve,0.0008);ve=ve/ve.max();duck=1-0.7*np.minimum(1,ve*4)
 bgm*=duck*0.28;bgm*=np.minimum(1,(TOT-T)/1.5)
-fx=np.minimum(1,(TOT-T)/0.5)
+fx=np.minimum(1,(TOT-T)/0.5)*(1-0.6*np.minimum(1,ve*4))   # SFX bus sidechain-ducked under narration
 Lm=voice*1.3+bgm+L*fx*0.4;Rm=voice*1.3+bgm+R*fx*0.4
 st=np.stack([Lm,Rm],1);st=st/np.max(np.abs(st))*0.92
 w=wave.open(f'{W}/mix.wav','wb');w.setnchannels(2);w.setsampwidth(2);w.setframerate(SR);w.writeframes((st*32767).astype(np.int16).tobytes());w.close()
 db=lambda x:20*np.log10(np.sqrt(np.mean(x**2))+1e-9)
 m=st.mean(1);vm=np.abs(lp(np.abs(voice),0.001))>0.01
 print('voice-region %.1f dB, non-voice %.1f dB'%(db(m[vm]),db(m[~vm])))
+sfx=((L+R)/2*fx*0.4)[:len(m)];bg=bgm[:len(m)]
+print('in voice regions: voice %.1f dB | sfx %.1f dB | music %.1f dB'%(db(voice[:len(m)][vm]*1.3),db(sfx[vm]),db(bg[vm])))
+import numpy as _n;w=int(0.4*SR);pk=max(db(sfx[k:k+w]) for k in range(0,len(sfx)-w,w//2) if vm[k:k+w].mean()>0.5)
+print('loudest SFX window under voice %.1f dB'%pk)

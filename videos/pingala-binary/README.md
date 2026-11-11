@@ -31,6 +31,12 @@ This uses the locked Why Spaces style (`../STYLE.md`) and Kabir's voice. It is 2
 - Pingala's *Chhandahshastra* is usually dated to about the 3rd–2nd century BCE, so the script says "lagbhag 1900 saal pehle" relative to Leibniz's 1703 binary.
 - The script says "binary **jaisa** system". Pingala enumerated laghu/guru patterns (prastāra), counted them as 2ⁿ, and gave index⇄pattern methods (naṣṭa/uddiṣṭa) that work like binary conversion. He did not build computers. The Meru Prastaar is credited to Halayudha's 10th-century commentary.
 
+## Cinematic pass
+- **3D camera moves:** the chip shot starts as a top-down crane dive, then slowly orbits with a slight roll. The prastaar camera orbits and dollies around the 16-row column. The Meru shot cranes up from a low angle that looks up the triangle, then pushes in on "Pascal's triangle".
+- **2D camera:** the illustration canvas alternates push-in, pull-out, pan left and pan right per scene, eased, with a slight roll drift and an entry settle (`CAM2D` in `parts/dom.part`). The header, titles and captions stay steady.
+- **Cinematic SFX:** braams, sub impacts, whoosh-swoops synced to the 3D camera moves, and shimmer tails, all through a short hall reverb send.
+- **Voice safety:** the SFX bus is sidechain-ducked under the narration by up to -8 dB (music by 70%). Measured in voice regions: the voice is -14.5 dB and the SFX average -41 dB, and the loudest SFX window under the voice is -26.5 dB, so the effects always stay at least 12 dB under Kabir. The big hits land in the gaps between lines.
+
 ## Production
 - Narration: Sarvam `bulbul:v3`, speaker kabir, `hi-IN`, pace 1.2, with one call per scene, each under 12 s. All scenes were checked with `saarika:v2.5` and for trailing junk with local faster-whisper.
 - "lamba" and "badalta" were unclear in the first takes, so both lines were regenerated until the transcripts were word-perfect.

@@ -1,7 +1,14 @@
 import { useMemo } from "react";
 import * as THREE from "three";
-import { Badge, CamRig, HDR, Layer, MonoTag, back, eo, ev, fin, lerp, pop, project, sceneAlpha, seg } from "./common";
+import { Badge, CamRig, HDR, Layer, MonoTag, SCN, back, eio, eo, ev, fin, lerp, pop, project, sceneAlpha, seg } from "./common";
+const SCN9 = SCN[9].start;
 
+
+/** cinematic camera on a sphere around a target: radius, elevation (deg), azimuth (deg) */
+const orbit = (r: number, elev: number, azim: number, tgt: [number, number, number]): [number, number, number] => {
+  const e = (elev * Math.PI) / 180, z = (azim * Math.PI) / 180;
+  return [tgt[0] + r * Math.cos(e) * Math.sin(z), tgt[1] + r * Math.sin(e), tgt[2] + r * Math.cos(e) * Math.cos(z)];
+};
 const hash = (i: number, k: number) => { const s = Math.sin(i * 127.1 + k * 311.7) * 43758.5453; return s - Math.floor(s); };
 const Lights: React.FC = () => (
   <>
@@ -42,11 +49,13 @@ export const ChipScene: React.FC<{ t: number }> = ({ t }) => {
   );
   const pulse = 0.5 + 0.5 * Math.sin(t * 4);
   const zo = pop(t, "zero", 0.5, -0.1), on = pop(t, "one", 0.5, -0.1);
-  const cam: [number, number, number] = [0, lerp(5.2, 4.4, eo(seg(t, 0, 7.5))), lerp(6.4, 5.6, eo(seg(t, 0, 7.5)))];
+  const dive = eio(seg(t, 0, 2.6)), drift = eio(seg(t, 2.4, 7.6));
+  const tgtC: [number, number, number] = [0, 0, 0.1];
+  const cam = orbit(lerp(8.2, 6.2, dive) - 0.9 * drift, lerp(88, 34, dive) - 6 * drift, lerp(0, 32, dive) + 40 * drift, tgtC);
   return (
     <>
       <Layer opacity={a} bloom={1.3}>
-        <CamRig pos={cam} look={[0, 0, 0.2]} />
+        <CamRig pos={cam} look={tgtC} roll={0.04 * Math.sin(t * 0.7)} />
         <Lights />
         <group scale={enter}>
           {/* board */}
@@ -107,13 +116,14 @@ const PATS = Array.from({ length: 16 }, (_, i) => [0, 1, 2, 3].map((b) => ((i >>
 export const PrastaarScene: React.FC<{ t: number }> = ({ t }) => {
   const a = sceneAlpha(t, 9);
   const build = seg(t, ev.patterns - 0.4, ev.solah - 0.2);
-  const yaw = 0.35 * Math.sin(t * 0.6);
+  const u = eio(seg(t, SCN9 - 0.1, SCN9 + 4.3));
+  const camP = orbit(lerp(7.4, 6.3, u), lerp(6, 16, u), lerp(-48, 38, u), [0, -0.12, 0]);
   const done = fin(t, "solah", 0.4, -0.1);
   return (
     <Layer opacity={a} bloom={1.2}>
-      <CamRig pos={[0, 0, 6.2]} look={[0, 0, 0]} />
+      <CamRig pos={camP} look={[0, -0.12, 0]} roll={-0.03 * Math.sin(u * Math.PI)} />
       <Lights />
-      <group rotation={[0.18, yaw, 0]}>
+      <group>
         {PATS.map((row, r) => {
           const p = back(seg(build * 16 - r, 0, 1));
           if (p <= 0) return null;
@@ -140,9 +150,10 @@ export const MeruScene: React.FC<{ t: number }> = ({ t }) => {
   const a = sceneAlpha(t, 14);
   const rows = 7;
   const build = seg(t, ev.meru - 0.6, ev.meru + 2.2);
-  const cam: [number, number, number] = [0, -0.6, 6.0];
-  const look: [number, number, number] = [0, 0.05, 0];
-  const yaw = 0.18 * Math.sin(t * 0.5);
+  const crane = eio(seg(t, ev.meru - 1.4, ev.meru + 2.4)), push = eio(seg(t, ev.pascal - 0.4, ev.pascal + 1.6));
+  const cam = orbit(lerp(6.9, 6.3, crane) - 0.3 * push, lerp(-30, 4, crane), lerp(34, 0, crane), [0, 0.1, 0]);
+  const look: [number, number, number] = [0, 0.1, 0];
+  const yaw = 0;
   const cells: { n: number; k: number; x: number; y: number }[] = [];
   for (let n = 0; n < rows; n++) for (let k = 0; k <= n; k++) cells.push({ n, k, x: (k - n / 2) * 0.36, y: 0.95 - n * 0.32 });
   const hl = eo(seg(t, ev.pascal - 0.3, ev.pascal + 0.6));
@@ -176,7 +187,7 @@ export const MeruScene: React.FC<{ t: number }> = ({ t }) => {
           </div>
         );
       })}
-      <MonoTag x={540} y={1200} a={fin(t, "meru", 0.4, 0.4) * a}>MERU PRASTAAR</MonoTag>
+      <MonoTag x={540} y={1215} a={fin(t, "meru", 0.4, 0.4) * a * (1 - push)}>MERU PRASTAAR</MonoTag>
     </>
   );
 };
