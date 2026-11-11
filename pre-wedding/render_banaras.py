@@ -13,7 +13,7 @@ usage: render_banaras.py <uploads_dir> <fonts_dir> <work_dir> <out_dir>
 import glob, os, subprocess, sys
 from PIL import Image, ImageDraw, ImageFont
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from title_style import names_title, lotus_divider, _finish
+from title_style import lotus_divider, _finish
 
 UP, FONTS, WORK, OUT = sys.argv[1:5]
 FPS, W, H = 30, 1280, 720
@@ -39,6 +39,10 @@ STAIRS = src("17-23-02")
 BLOOM = src("17-35-11")
 GHAT = src("17-35-34")
 GLAM = src("17-29-53")
+# yesterday's third batch: only drawn on when the clips above run out
+LAKE = src("18-42-28")
+HAVELI = src("18-44-00")
+CASUAL = src("18-30-40")
 
 # Shot boundaries of the base film (seconds): hard cuts, dips to black and soft
 # cuts, found by scene detection and luma analysis.
@@ -107,6 +111,36 @@ GRADE = ("colortemperature=temperature=7800:mix=0.9,"
 LOGO_CROP = "crop=1168:657:108:30"
 
 
+# Clean takes inside each generated clip (seconds), between the clips' own
+# dissolves. Long shots are filled from more than one take so nothing is
+# slowed below MIN_SPEED (heavy slow motion is what blurred and warped them).
+TAKES = {
+    TEMPLE: [(0.0, 4.9), (6.5, 10.0)],
+    BAZAAR: [(0.0, 4.2), (5.0, 7.2), (8.0, 10.0)],
+    GHATWALK: [(0.0, 3.9), (4.75, 7.3), (8.0, 10.0)],
+    BOAT: [(0.0, 2.0), (3.0, 4.9)],
+    SPICE: [(0.0, 3.3), (3.4, 5.6), (5.8, 7.7)],
+    COURT: [(0.0, 3.5), (3.75, 6.6), (7.2, 8.4), (8.75, 10.0)],
+    STEPWELL: [(0.0, 4.1), (4.3, 6.6), (6.8, 8.6), (9.0, 10.0)],
+    BEACH: [(0.0, 2.0), (3.3, 6.2), (7.0, 10.0)],
+    DOVES: [(0.0, 4.0), (4.3, 7.0), (7.9, 10.0)],
+    AARTI: [(7.3, 10.0)],
+    STAIRS: [(0.0, 1.35), (1.5, 3.4), (3.75, 4.3), (4.5, 5.2), (5.5, 6.1), (6.25, 7.0),
+             (7.5, 8.9), (9.15, 10.0)],
+    BLOOM: [(0.0, 1.9), (2.0, 3.6), (3.75, 4.15), (4.3, 5.1), (5.25, 6.4), (6.75, 7.3),
+            (7.5, 8.35), (8.5, 10.0)],
+    GHAT: [(0.0, 2.0), (2.5, 4.1), (4.55, 5.4), (6.0, 7.2), (7.5, 8.6), (9.1, 10.0)],
+    GLAM: [(6.5, 7.9)],
+    LAKE: [(0.0, 1.85), (2.3, 3.35), (3.5, 4.1), (4.9, 5.6), (6.0, 7.7), (8.0, 10.0)],
+    HAVELI: [(0.0, 1.85), (2.0, 3.35), (3.5, 4.85), (5.0, 6.05), (6.3, 8.25), (8.75, 10.0)],
+    CASUAL: [(0.0, 1.85), (2.2, 3.35), (4.75, 6.6), (7.1, 8.85), (9.25, 10.0)],
+}
+EXTRA = {LAKE, HAVELI, CASUAL}
+MIN_SPEED = 0.5
+XF = 10                  # dissolve length, frames
+FAST = (51.4, 72.27)     # the fast-cut montage keeps hard cuts
+
+
 def run(cmd):
     subprocess.run(cmd, check=True)
 
@@ -115,35 +149,190 @@ def fr(t):
     return round(t * FPS)
 
 
-def our_shot(i, spec, n, path, fade_in, fade_out):
-    clip, ss, speed = spec[:3]
-    bw = len(spec) > 3 and spec[3]
+def take_of(clip, t):
+    """The clean take holding t (t snapped forward past a dissolve if needed)."""
+    for a, b in TAKES[clip]:
+        if a - 0.05 <= t < b - 0.3:
+            return max(t, a), b
+    for a, b in TAKES[clip]:
+        if a >= t:
+            return a, b
+    return TAKES[clip][-1]
+
+
+class Pool:
+    """Free source time per clip, so no moment appears twice."""
+    MARGIN = 0.22   # spare source after each use, for the dissolve overlap
+
+    def __init__(self):
+        self.free = {c: [list(x) for x in v] for c, v in TAKES.items()}
+        self.history = []     # (clip, a, b, film time)
+
+    def old_moment(self, now, need):
+        best = None
+        for c, takes in TAKES.items():
+            if c in (GLAM,) or c in EXTRA:
+                continue
+            for a, b in takes:
+                t = a
+                while t + need <= b:
+                    clash = [h for h in self.history if h[0] == c and h[1] < t + need and t < h[2]]
+                    if all(now - h[3] >= 90 for h in clash):
+                        last = max((h[3] for h in clash), default=-1e9)
+                        if best is None or last < best[0]:
+                            best = (last, c, t)
+                    t += 0.25
+        assert best, "no footage left to reuse"
+        return best[1], best[2]
+
+    def at(self, clip, t):
+        """Free stretch starting at (or just after) t in clip, as (start, length)."""
+        for a, b in self.free[clip]:
+            if a - 0.01 <= t < b:
+                return t, b - t
+        for a, b in self.free[clip]:
+            if a >= t:
+                return a, b - a
+        return t, 0.0
+
+    def use(self, clip, start, length):
+        end = start + length + self.MARGIN
+        out = []
+        for a, b in self.free[clip]:
+            if b <= start or a >= end:
+                out.append([a, b])
+            else:
+                if a < start:
+                    out.append([a, start])
+                if b > end:
+                    out.append([end, b])
+        self.free[clip] = [x for x in out if x[1] - x[0] > 0.05]
+
+    def largest(self, prefer, minimum, skip=()):
+        best = None
+        for c, iv in self.free.items():
+            if c == GLAM:
+                continue
+            for a, b in iv:
+                if (c, round(a, 3)) in skip:
+                    continue
+                L = b - a - self.MARGIN
+                score = L + (1.0 if c == prefer else 0.0) - (2.0 if c in EXTRA else 0.0)
+                if L >= minimum and (best is None or score > best[0]):
+                    best = (score, c, a, L)
+        return best
+
+
+def plan():
+    """Pieces: dicts with kind, n (frames), spec; plus dissolve flags between them."""
+    pool = Pool()
+    pieces = []
+    for i, (a_t, b_t) in enumerate(zip(BOUNDS, BOUNDS[1:])):
+        k = round(a_t, 3)
+        n = fr(b_t) - fr(a_t)
+        fin, fout = a_t in DIPS, b_t in DIPS
+        if k in R:
+            spec = R[k]
+            clip, ss, sp = spec[:3]
+            bw = len(spec) > 3 and spec[3]
+            sp = max(sp, MIN_SPEED)
+            subs, left = [], n
+            c = clip
+            t, _ = take_of(clip, ss)
+            start, avail = pool.at(c, t)
+            avail -= Pool.MARGIN
+            tried = set()
+            while left > 0:
+                need = left / FPS * sp
+                if avail >= need:
+                    m = left
+                else:
+                    m = int(avail / sp * FPS)
+                    if left - m < 30:
+                        m = left - 30
+                    if m < 30:
+                        m = 0
+                tried.add((c, round(start, 3)))
+                if m:
+                    pool.use(c, start, m / FPS * sp)
+                    pool.history.append((c, start, start + m / FPS * sp, a_t))
+                    subs.append({"kind": "ours", "clip": c, "ss": start, "sp": sp, "bw": bw, "n": m})
+                    left -= m
+                    if not left:
+                        break
+                pick = pool.largest(c, min(1.0, left / FPS * sp), tried)
+                if pick is None:
+                    # fresh footage has run out: reuse a moment last seen at
+                    # least a minute and a half earlier, rather than slowing
+                    # anything below MIN_SPEED
+                    c, start = pool.old_moment(a_t, left / FPS * sp + Pool.MARGIN)
+                    subs.append({"kind": "ours", "clip": c, "ss": start, "sp": sp, "bw": bw, "n": left})
+                    pool.history.append((c, start, start + left / FPS * sp, a_t))
+                    break
+                _, c, start, avail = pick
+            subs[0]["fin"] = fin
+            subs[-1]["fout"] = fout
+            subs[0]["t0"] = a_t
+            for j, sbt in enumerate(subs):
+                sbt["xf_in"] = j > 0      # dissolve between takes inside a shot
+                pieces.append(sbt)
+        elif k in BLACK:
+            pieces.append({"kind": "black", "n": n, "t0": a_t})
+        elif k in SLOW_BASE:
+            pieces.append({"kind": "slowbase", "src": SLOW_BASE[k], "n": n, "t0": a_t})
+        else:
+            pieces.append({"kind": "base", "a": fr(a_t), "n": n, "t0": a_t})
+    # dissolves at the film's own cuts: only outside the fast montage, never at
+    # a fade-to-black, and only where at least one side is ours
+    for j in range(1, len(pieces)):
+        A, B = pieces[j - 1], pieces[j]
+        if B.get("xf_in"):
+            continue
+        t = B.get("t0")
+        if t is None or t in DIPS or FAST[0] <= t <= FAST[1]:
+            continue
+        if "ours" in (A["kind"], B["kind"]) and A["n"] >= 30 and B["n"] >= 30:
+            B["xf_in"] = True
+    # who carries each overlap: ours extends (tail of A, else head of B)
+    for j in range(1, len(pieces)):
+        if pieces[j].get("xf_in"):
+            if pieces[j - 1]["kind"] == "ours":
+                pieces[j - 1]["tail"] = XF
+            else:
+                pieces[j]["head"] = XF
+    return pieces
+
+
+def our_shot(pc, path):
+    head, tail = pc.get("head", 0), pc.get("tail", 0)
+    n = pc["n"] + head + tail
+    sp = pc["sp"]
+    ss = max(0.0, pc["ss"] - head / FPS * sp)
     dur = n / FPS
     f = []
-    if speed < 1.0:
-        f.append(f"setpts={1/speed:.4f}*PTS,minterpolate=fps={FPS}:mi_mode=mci:mc_mode=aobmc:vsbmc=1")
+    if sp < 1.0:
+        f.append(f"setpts={1/sp:.4f}*PTS,minterpolate=fps={FPS}:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1:scd=fdiff")
     else:
         f.append(f"fps={FPS}")
     # generator watermark sits at x>1148, y>650: crop it away (no blur patch)
     f.append("crop=1136:639:6:4")
     f.append("scale=2560:1440:flags=lanczos")
-    f.append(f"zoompan=z='1.02+0.05*on/{max(n-1,1)}':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=1:s={W}x{H}:fps={FPS}")
+    f.append(f"zoompan=z='1.02+0.04*on/{max(n-1,1)}':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=1:s={W}x{H}:fps={FPS}")
     f.append(GRADE)
-    if bw:
+    if pc.get("bw"):
         f.append("hue=s=0,eq=contrast=1.08")
-    if fade_in:
+    if pc.get("fin"):
         f.append("fade=in:st=0:d=0.45")
-    if fade_out:
+    if pc.get("fout"):
         f.append(f"fade=out:st={dur-0.45:.3f}:d=0.45")
-    f.append("setsar=1,format=yuv420p")
-    assert ss + dur * speed <= 10.03, f"segment {i} runs past its clip"
-    run(["ffmpeg", "-v", "error", "-y", "-ss", str(ss), "-t", f"{dur*speed+0.5:.3f}", "-i", clip,
+    f.append("tpad=stop_mode=clone:stop_duration=0.5,setsar=1,format=yuv420p")
+    run(["ffmpeg", "-v", "error", "-y", "-ss", f"{ss:.3f}", "-t", f"{dur*sp+0.6:.3f}", "-i", pc["clip"],
          "-vf", ",".join(f), "-frames:v", str(n), "-an",
          "-c:v", "libx264", "-preset", "medium", "-crf", "14", path])
 
 
-def base_piece(i, a, b, path):
-    f = [f"trim=start_frame={a}:end_frame={b}", "setpts=PTS-STARTPTS", LOGO_CROP,
+def base_piece(a, n, path):
+    f = [f"trim=start_frame={a}:end_frame={a+n}", "setpts=PTS-STARTPTS", LOGO_CROP,
          f"scale={W}:{H}:flags=lanczos", "setsar=1", "format=yuv420p"]
     run(["ffmpeg", "-v", "error", "-y", "-i", BASE, "-vf", ",".join(f), "-an",
          "-r", str(FPS), "-c:v", "libx264", "-preset", "medium", "-crf", "14", path])
@@ -166,114 +355,188 @@ def black_piece(n, path):
          "-crf", "14", path])
 
 
+def xfade_run(files, lens, path):
+    """Join pieces with dissolves; every overlap is XF frames, carried by the
+    extended side, so the joined run keeps the film's exact length."""
+    inputs = []
+    for f in files:
+        inputs += ["-i", f]
+    fc, last, cur = [], "[0:v]", lens[0]
+    for k in range(1, len(files)):
+        off = (cur - XF) / FPS
+        out = f"[x{k}]"
+        fc.append(f"{last}[{k}:v]xfade=transition=fade:duration={XF/FPS:.4f}:offset={off:.4f}{out}")
+        last, cur = out, cur + lens[k] - XF
+    run(["ffmpeg", "-v", "error", "-y", *inputs, "-filter_complex", ";".join(fc), "-map", last,
+         "-r", str(FPS), "-c:v", "libx264", "-preset", "medium", "-crf", "14", "-pix_fmt", "yuv420p", path])
+    return cur
+
+
+def gold(mask):
+    return _finish(mask, 0)
+
+
+def centred(im):
+    out = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    out.alpha_composite(im, ((W - im.size[0]) // 2, (H - im.size[1]) // 2))
+    return out
+
+
+def tracked(d, x, y, text, font, track):
+    for c in text:
+        d.text((x, y), c, font=font, fill=255)
+        x += d.textlength(c, font=font) + track
+    return x
+
+
+def text_w(d, text, font, track):
+    return sum(d.textlength(c, font=font) for c in text) + track * (len(text) - 1)
+
+
+def centre_ink(im):
+    """Place an RGBA layer so its visible ink sits exactly at the frame centre."""
+    bb = im.getbbox()
+    ink = im.crop(bb)
+    out = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    out.alpha_composite(ink, ((W - ink.size[0]) // 2, (H - ink.size[1]) // 2))
+    return out
+
+
+def white_with_shadow(mask):
+    from PIL import ImageFilter
+    sh = Image.new("L", (W, H), 0)
+    sh.paste(mask, (2, 2))
+    sh = sh.filter(ImageFilter.GaussianBlur(3))
+    shadow = Image.new("RGBA", (W, H), (0, 0, 0, 0)); shadow.putalpha(sh.point(lambda v: int(v * 0.75)))
+    fill = Image.new("RGBA", (W, H), (252, 250, 246, 0)); fill.putalpha(mask)
+    return Image.alpha_composite(shadow, fill)
+
+
 def film_by_png(path):
-    """'A FILM BY PARTH D. JOSHI' in the base film's style: light serif capitals,
-    the name in bold, centred where the original credit sat."""
-    s = W / 1276
-    small = ImageFont.truetype(f"{FONTS}/cinzel_r.ttf", int(25 * s))
-    big = ImageFont.truetype(f"{FONTS}/cinzel_b.ttf", int(30 * s))
-    im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    a, b = "A FILM BY ", "PARTH D. JOSHI"
-    wa = d.textlength(a, font=small)
-    wb = d.textlength(b, font=big)
-    x = (W - wa - wb) / 2
-    base_y = int(373 * H / 718)
+    """'A FILM BY PARTH D. JOSHI' in Cinzel, white, centred on screen."""
+    small = ImageFont.truetype(f"{FONTS}/cinzel_r.ttf", 26)
+    big = ImageFont.truetype(f"{FONTS}/cinzel_b.ttf", 32)
+    m = Image.new("L", (W, H), 0)
+    d = ImageDraw.Draw(m)
+    a, b = "A Film By ", "Parth D. Joshi"
+    wa = text_w(d, a, small, 3) + 3
+    base = H // 2
     asc_s, _ = small.getmetrics(); asc_b, _ = big.getmetrics()
-    for dx, dy in ((1, 1), (2, 2)):
-        d.text((x + dx, base_y - asc_s + dy), a, font=small, fill=(0, 0, 0, 90))
-        d.text((x + wa + dx, base_y - asc_b + dy), b, font=big, fill=(0, 0, 0, 90))
-    d.text((x, base_y - asc_s), a, font=small, fill=(242, 240, 236, 255))
-    d.text((x + wa, base_y - asc_b), b, font=big, fill=(255, 255, 255, 255))
-    im.save(path)
+    x = tracked(d, 100, base - asc_s, a, small, 3)
+    tracked(d, 100 + wa, base - asc_b, b, big, 4)
+    centre_ink(white_with_shadow(m)).save(path)
 
 
 def names_lower_png(path):
-    """'Ravi & Sakshi' lower third in the base film's style (thin, white)."""
-    font = ImageFont.truetype(f"{FONTS}/corm_r.ttf", int(48 * W / 1276))
-    im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    t = "Ravi & Sakshi"
-    l, tp, r, b = d.textbbox((0, 0), t, font=font)
-    x = (W - (r - l)) / 2 - l
-    y = int(655 * H / 718) - b
-    for dx, dy, a in ((1, 1, 140), (2, 2, 90), (0, 0, 60)):
-        d.text((x + dx, y + dy), t, font=font, fill=(0, 0, 0, a), stroke_width=2 if a == 60 else 0)
-    d.text((x, y), t, font=font, fill=(250, 248, 244, 255))
-    im.save(path)
+    """'Ravi & Sakshi' card where the previous couple's name sat, in Cinzel,
+    white with a soft shadow, centred on screen."""
+    font = ImageFont.truetype(f"{FONTS}/cinzel_r.ttf", 44)
+    m = Image.new("L", (W, H), 0)
+    tracked(ImageDraw.Draw(m), 100, H // 2, "Ravi & Sakshi", font, 5)
+    centre_ink(white_with_shadow(m)).save(path)
 
 
 def end_names_png(path):
-    """Closing card: 'Ravi & Sakshi' big, gold calligraphy, centred."""
-    n = names_title(f"{FONTS}/parisienne.ttf", 1.0)
-    n = names_title(f"{FONTS}/parisienne.ttf", W * 0.84 / n.size[0])  # big, inside the frame
-    im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    im.alpha_composite(n, ((W - n.size[0]) // 2, (H - n.size[1]) // 2))
-    im.save(path)
+    """Closing card: 'RAVI & SAKSHI' large in gold Cinzel with the lotus divider."""
+    font = ImageFont.truetype(f"{FONTS}/cinzel_b.ttf", 88)
+    m = Image.new("L", (W, H), 0)
+    d = ImageDraw.Draw(m)
+    t, track = "Ravi & Sakshi", 8
+    tw = text_w(d, t, font, track)
+    l, tp, r, b = d.textbbox((0, 0), t, font=font)
+    y = H // 2 - 80
+    tracked(d, (W - tw) / 2, y - tp, t, font, track)
+    lotus_divider(d, W // 2, y + (b - tp) + 26, 56, int(tw * 0.42), 3)
+    centre_ink(gold(m)).save(path)
+
+
+def film_by_end_png(path):
+    """Closing card: 'A Film By' / 'PARTH D. JOSHI' in gold Cinzel."""
+    small = ImageFont.truetype(f"{FONTS}/cinzel_r.ttf", 30)
+    big = ImageFont.truetype(f"{FONTS}/cinzel_b.ttf", 56)
+    m = Image.new("L", (W, H), 0)
+    d = ImageDraw.Draw(m)
+    a, b = "A Film By", "Parth D. Joshi"
+    wa, wb = text_w(d, a, small, 4), text_w(d, b, big, 6)
+    y = H // 2 - 60
+    tracked(d, (W - wa) / 2, y, a, small, 4)
+    tracked(d, (W - wb) / 2, y + 52, b, big, 6)
+    centre_ink(gold(m)).save(path)
 
 
 def mahadev_png(path):
-    """Closing card: 'HAR HAR MAHADEV' in gold capitals with the lotus divider."""
+    """Last frame: 'HAR HAR MAHADEV' in gold Cinzel with the lotus divider."""
     font = ImageFont.truetype(f"{FONTS}/cinzel_b.ttf", 64)
-    mask = Image.new("L", (W, H), 0)
-    d = ImageDraw.Draw(mask)
-    t = "HAR HAR MAHADEV"
-    track = 10
-    widths = [d.textlength(c, font=font) for c in t]
-    tw = sum(widths) + track * (len(t) - 1)
+    m = Image.new("L", (W, H), 0)
+    d = ImageDraw.Draw(m)
+    t, track = "HAR HAR MAHADEV", 10
+    tw = text_w(d, t, font, track)
     l, tp, r, b = d.textbbox((0, 0), t, font=font)
-    x = (W - tw) / 2
     y = H // 2 - 70
-    for c, cw in zip(t, widths):
-        d.text((x, y - tp), c, font=font, fill=255)
-        x += cw + track
+    tracked(d, (W - tw) / 2, y - tp, t, font, track)
     lotus_divider(d, W // 2, y + (b - tp) + 22, 52, int(tw * 0.42), 3)
-    out = _finish(mask, 0)
-    im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    im.alpha_composite(out, ((W - out.size[0]) // 2, (H - out.size[1]) // 2))
-    im.save(path)
+    centre_ink(gold(m)).save(path)
 
 
 def main():
-    parts = []
-    for i, (a_t, b_t) in enumerate(zip(BOUNDS, BOUNDS[1:])):
-        a, b = fr(a_t), fr(b_t)
-        p = os.path.join(WORK, f"p{i:03d}.mp4")
-        parts.append(p)
-        if os.environ.get("REUSE") and os.path.exists(p):
-            continue
-        k = round(a_t, 3)
-        if k in R:
-            our_shot(i, R[k], b - a, p, a_t in DIPS, b_t in DIPS)
-        elif k in BLACK:
-            black_piece(b - a, p)
-        elif k in SLOW_BASE:
-            base_slow(*SLOW_BASE[k], b - a, p)
+    pieces = plan()
+    reuse = os.environ.get("REUSE")
+    files, lens = [], []
+    for j, pc in enumerate(pieces):
+        p = os.path.join(WORK, f"q{j:03d}.mp4")
+        L = pc["n"] + pc.get("head", 0) + pc.get("tail", 0)
+        if not (reuse and os.path.exists(p)):
+            if pc["kind"] == "ours":
+                our_shot(pc, p)
+            elif pc["kind"] == "black":
+                black_piece(pc["n"], p)
+            elif pc["kind"] == "slowbase":
+                base_slow(*pc["src"], pc["n"], p)
+            else:
+                base_piece(pc["a"], pc["n"], p)
+        files.append(p); lens.append(L)
+    # group into runs joined by dissolves
+    runs, cur = [], [0]
+    for j in range(1, len(pieces)):
+        if pieces[j].get("xf_in"):
+            cur.append(j)
         else:
-            base_piece(i, a, b, p)
+            runs.append(cur); cur = [j]
+    runs.append(cur)
+    parts = []
+    for r_i, run_ in enumerate(runs):
+        if len(run_) == 1:
+            parts.append(files[run_[0]])
+        else:
+            p = os.path.join(WORK, f"run{r_i:03d}.mp4")
+            if not (reuse and os.path.exists(p)):
+                xfade_run([files[j] for j in run_], [lens[j] for j in run_], p)
+            parts.append(p)
     with open(os.path.join(WORK, "list.txt"), "w") as fh:
         fh.writelines(f"file '{p}'\n" for p in parts)
-    film_by_png(os.path.join(WORK, "filmby.png"))
-    names_lower_png(os.path.join(WORK, "names_lower.png"))
-    end_names_png(os.path.join(WORK, "end_names.png"))
-    mahadev_png(os.path.join(WORK, "mahadev.png"))
+    for fn, name in ((film_by_png, "filmby"), (names_lower_png, "names_lower"),
+                     (end_names_png, "end_names"), (film_by_end_png, "filmby_end"),
+                     (mahadev_png, "mahadev")):
+        fn(os.path.join(WORK, f"{name}.png"))
     T = BOUNDS[-1]
     out = os.path.join(OUT, "Ravi_Sakshi_Banaras_Film_16x9.mp4")
-    # credit stays through the palace shot (same span as the original credit,
-    # now a little longer), then fades; names lower third where the old one sat;
-    # closing card: names, then Har Har Mahadev
+    # credit through the palace shot; names lower third where the old one sat;
+    # closing card: names, credit, then Har Har Mahadev on the last frame
     fc = (f"[2:v]format=rgba,fade=in:st=87.8:d=0.8:alpha=1,fade=out:st=93.6:d=0.7:alpha=1[t];"
           f"[3:v]format=rgba,fade=in:st=135.0:d=0.6:alpha=1,fade=out:st=140.9:d=0.6:alpha=1[nl];"
-          f"[4:v]format=rgba,fade=in:st=273.7:d=0.9:alpha=1,fade=out:st=276.5:d=0.6:alpha=1[en];"
-          f"[5:v]format=rgba,fade=in:st=277.3:d=0.8:alpha=1,fade=out:st=279.6:d=0.7:alpha=1[hm];"
+          f"[4:v]format=rgba,fade=in:st=273.5:d=0.8:alpha=1,fade=out:st=275.4:d=0.5:alpha=1[en];"
+          f"[5:v]format=rgba,fade=in:st=275.9:d=0.7:alpha=1,fade=out:st=277.6:d=0.5:alpha=1[fb];"
+          f"[6:v]format=rgba,fade=in:st=278.1:d=0.7:alpha=1[hm];"
           f"[0:v][t]overlay=0:0:enable='between(t,87.7,94.4)':format=auto[v1];"
           f"[v1][nl]overlay=0:0:enable='between(t,134.9,141.6)':format=auto[v2];"
-          f"[v2][en]overlay=0:0:enable='between(t,273.6,277.2)':format=auto[v3];"
-          f"[v3][hm]overlay=0:0:enable='between(t,277.2,280.4)':format=auto,format=yuv420p[v]")
+          f"[v2][en]overlay=0:0:enable='between(t,273.4,276.0)':format=auto[v3];"
+          f"[v3][fb]overlay=0:0:enable='between(t,275.8,278.2)':format=auto[v4];"
+          f"[v4][hm]overlay=0:0:enable='gte(t,278.0)':format=auto,format=yuv420p[v]")
     run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", os.path.join(WORK, "list.txt"),
          "-i", BASE, "-loop", "1", "-t", str(T), "-i", os.path.join(WORK, "filmby.png"),
          "-loop", "1", "-t", str(T), "-i", os.path.join(WORK, "names_lower.png"),
          "-loop", "1", "-t", str(T), "-i", os.path.join(WORK, "end_names.png"),
+         "-loop", "1", "-t", str(T), "-i", os.path.join(WORK, "filmby_end.png"),
          "-loop", "1", "-t", str(T), "-i", os.path.join(WORK, "mahadev.png"),
          "-filter_complex", fc, "-map", "[v]", "-map", "1:a",
          "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-maxrate", "10M", "-bufsize", "20M",
