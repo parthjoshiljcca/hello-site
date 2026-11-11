@@ -63,7 +63,7 @@ R = {
     48: (BAZAAR, 2.8, 1.0, True), 49: (STEPWELL, 6.8, 1.0, True), 51: (GHAT, 6.45, 1.0, True),
     56: (DOVES, 4.4, 0.8), 57: (AARTI, 7.45, 0.33), 63: (GHATWALK, 2.0, 0.48),
     64: (COURT, 0.0, 0.7), 67: (GHAT, 2.4, 0.55), 68: (TEMPLE, 8.05, 0.9),
-    69: (BLOOM, 0.2, 0.4), 71: (DOVES, 7.95, 0.5), 73: (BEACH, 7.0, 0.5),
+    69: (BLOOM, 0.2, 0.4), 71: (DOVES, 7.9, 0.48), 73: (BEACH, 7.0, 0.5),
     74: (BAZAAR, 4.9, 0.6), 75: (SPICE, 0.3, 0.9), 76: (GHAT, 4.5, 0.4),
     77: (BEACH, 8.6, 0.6), 78: (STEPWELL, 1.2, 0.6), 79: (GHATWALK, 8.0, 0.45),
     80: (COURT, 8.75, 0.3), 81: (BAZAAR, 8.0, 0.38), 82: (DOVES, 2.0, 0.42),
@@ -72,9 +72,9 @@ R = {
     96: (STAIRS, 1.5, 0.5), 97: (COURT, 4.6, 0.85), 98: (SPICE, 3.95, 0.7),
     99: (GHATWALK, 4.85, 0.55), 100: (GLAM, 6.5, 0.55), 101: (STAIRS, 4.5, 0.55),
     102: (BLOOM, 7.5, 0.65), 103: (DOVES, 5.6, 0.55), 104: (STEPWELL, 5.4, 0.65),
-    105: (TEMPLE, 0.2, 0.6), 106: (STEPWELL, 9.0, 0.45), 107: (BOAT, 3.8, 0.4),
-    108: (STAIRS, 0.2, 0.48), 109: (STAIRS, 9.25, 0.3), 110: (SPICE, 1.85, 0.7),
-    111: (GHAT, 9.2, 0.32),
+    105: (TEMPLE, 0.2, 0.6), 106: (STEPWELL, 9.0, 0.45), 107: (BOAT, 3.78, 0.38),
+    108: (STAIRS, 0.2, 0.48), 109: (STAIRS, 9.25, 0.27), 110: (SPICE, 1.85, 0.7),
+    111: (GHAT, 9.2, 0.29),
 }
 BLACK = {58, 113}       # "A FILM BY SHAGUN" black card, closing logo card
 TEXT_SEG = 59           # palace shot carrying the end of the film-by text
