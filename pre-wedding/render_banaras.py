@@ -154,6 +154,7 @@ def base_slow(src_a, src_b, n, path):
     f = [f"trim=start={src_a}:end={src_b}", "setpts=PTS-STARTPTS", LOGO_CROP,
          f"scale={W}:{H}:flags=lanczos",
          f"setpts={1/speed:.4f}*PTS,minterpolate=fps={FPS}:mi_mode=mci:mc_mode=aobmc:vsbmc=1",
+         "tpad=stop_mode=clone:stop_duration=0.3",  # exact frame count
          "setsar=1", "format=yuv420p"]
     run(["ffmpeg", "-v", "error", "-y", "-i", BASE, "-vf", ",".join(f), "-an", "-frames:v", str(n),
          "-c:v", "libx264", "-preset", "medium", "-crf", "14", path])
@@ -189,14 +190,15 @@ def film_by_png(path):
 
 def names_lower_png(path):
     """'Ravi & Sakshi' lower third in the base film's style (thin, white)."""
-    font = ImageFont.truetype(f"{FONTS}/corm_l.ttf", int(46 * W / 1276))
+    font = ImageFont.truetype(f"{FONTS}/corm_r.ttf", int(48 * W / 1276))
     im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(im)
     t = "Ravi & Sakshi"
     l, tp, r, b = d.textbbox((0, 0), t, font=font)
     x = (W - (r - l)) / 2 - l
     y = int(655 * H / 718) - b
-    d.text((x + 1, y + 1), t, font=font, fill=(0, 0, 0, 110))
+    for dx, dy, a in ((1, 1, 140), (2, 2, 90), (0, 0, 60)):
+        d.text((x + dx, y + dy), t, font=font, fill=(0, 0, 0, a), stroke_width=2 if a == 60 else 0)
     d.text((x, y), t, font=font, fill=(250, 248, 244, 255))
     im.save(path)
 
