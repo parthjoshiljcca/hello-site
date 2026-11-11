@@ -1,29 +1,110 @@
 [
-["आपके phone में हज़ारों photos, contacts, messages और apps हैं।","Aapke phone mein hazaaron photos, contacts, messages aur apps hain."],
-["फिर भी आप किसी का नाम type करते हो, और contact पलक झपकते मिल जाता है। कैसे?","Phir bhi aap kisi ka naam type karte ho, aur contact palak jhapakte mil jaata hai. Kaise?"],
-["इसका राज़ है, Data Structures।","Iska raaz hai, Data Structures."],
-["पहले एक सवाल। आपका कमरा पूरा बिखरा हुआ है, और मम्मी कहती हैं, मेरी चाबी ढूँढो।","Pehle ek sawaal. Aapka kamra poora bikhra hua hai, aur mummy kehti hain, meri chaabi dhoondho."],
-["अब आप हर कोने में एक एक चीज़ उठाकर देखोगे। बहुत time लगेगा।","Ab aap har kone mein ek ek cheez uthaakar dekhoge. Bahut time lagega."],
-["लेकिन अगर दरवाज़े के पास एक key holder हो, जहाँ चाबी हमेशा टँगी रहती है, तो एक second में मिल जाएगी।","Lekin agar darwaaze ke paas ek key holder ho, jahan chaabi hamesha tangi rehti hai, toh ek second mein mil jaayegi."],
-["बस यही है data structure। Data को ऐसे रखना, कि ज़रूरत पड़ने पर काम तेज़ी से हो।","Bas yahi hai data structure. Data ko aise rakhna, ki zaroorat padne par kaam tezi se ho."],
-["Computer के लिए ये और भी ज़रूरी है। Instagram पर करोड़ों users हैं।","Computer ke liye yeh aur bhi zaroori hai. Instagram par crore users hain."],
-["अगर वो हर username एक एक करके check करे, तो search बहुत slow हो जाए।","Agar woh har username ek ek karke check kare, toh search bahut slow ho jaaye."],
-["सही data structure से वही काम पलक झपकते हो जाता है।","Sahi data structure se wahi kaam palak jhapakte ho jaata hai."],
-["और मज़े की बात, हर काम के लिए अलग तरीका होता है। चलो real life में देखते हैं।","Aur maze ki baat, har kaam ke liye alag tareeka hota hai. Chalo real life mein dekhte hain."],
-["Train के डिब्बे एक line में, हर डिब्बे का अपना number। Number पता हो, तो सीधे वहीं पहुँचो। ये है Array।","Train ke dibbe ek line mein, har dibbe ka apna number. Number pata ho, toh seedhe wahin pahuncho. Yeh hai Array."],
-["Treasure hunt, जहाँ हर clue अगले clue का पता बताता है। ये है Linked List।","Treasure hunt, jahan har clue agle clue ka pata batata hai. Yeh hai Linked List."],
-["शादी में plates का ढेर। जो plate सबसे आख़िर में रखी, वही सबसे पहले उठती है।","Shaadi mein plates ka dher. Jo plate sabse aakhir mein rakhi, wahi sabse pehle uthti hai."],
-["ये है Stack। आपका undo button भी यही करता है।","Yeh hai Stack. Aapka undo button bhi yahi karta hai."],
-["चाय की दुकान पर line। जो पहले आया, उसे पहले चाय। ये है Queue।","Chai ki dukaan par line. Jo pehle aaya, use pehle chai. Yeh hai Queue."],
-["Family tree, दादा जी से पापा, पापा से आप। ये है Tree।","Family tree, Dada ji se Papa, Papa se aap. Yeh hai Tree."],
-["आपके phone के folders भी ऐसे ही जुड़े हैं।","Aapke phone ke folders bhi aise hi jude hain."],
-["Metro map, हर station कई stations से जुड़ा हुआ। ये है Graph।","Metro map, har station kai stations se juda hua. Yeh hai Graph."],
-["Google Maps भी रास्ता ढूँढने के लिए graph की तरह ही सोचता है।","Google Maps bhi raasta dhoondhne ke liye graph ki tarah hi sochta hai."],
-["और locker room, जहाँ हर नाम का locker number तय है। नाम बोलो, सीधे locker खोलो। ये है Hash Table।","Aur locker room, jahan har naam ka locker number tay hai. Naam bolo, seedhe locker kholo. Yeh hai Hash Table."],
-["तो data structures की ज़रूरत क्यों पड़ी? क्योंकि data बढ़ता गया।","Toh data structures ki zaroorat kyun padi? Kyunki data badhta gaya."],
-["और हमें चाहिए था, सही चीज़, सही जगह पर, सही speed से।","Aur humein chahiye tha, sahi cheez, sahi jagah par, sahi speed se."],
-["याद रखने का trick। Array train, Linked List treasure hunt, Stack plates।","Yaad rakhne ka trick. Array train, Linked List treasure hunt, Stack plates."],
-["Queue चाय की line, Tree family, Graph metro, और Hash Table locker।","Queue chai ki line, Tree family, Graph metro, aur Hash Table locker."],
-["अगले episode में, Array को गहराई से समझेंगे। Series follow कर लो।","Agle episode mein, Array ko gehraai se samjhenge. Series follow kar lo."],
-["आपको कौन सा data structure सबसे interesting लगा? Comments में बताओ।","Aapko kaun sa data structure sabse interesting laga? Comments mein batao."]
+[
+"आपके फ़ोन में हज़ारों फ़ोटोज़, कॉन्टैक्ट्स, मैसेजेज़ और ऐप्स हैं।",
+"Aapke phone mein hazaaron photos, contacts, messages aur apps hain."
+],
+[
+"फिर भी आप किसी का नाम टाइप करते हो, और कॉन्टैक्ट पलक झपकते मिल जाता है। कैसे?",
+"Phir bhi aap kisi ka naam type karte ho, aur contact palak jhapakte mil jaata hai. Kaise?"
+],
+[
+"इसका राज़ है, डेटा स्ट्रक्चर्स।",
+"Iska raaz hai, Data Structures."
+],
+[
+"पहले एक सवाल। आपका कमरा पूरा बिखरा हुआ है, और मम्मी कहती हैं, मेरी चाबी ढूँढो।",
+"Pehle ek sawaal. Aapka kamra poora bikhra hua hai, aur mummy kehti hain, meri chaabi dhoondho."
+],
+[
+"अब आप हर कोने में एक एक चीज़ उठाकर देखोगे। बहुत टाइम लगेगा।",
+"Ab aap har kone mein ek ek cheez uthaakar dekhoge. Bahut time lagega."
+],
+[
+"लेकिन अगर दरवाज़े के पास एक की होल्डर हो, जहाँ चाबी हमेशा टँगी रहती है, तो एक सेकंड में मिल जाएगी।",
+"Lekin agar darwaaze ke paas ek key holder ho, jahan chaabi hamesha tangi rehti hai, toh ek second mein mil jaayegi."
+],
+[
+"बस यही है डेटा स्ट्रक्चर। डेटा को ऐसे रखना, कि ज़रूरत पड़ने पर काम तेज़ी से हो।",
+"Bas yahi hai data structure. Data ko aise rakhna, ki zaroorat padne par kaam tezi se ho."
+],
+[
+"कंप्यूटर के लिए ये और भी ज़रूरी है। इंस्टाग्राम पर करोड़ों यूज़र्स हैं।",
+"Computer ke liye yeh aur bhi zaroori hai. Instagram par crore users hain."
+],
+[
+"अगर वो हर यूज़रनेम एक एक करके चेक करे, तो सर्च बहुत स्लो हो जाए।",
+"Agar woh har username ek ek karke check kare, toh search bahut slow ho jaaye."
+],
+[
+"सही डेटा स्ट्रक्चर से वही काम पलक झपकते हो जाता है।",
+"Sahi data structure se wahi kaam palak jhapakte ho jaata hai."
+],
+[
+"और मज़े की बात, हर काम के लिए अलग तरीका होता है। चलो रियल लाइफ़ में देखते हैं।",
+"Aur maze ki baat, har kaam ke liye alag tareeka hota hai. Chalo real life mein dekhte hain."
+],
+[
+"ट्रेन के डिब्बे एक लाइन में, हर डिब्बे का अपना नंबर। नंबर पता हो, तो सीधे वहीं पहुँचो। ये है ऐरे।",
+"Train ke dibbe ek line mein, har dibbe ka apna number. Number pata ho, toh seedhe wahin pahuncho. Yeh hai Array."
+],
+[
+"ट्रेज़र हंट, जहाँ हर क्लू अगले क्लू का पता बताता है। ये है लिंक्ड लिस्ट।",
+"Treasure hunt, jahan har clue agle clue ka pata batata hai. Yeh hai Linked List."
+],
+[
+"शादी में प्लेट्स का ढेर। जो प्लेट सबसे आख़िर में रखी, वही सबसे पहले उठती है।",
+"Shaadi mein plates ka dher. Jo plate sabse aakhir mein rakhi, wahi sabse pehle uthti hai."
+],
+[
+"ये है स्टैक। आपका अनडू बटन भी यही करता है।",
+"Yeh hai Stack. Aapka undo button bhi yahi karta hai."
+],
+[
+"चाय की दुकान पर लाइन। जो पहले आया, उसे पहले चाय। ये है क्यू।",
+"Chai ki dukaan par line. Jo pehle aaya, use pehle chai. Yeh hai Queue."
+],
+[
+"फ़ैमिली ट्री, दादा जी से पापा, पापा से आप। ये है ट्री।",
+"Family tree, Dada ji se Papa, Papa se aap. Yeh hai Tree."
+],
+[
+"आपके फ़ोन के फ़ोल्डर्स भी ऐसे ही जुड़े हैं।",
+"Aapke phone ke folders bhi aise hi jude hain."
+],
+[
+"मेट्रो मैप, हर स्टेशन कई स्टेशनों से जुड़ा हुआ। ये है ग्राफ़।",
+"Metro map, har station kai stations se juda hua. Yeh hai Graph."
+],
+[
+"गूगल मैप्स भी रास्ता ढूँढने के लिए ग्राफ़ की तरह ही सोचता है।",
+"Google Maps bhi raasta dhoondhne ke liye graph ki tarah hi sochta hai."
+],
+[
+"और लॉकर रूम, जहाँ हर नाम का लॉकर नंबर तय है। नाम बोलो, सीधे लॉकर खोलो। ये है हैश टेबल।",
+"Aur locker room, jahan har naam ka locker number tay hai. Naam bolo, seedhe locker kholo. Yeh hai Hash Table."
+],
+[
+"तो डेटा स्ट्रक्चर्स की ज़रूरत क्यों पड़ी? क्योंकि डेटा बढ़ता गया।",
+"Toh data structures ki zaroorat kyun padi? Kyunki data badhta gaya."
+],
+[
+"और हमें चाहिए था, सही चीज़, सही जगह पर, सही स्पीड से।",
+"Aur humein chahiye tha, sahi cheez, sahi jagah par, sahi speed se."
+],
+[
+"याद रखने का ट्रिक। ऐरे ट्रेन, लिंक्ड लिस्ट ट्रेज़र हंट, स्टैक प्लेट्स।",
+"Yaad rakhne ka trick. Array train, Linked List treasure hunt, Stack plates."
+],
+[
+"क्यू चाय की लाइन, ट्री फ़ैमिली, ग्राफ़ मेट्रो, और हैश टेबल लॉकर।",
+"Queue chai ki line, Tree family, Graph metro, aur Hash Table locker."
+],
+[
+"अगले एपिसोड में, ऐरे को गहराई से समझेंगे। सीरीज़ फ़ॉलो कर लो।",
+"Agle episode mein, Array ko gehraai se samjhenge. Series follow kar lo."
+],
+[
+"आपको कौन सा डेटा स्ट्रक्चर सबसे इंटरेस्टिंग लगा? कमेंट्स में बताओ।",
+"Aapko kaun sa data structure sabse interesting laga? Comments mein batao."
+]
 ]

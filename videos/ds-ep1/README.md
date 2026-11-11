@@ -1,6 +1,6 @@
 # The Why Spaces · Data Structures Series · Ep. 1: Data Structures ki zaroorat kyun padi?
 
-Final: `ds-ep1-data-structures-kyun.mp4` (1080x1920, 30 fps, about 2:09 of content plus The Why Spaces credit)
+Final: `ds-ep1-data-structures-kyun.mp4` (1080x1920, 30 fps, about 2:18 of content plus The Why Spaces credit)
 
 This is the first episode of The Why Spaces' own Data Structures series, in the locked Why Spaces style (`../STYLE.md`) with Kabir's voice and the cinematic default: 3D camera moves, 2D camera motion, and cinematic SFX ducked under the narration. The 3D shots are in `../ds-ep1-3d`.
 
@@ -37,6 +37,13 @@ The core "why" is a messy room vs a key holder by the door: storing data is easy
 21–22. **Recap mnemonic:** each data structure = its analogy, with icons.
 23. Next: EP 02, Array.
 24. Comment prompt.
+
+## Narration v2 (natural voice fix)
+The first cut sounded unnatural. Measured, each of the 24 TTS calls landed at a different base pitch (95–124 Hz, a 5.4-semitone spread), and some English tech words were mispronounced (Array came out as "arre"). The fix:
+- **Pronunciation:** the TTS text writes every English or tech word in Devanagari (ऐरे, हैश टेबल, अनडू, लिंक्ड लिस्ट…); the on-screen captions stay in Roman.
+- **Steadier prosody:** `temperature` 0.35 and pace 1.1 (instead of 1.2), set via the `TTS_TEMP` / `TTS_PACE` env vars in `src/tts.py`.
+- **Consistent pitch:** clips more than 1.5 semitones off ~108 Hz are regenerated (best of up to 4). Then every clip is shifted to 108 Hz with ffmpeg `rubberband` (`formant=preserved`, so the timbre stays natural). The final spread is 0.5 semitones.
+- All clips were re-verified with `saarika:v2.5` and faster-whisper. `narration-before-after.mp3` compares the same passage old vs new.
 
 ## Production
 - Narration: Sarvam `bulbul:v3`, speaker kabir, `hi-IN`, pace 1.2, with 24 calls, each under 12 s. All clips were checked with `saarika:v2.5` and for trailing junk with local faster-whisper (all clean).
