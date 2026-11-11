@@ -26,7 +26,7 @@ This uses the locked Why Spaces style (`../STYLE.md`) and Kabir's voice. Most sc
 - Narration: Sarvam `bulbul:v3`, speaker kabir, `hi-IN`, pace 1.2, with one call per scene. All scenes were checked with `saarika:v2.5` and checked for trailing junk with local faster-whisper (all clean).
 - Mix: the voice is in front, over the locked 112 bpm structure with a minor progression. SFX include heartbeats, alarm beeps, a lion roar, notification pings, and breath in/out on the orb.
 - 2D: `src/scenes.js` is built from `parts/base.part`, `parts/anx.part` (titles, primitives and scenes), `parts/prims.part` and `parts/dom.part`. The 3D scenes keep only their 2D badges in the base.
-- 3D: `../why-anxiety-3d`. Segments are rendered with `--gl=swangle --concurrency=1` and one warm-up frame, because the first WebGL frame renders blank. `tools/splice.py` swaps them into the base frame-exactly, adds the mix and appends the credit.
+- Encode: crf 24 / maxrate 4.8M (37 MB). 3D: `../why-anxiety-3d`. Segments are rendered with `--gl=swangle --concurrency=1` and one warm-up frame, because the first WebGL frame renders blank. `tools/splice.py` swaps them into the base frame-exactly, adds the mix and appends the credit.
 
 ## Rebuild
 Use any work directory `$W`.
