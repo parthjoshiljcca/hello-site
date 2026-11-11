@@ -27,7 +27,7 @@ Beliefs are framed as maanyata, lok katha or "puraanon ke anusaar", never as fac
 - The Puran scene (about 15 s) was cut off by the TTS length cap mid-word, so it was split into two scenes (`src/groups.json`) and regenerated. Keep each TTS call under about 12 s.
 - Mix: the voice is in front, over the 112 bpm structure with a minor progression. SFX include a chime on the nimbu, a bite, a roar for the Kirtimukha and the creature, a drone, and thuds.
 - 3D: the first 3D segment starts at frame 0, so it is rendered without a warm-up frame (its first frame is fully faded anyway); `tools/splice.py` handles this.
-- Encode: crf 24 / maxrate 4.8M.
+- Encode: crf 25 / maxrate 3.2M (39 MB for 2:25).
 
 ## Rebuild
 The steps are the same as for `../why-anxiety`. Use `src/` here and `../nimbu-mirchi-3d` (composition `Nazar3D`, `tools/segments.py`, `tools/splice.py`).
