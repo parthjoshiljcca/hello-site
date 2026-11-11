@@ -4,13 +4,16 @@
 Re-cut of the team's earlier Banaras film (used with permission): every shot of
 the previous couple is replaced, frame-for-frame on the same cut points, with a
 matching Ravi & Sakshi shot; the B-roll, song and pacing stay. The corner logo
-is removed throughout, "A FILM BY SHAGUN" becomes "A FILM BY PARTH D. JOSHI"
-in the same style and timing, and the closing logo card becomes black.
+is cropped away throughout, "A FILM BY SHAGUN" becomes "A FILM BY PARTH D. JOSHI"
+in the same style, the previous couple's name card becomes "Ravi & Sakshi", and
+the closing logo card becomes "Ravi & Sakshi" and "Har Har Mahadev".
 
 usage: render_banaras.py <uploads_dir> <fonts_dir> <work_dir> <out_dir>
 """
 import glob, os, subprocess, sys
 from PIL import Image, ImageDraw, ImageFont
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from title_style import names_title, lotus_divider, _finish
 
 UP, FONTS, WORK, OUT = sys.argv[1:5]
 FPS, W, H = 30, 1280, 720
@@ -77,14 +80,31 @@ R = {
     111: (GHAT, 9.2, 0.29),
 }
 BLACK = {58, 113}       # "A FILM BY SHAGUN" black card, closing logo card
-TEXT_SEG = 59           # palace shot carrying the end of the film-by text
+
+# Re-key by segment start time, then add the fast black & white cuts (69.5-71.2s)
+# that the first detection pass merged, replacing the old couple there too.
+R = {round(BOUNDS[i], 3): v for i, v in R.items()}
+BLACK = {round(BOUNDS[i], 3) for i in BLACK}
+BOUNDS = sorted(BOUNDS + [69.7, 69.967, 70.867, 71.167])
+R.update({
+    69.5: (BLOOM, 2.3, 1.0, True),       # groom under the flower arch
+    69.967: (BAZAAR, 6.6, 1.0, True),    # close-up in the lane
+    70.867: (STEPWELL, 7.6, 1.0, True),  # hands on the steps
+    71.03: (STAIRS, 3.8, 1.0, True),     # sherwani detail
+    # boats B-roll that carried the previous couple's names: our water shot
+    133.3: (BEACH, 0.0, 0.4),
+})
+# palace shot that carried "A FILM BY SHAGUN": rebuilt from its clean tail
+# (92.55s on), slowed to the same length, so no patch is ever needed
+SLOW_BASE = {91.23: (92.55, 95.37)}
 
 # grade for our shots, matched to the base film's measured look
 GRADE = ("colortemperature=temperature=7800:mix=0.9,"
          "eq=contrast=1.0:saturation=0.86:brightness=0.045:gamma=1.08,"
          "curves=all='0/0.025 0.5/0.545 1/0.975'")
-LOGO = "delogo=x=6:y=6:w=96:h=76"           # base film's corner logo
-FILMBY_BOX = "delogo=x=468:y=334:w=342:h=50"  # base film's "A FILM BY SHAGUN"
+# base film's corner logo sits in x<104, y<84: crop it away instead of
+# blurring it (no patch), keeping 16:9
+LOGO_CROP = "crop=1168:657:108:30"
 
 
 def run(cmd):
@@ -99,13 +119,15 @@ def our_shot(i, spec, n, path, fade_in, fade_out):
     clip, ss, speed = spec[:3]
     bw = len(spec) > 3 and spec[3]
     dur = n / FPS
-    f = ["delogo=x=1148:y=650:w=114:h=48"]  # generator watermark
+    f = []
     if speed < 1.0:
         f.append(f"setpts={1/speed:.4f}*PTS,minterpolate=fps={FPS}:mi_mode=mci:mc_mode=aobmc:vsbmc=1")
     else:
         f.append(f"fps={FPS}")
+    # generator watermark sits at x>1148, y>650: crop it away (no blur patch)
+    f.append("crop=1136:639:6:4")
     f.append("scale=2560:1440:flags=lanczos")
-    f.append(f"zoompan=z='1.14+0.05*on/{max(n-1,1)}':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=1:s={W}x{H}:fps={FPS}")
+    f.append(f"zoompan=z='1.02+0.05*on/{max(n-1,1)}':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=1:s={W}x{H}:fps={FPS}")
     f.append(GRADE)
     if bw:
         f.append("hue=s=0,eq=contrast=1.08")
@@ -121,12 +143,20 @@ def our_shot(i, spec, n, path, fade_in, fade_out):
 
 
 def base_piece(i, a, b, path):
-    f = [f"trim=start_frame={a}:end_frame={b}", "setpts=PTS-STARTPTS", LOGO]
-    if i == TEXT_SEG:
-        f.append(f"{FILMBY_BOX}:enable='lt(t,{92.95 - BOUNDS[i]:.2f})'")
-    f += [f"scale={W}:{H}:flags=lanczos", "setsar=1", "format=yuv420p"]
+    f = [f"trim=start_frame={a}:end_frame={b}", "setpts=PTS-STARTPTS", LOGO_CROP,
+         f"scale={W}:{H}:flags=lanczos", "setsar=1", "format=yuv420p"]
     run(["ffmpeg", "-v", "error", "-y", "-i", BASE, "-vf", ",".join(f), "-an",
          "-r", str(FPS), "-c:v", "libx264", "-preset", "medium", "-crf", "14", path])
+
+
+def base_slow(src_a, src_b, n, path):
+    speed = (src_b - src_a) / (n / FPS)
+    f = [f"trim=start={src_a}:end={src_b}", "setpts=PTS-STARTPTS", LOGO_CROP,
+         f"scale={W}:{H}:flags=lanczos",
+         f"setpts={1/speed:.4f}*PTS,minterpolate=fps={FPS}:mi_mode=mci:mc_mode=aobmc:vsbmc=1",
+         "setsar=1", "format=yuv420p"]
+    run(["ffmpeg", "-v", "error", "-y", "-i", BASE, "-vf", ",".join(f), "-an", "-frames:v", str(n),
+         "-c:v", "libx264", "-preset", "medium", "-crf", "14", path])
 
 
 def black_piece(n, path):
@@ -157,6 +187,51 @@ def film_by_png(path):
     im.save(path)
 
 
+def names_lower_png(path):
+    """'Ravi & Sakshi' lower third in the base film's style (thin, white)."""
+    font = ImageFont.truetype(f"{FONTS}/corm_l.ttf", int(46 * W / 1276))
+    im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    t = "Ravi & Sakshi"
+    l, tp, r, b = d.textbbox((0, 0), t, font=font)
+    x = (W - (r - l)) / 2 - l
+    y = int(655 * H / 718) - b
+    d.text((x + 1, y + 1), t, font=font, fill=(0, 0, 0, 110))
+    d.text((x, y), t, font=font, fill=(250, 248, 244, 255))
+    im.save(path)
+
+
+def end_names_png(path):
+    """Closing card: 'Ravi & Sakshi' big, gold calligraphy, centred."""
+    n = names_title(f"{FONTS}/parisienne.ttf", 1.0)
+    n = names_title(f"{FONTS}/parisienne.ttf", W * 0.84 / n.size[0])  # big, inside the frame
+    im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    im.alpha_composite(n, ((W - n.size[0]) // 2, (H - n.size[1]) // 2))
+    im.save(path)
+
+
+def mahadev_png(path):
+    """Closing card: 'HAR HAR MAHADEV' in gold capitals with the lotus divider."""
+    font = ImageFont.truetype(f"{FONTS}/cinzel_b.ttf", 64)
+    mask = Image.new("L", (W, H), 0)
+    d = ImageDraw.Draw(mask)
+    t = "HAR HAR MAHADEV"
+    track = 10
+    widths = [d.textlength(c, font=font) for c in t]
+    tw = sum(widths) + track * (len(t) - 1)
+    l, tp, r, b = d.textbbox((0, 0), t, font=font)
+    x = (W - tw) / 2
+    y = H // 2 - 70
+    for c, cw in zip(t, widths):
+        d.text((x, y - tp), c, font=font, fill=255)
+        x += cw + track
+    lotus_divider(d, W // 2, y + (b - tp) + 22, 52, int(tw * 0.42), 3)
+    out = _finish(mask, 0)
+    im = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    im.alpha_composite(out, ((W - out.size[0]) // 2, (H - out.size[1]) // 2))
+    im.save(path)
+
+
 def main():
     parts = []
     for i, (a_t, b_t) in enumerate(zip(BOUNDS, BOUNDS[1:])):
@@ -165,21 +240,39 @@ def main():
         parts.append(p)
         if os.environ.get("REUSE") and os.path.exists(p):
             continue
-        if i in R:
-            our_shot(i, R[i], b - a, p, a_t in DIPS, b_t in DIPS)
-        elif i in BLACK:
+        k = round(a_t, 3)
+        if k in R:
+            our_shot(i, R[k], b - a, p, a_t in DIPS, b_t in DIPS)
+        elif k in BLACK:
             black_piece(b - a, p)
+        elif k in SLOW_BASE:
+            base_slow(*SLOW_BASE[k], b - a, p)
         else:
             base_piece(i, a, b, p)
     with open(os.path.join(WORK, "list.txt"), "w") as fh:
         fh.writelines(f"file '{p}'\n" for p in parts)
     film_by_png(os.path.join(WORK, "filmby.png"))
+    names_lower_png(os.path.join(WORK, "names_lower.png"))
+    end_names_png(os.path.join(WORK, "end_names.png"))
+    mahadev_png(os.path.join(WORK, "mahadev.png"))
     T = BOUNDS[-1]
     out = os.path.join(OUT, "Ravi_Sakshi_Banaras_Film_16x9.mp4")
-    fc = (f"[2:v]format=rgba,fade=in:st=87.8:d=0.8:alpha=1,fade=out:st=92.2:d=0.6:alpha=1[t];"
-          f"[0:v][t]overlay=0:0:enable='between(t,87.7,92.9)':format=auto,format=yuv420p[v]")
+    # credit stays through the palace shot (same span as the original credit,
+    # now a little longer), then fades; names lower third where the old one sat;
+    # closing card: names, then Har Har Mahadev
+    fc = (f"[2:v]format=rgba,fade=in:st=87.8:d=0.8:alpha=1,fade=out:st=93.6:d=0.7:alpha=1[t];"
+          f"[3:v]format=rgba,fade=in:st=135.0:d=0.6:alpha=1,fade=out:st=140.9:d=0.6:alpha=1[nl];"
+          f"[4:v]format=rgba,fade=in:st=273.7:d=0.9:alpha=1,fade=out:st=276.5:d=0.6:alpha=1[en];"
+          f"[5:v]format=rgba,fade=in:st=277.3:d=0.8:alpha=1,fade=out:st=279.6:d=0.7:alpha=1[hm];"
+          f"[0:v][t]overlay=0:0:enable='between(t,87.7,94.4)':format=auto[v1];"
+          f"[v1][nl]overlay=0:0:enable='between(t,134.9,141.6)':format=auto[v2];"
+          f"[v2][en]overlay=0:0:enable='between(t,273.6,277.2)':format=auto[v3];"
+          f"[v3][hm]overlay=0:0:enable='between(t,277.2,280.4)':format=auto,format=yuv420p[v]")
     run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", os.path.join(WORK, "list.txt"),
          "-i", BASE, "-loop", "1", "-t", str(T), "-i", os.path.join(WORK, "filmby.png"),
+         "-loop", "1", "-t", str(T), "-i", os.path.join(WORK, "names_lower.png"),
+         "-loop", "1", "-t", str(T), "-i", os.path.join(WORK, "end_names.png"),
+         "-loop", "1", "-t", str(T), "-i", os.path.join(WORK, "mahadev.png"),
          "-filter_complex", fc, "-map", "[v]", "-map", "1:a",
          "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-maxrate", "10M", "-bufsize", "20M",
          "-r", str(FPS), "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", "-t", str(T), out])
