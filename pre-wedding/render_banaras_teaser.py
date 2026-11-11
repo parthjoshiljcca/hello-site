@@ -34,7 +34,9 @@ CARD = 3.9                             # credit card, music fading under it
 TOTAL = PIC_END + CARD
 
 # film moments that carry text, titles, black or black & white: skipped
-AVOID = [(0, 6.4), (37.8, 49.6), (68.2, 72.3), (86.8, 95.5), (133.0, 142.4), (272.5, 281)]
+# (plus the near-black night shots, which read as a flash of black at this pace)
+AVOID = [(0, 6.4), (12.5, 18.2), (37.8, 49.6), (68.2, 79.0), (86.8, 95.5), (133.0, 142.4),
+         (272.5, 281)]
 
 
 def candidates():
