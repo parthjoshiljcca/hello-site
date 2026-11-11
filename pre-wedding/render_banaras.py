@@ -136,6 +136,12 @@ TAKES = {
     CASUAL: [(0.0, 1.85), (2.2, 3.35), (4.75, 6.6), (7.1, 8.85), (9.25, 10.0)],
 }
 EXTRA = {LAKE, HAVELI, CASUAL}
+# Only scenes that feel like Banaras: ghats, river, boat, temple, diyas, lanes,
+# bazaar, courtyard, steps. Udaipur lake, Rajasthani palace and garden, the
+# black-outfit and seaside scenes are left out of this film.
+NOT_BANARAS = {STAIRS, BLOOM, GLAM, LAKE, HAVELI, CASUAL}
+TAKES = {c: v for c, v in TAKES.items() if c not in NOT_BANARAS}
+EXTRA = set()
 MIN_SPEED = 0.5
 XF = 10                  # dissolve length, frames
 FAST = (51.4, 72.27)     # the fast-cut montage keeps hard cuts
@@ -177,7 +183,7 @@ class Pool:
                 t = a
                 while t + need <= b:
                     clash = [h for h in self.history if h[0] == c and h[1] < t + need and t < h[2]]
-                    if all(now - h[3] >= 90 for h in clash):
+                    if all(now - h[3] >= 60 for h in clash):
                         last = max((h[3] for h in clash), default=-1e9)
                         if best is None or last < best[0]:
                             best = (last, c, t)
@@ -237,10 +243,14 @@ def plan():
             bw = len(spec) > 3 and spec[3]
             sp = max(sp, MIN_SPEED)
             subs, left = [], n
-            c = clip
-            t, _ = take_of(clip, ss)
-            start, avail = pool.at(c, t)
-            avail -= Pool.MARGIN
+            if clip in TAKES:
+                c = clip
+                t, _ = take_of(clip, ss)
+                start, avail = pool.at(c, t)
+                avail -= Pool.MARGIN
+            else:
+                # a scene that isn't Banaras: let the allocator choose
+                c, start, avail = GHAT, 0.0, -1.0
             tried = set()
             while left > 0:
                 need = left / FPS * sp
@@ -266,7 +276,8 @@ def plan():
                     # least a minute and a half earlier, rather than slowing
                     # anything below MIN_SPEED
                     c, start = pool.old_moment(a_t, left / FPS * sp + Pool.MARGIN)
-                    subs.append({"kind": "ours", "clip": c, "ss": start, "sp": sp, "bw": bw, "n": left})
+                    subs.append({"kind": "ours", "clip": c, "ss": start, "sp": sp, "bw": bw, "n": left,
+                                 "reuse": True})
                     pool.history.append((c, start, start + left / FPS * sp, a_t))
                     break
                 _, c, start, avail = pick
@@ -317,7 +328,13 @@ def our_shot(pc, path):
     # generator watermark sits at x>1148, y>650: crop it away (no blur patch)
     f.append("crop=1136:639:6:4")
     f.append("scale=2560:1440:flags=lanczos")
-    f.append(f"zoompan=z='1.02+0.04*on/{max(n-1,1)}':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=1:s={W}x{H}:fps={FPS}")
+    if pc.get("reuse"):
+        # a moment seen earlier in the film: mirrored and framed tighter so it
+        # reads as a new angle
+        f.append("hflip")
+        f.append(f"zoompan=z='1.22+0.05*on/{max(n-1,1)}':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=1:s={W}x{H}:fps={FPS}")
+    else:
+        f.append(f"zoompan=z='1.02+0.04*on/{max(n-1,1)}':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=1:s={W}x{H}:fps={FPS}")
     f.append(GRADE)
     if pc.get("bw"):
         f.append("hue=s=0,eq=contrast=1.08")
