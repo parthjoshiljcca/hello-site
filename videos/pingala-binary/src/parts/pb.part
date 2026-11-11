@@ -1,0 +1,137 @@
+const SC=[
+ {pill:'01 · DIGITAL',title:'Sirf <em>0</em> aur <em>1</em>',sub:'Phone · Laptop · Internet',tag:'BINARY'},
+ {pill:'02 · HISTORY',title:'Leibniz, <em>1703</em>',sub:'Kitaabon wali kahaani',tag:'GERMANY'},
+ {pill:'03 · TWIST',title:'1900 Saal <em>Pehle</em>',sub:'Bharat mein binary jaisa system',tag:'ACHARYA · PINGALA'},
+ {pill:'04 · SAWAAL',title:'Computer Nahi, <em>Toh Kyun?</em>',sub:'Binary ki zaroorat kyun padi?',tag:'THE · WHY'},
+ {pill:'05 · JAWAAB',title:'<em>Kavita</em>',sub:'Chhandahshastra: rhythm ka vigyaan',tag:'SANSKRIT · PROSODY'},
+ {pill:'06 · DO AKSHAR',title:'Laghu & <em>Guru</em>',sub:'Chhota akshar · lamba akshar',tag:'SHORT · LONG'},
+ {pill:'07 · EXAMPLE',title:'Ka vs <em>Kaa</em>',sub:'Chhoti aawaaz · lambi aawaaz',tag:'LAGHU · GURU'},
+ {pill:'08 · 2 STATES',title:'Bilkul <em>0 · 1</em> Jaisa',sub:'Sirf do cheezein',tag:'BINARY · IDEA'},
+ {pill:'09 · PUZZLE',title:'Kitne <em>Rhythm?</em>',sub:'4 akshar ki ek line',tag:'COUNT'},
+ {pill:'10 · PRASTAAR',title:'Saare <em>Patterns</em>',sub:'Pingala ki list',tag:'16 PATTERNS'},
+ {pill:'11 · MATHS',title:'2×2×2×2 = <em>16</em>',sub:'Har akshar ke do option',tag:'MULTIPLY'},
+ {pill:'12 · FORMULA',title:'2 <em>to the power n</em>',sub:'n akshar → 2ⁿ rhythm',tag:'EXPONENT'},
+ {pill:'13 · ALGORITHM',title:'Pattern ⇄ <em>Number</em>',sub:'Dono taraf conversion',tag:'NASHTA · UDDISHTA'},
+ {pill:'14 · AAJ',title:'Decimal → <em>Binary</em>',sub:'Computer bhi yahi karta hai',tag:'SAME · LOGIC'},
+ {pill:'15 · 10TH CENTURY',title:'Meru <em>Prastaar</em>',sub:'Halayudha · aaj ka Pascal\'s triangle',tag:'HALAYUDHA'},
+ {pill:'16 · ASLI WHY',title:'Kavita Ke <em>Liye</em>',sub:'Computer ke liye nahi',tag:'RHYTHM'},
+ {pill:'17 · AAJ',title:'Digital <em>Duniya</em>',sub:'Laghu-guru = 0-1',tag:'LEGACY'},
+ {pill:'18 · AAPKI BAARI',title:'Pata <em>Tha?</em>',sub:'Comments mein batao',tag:'COMMENT · KARO'},
+];
+const HL=['zero','one','binary','1703','leibniz','1900','bharat','pingala','computer','kavita','chhandahshastra','rhythm','laghu','guru','ka','kaa','chaar','patterns','solah','option','power','number','pattern','decimal','halayudha','meru','prastaar','pascal\'s','digital','comments'];
+
+// ---------- binary primitives ----------
+// laghu = short beat, guru = long beat (the visual bridge to 0 and 1)
+function beat(x,y,long,s,a,glow=0){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;const w=(long?110:34)*s,h=34*s;rr(x-w/2,y-h/2,w,h,h/2);ctx.fillStyle=long?'rgba(255,138,31,.85)':'rgba(243,236,228,.9)';ctx.shadowColor=long?OR:'#fff';ctx.shadowBlur=10+20*glow;ctx.fill();ctx.restore()}
+function sage(x,y,s,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);bust(0,0,1,1,true);
+ ctx.beginPath();ctx.ellipse(0,-150,26,22,0,0,7);ctx.fillStyle='rgba(40,28,20,.98)';ctx.fill();gs(3.5,LN);
+ ctx.beginPath();ctx.moveTo(-40,-50);ctx.quadraticCurveTo(-36,10,0,30);ctx.quadraticCurveTo(36,10,40,-50);ctx.quadraticCurveTo(0,-30,-40,-50);ctx.fillStyle='rgba(243,236,228,.85)';ctx.fill();
+ for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(-22,-104+i*7);ctx.lineTo(22,-104+i*7);gs(2,'rgba(255,138,31,.7)')}ctx.restore()}
+function leibnizBust(x,y,s,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);
+ for(const d of[-1,1])for(let i=0;i<4;i++){ctx.beginPath();ctx.arc(d*(56+i*4),-110+i*30,22,0,7);ctx.fillStyle='rgba(225,215,200,.9)';ctx.fill();gs(2,LN)}
+ bust(0,0,1,1,false);ctx.beginPath();ctx.arc(0,-112,50,Math.PI*1.05,Math.PI*1.95);gs(10,'rgba(225,215,200,.9)');
+ ctx.beginPath();ctx.moveTo(-16,12);ctx.lineTo(0,40);ctx.lineTo(16,12);ctx.fillStyle='#fff';ctx.fill();ctx.restore()}
+function palmLeaf(x,y,s,a,t,rows){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);rr(-300,-60,600,120,26);ctx.fillStyle='rgba(214,170,100,.9)';ctx.fill();gs(3,'#ffe0a0',8);
+ ctx.beginPath();ctx.arc(-200,0,10,0,7);ctx.arc(200,0,10,0,7);ctx.fillStyle='rgba(60,30,10,.9)';ctx.fill();
+ const r=rng(4);for(let k=0;k<(rows||2);k++)for(let i=0;i<9;i++){const lg=r()<0.5;beat(-150+i*36,-22+k*44,lg,0.32,1)}ctx.restore()}
+function slot(x,y,s,a,long,flip){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;rr(x-70*s,y-50*s,140*s,100*s,16*s);ctx.fillStyle='rgba(22,15,11,.92)';ctx.fill();gs(2.5,'rgba(255,138,31,.7)',10);ctx.restore();if(long!==null)beat(x,y,long,s*0.9,a*(flip===undefined?1:flip))}
+function chipIcon(x,y,s,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);rr(-60,-60,120,120,12);ctx.fillStyle='rgba(30,22,16,.95)';ctx.fill();gs(4,LN);rr(-30,-30,60,60,6);gs(3,OR,12);
+ for(let i=0;i<5;i++)for(const d of[-1,1]){ctx.beginPath();ctx.moveTo(-40+i*20,d*60);ctx.lineTo(-40+i*20,d*80);ctx.moveTo(d*60,-40+i*20);ctx.lineTo(d*80,-40+i*20);gs(3,LN)}ctx.restore()}
+function noteIcon(x,y,s,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);ctx.beginPath();ctx.ellipse(0,0,13,9,-0.4,0,7);ctx.fillStyle=OR;ctx.shadowColor=OR;ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;ctx.beginPath();ctx.moveTo(11,-4);ctx.lineTo(11,-50);ctx.quadraticCurveTo(26,-40,30,-24);gs(4,OR);ctx.restore()}
+function bigTxt(s,x,y,size,a,col=OR,glow=30){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;txt(s,x,y,`900 ${size}px M`,col,'center',glow);ctx.restore()}
+function switchIcon(x,y,s,a,on){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);rr(-60,-30,120,60,30);ctx.fillStyle=on?'rgba(255,138,31,.6)':'rgba(40,30,24,.95)';ctx.fill();gs(3,LN);ctx.beginPath();ctx.arc(on?30:-30,0,22,0,7);ctx.fillStyle=WH;ctx.fill();ctx.restore()}
+const PATS=Array.from({length:16},(_,i)=>[0,1,2,3].map(b=>((i>>b)&1)===0)); // Pingala starts with all-guru; true = guru (long)
+
+// ---------- scenes ----------
+function S0(t,lt){ // 3D chip; 2D tags
+ [['phone','PHONE',220],['laptop','LAPTOP',540],['internet','INTERNET',860]].forEach(([e,l,x],i)=>monoTag(x,640,l,fin(t,e,0.4,-0.1+i*0.25)));
+ badge(540,1255,'BINARY NUMBER SYSTEM',pop(t,'binary',0.45,0),{fs:28});
+}
+function S1(t,lt){ // Leibniz 1703
+ const a=eo(seg(lt,0,0.5));leibnizBust(320,1000,1.15,pop(t,'leibniz',0.5,-1.2));monoTag(320,1160,'G. W. LEIBNIZ',fin(t,'leibniz',0.4,0));
+ card(780,960,330,380,pop(t,'y1703',0.45,-0.3),'',null,t);const p=fin(t,'y1703',0.5,0);
+ ['0','1','10','11','100','101'].forEach((s,i)=>bigTxt(s,780,820+i*52,40,cl(p*6-i),i%2?GOLD:WH,8));
+ badge(540,640,'1703',pop(t,'y1703',0.45,0),{fs:34});
+}
+function S2(t,lt){ // 1900 years earlier: Pingala
+ const tl=fin(t,'y1900',0.8,-0.3);ctx.save();ctx.globalAlpha*=tl;ctx.beginPath();ctx.moveTo(140,700);ctx.lineTo(lerp(140,940,tl),700);gs(4,LN);ctx.restore();
+ monoTag(160,640,'~200 BCE',tl);monoTag(920,640,'1703 CE',tl);
+ if(tl>0.5){ctx.save();ctx.globalAlpha*=cl((tl-0.5)*2);ctx.beginPath();ctx.moveTo(160,730);ctx.quadraticCurveTo(540,800,920,730);gs(3,OR,10);ctx.restore();bigTxt('~1900 SAAL',540,790,38,cl((tl-0.5)*2),GOLD,14)}
+ sage(360,1020,1.0,pop(t,'bharat',0.5,-0.2));palmLeaf(790,1020,0.62,fin(t,'jaisa',0.5,0),t,2);monoTag(790,1100,'BINARY JAISA SYSTEM',fin(t,'jaisa',0.4,0.3));
+ badge(540,1255,'ACHARYA PINGALA',pop(t,'pingala',0.45,0),{fs:30});
+}
+function S3(t,lt){ // no computer: why?
+ const a=eo(seg(lt,0,0.5));sage(300,1000,1.0,a);chipIcon(780,860,1.3,pop(t,'computer',0.45,-0.1));cross(780,860,90,fin(t,'computer',0.4,0.4));
+ const q=pop(t,'zaroorat',0.5,-0.3);if(q>0){ctx.save();ctx.translate(780,1120);ctx.scale(q,q);txt('?',0,0,'900 150px M',OR,'center',36);ctx.restore()}
+}
+function S4(t,lt){ // kavita, chhandahshastra
+ const k=pop(t,'kavita',0.5,-0.1);bigTxt('KAVITA',540,720,96,cl(k));for(let i=0;i<5;i++){const ph=(t*0.4+i/5)%1;noteIcon(180+i*180,900-ph*120,1.1,cl(k)*Math.sin(ph*Math.PI))}
+ palmLeaf(540,1040,1.2,fin(t,'chhand',0.5,-0.1),t,2);monoTag(540,1160,'CHHANDAHSHASTRA',fin(t,'chhand',0.4,0.2));
+ const r=fin(t,'rhythm',0.5,-0.2);if(r>0){const pat=[0,1,0,0,1,1,0,1];pat.forEach((l,i)=>{const on=Math.floor(t*3)%8===i;beat(220+i*92,1240,l,0.5,r,on?1:0)})}
+}
+function S5(t,lt){ // laghu & guru
+ const a=eo(seg(lt,0,0.5));const r=rng(3);for(let i=0;i<8;i++){const l=r()<0.5;beat(160+i*108,680,l,0.5,fin(t,'akshar',0.4,i*0.06))}monoTag(540,760,'HAR AKSHAR',fin(t,'akshar',0.4,0.3));
+ const lp=pop(t,'laghu',0.45,-0.1),gp=pop(t,'guru',0.45,-0.1);
+ card(290,1010,380,320,lp,'',null,t);if(lp>0){beat(290,970,false,1.6,cl(lp),0.6);bigTxt('LAGHU',290,1080,46,cl(lp),WH,10);monoTag(290,1135,'CHHOTA',cl(lp))}
+ card(790,1010,380,320,gp,'',null,t);if(gp>0){beat(790,970,true,1.6,cl(gp),0.6);bigTxt('GURU',790,1080,46,cl(gp));monoTag(790,1135,'LAMBA',cl(gp))}
+}
+function S6(t,lt){ // ka vs kaa
+ const k1=pop(t,'ka',0.45,-0.1),k2=pop(t,'kaa',0.45,-0.1);
+ bigTxt('KA',300,820,120,cl(k1),WH,16);if(k1>0){const w=seg(t,E('ka'),E('ka')+0.25);ctx.save();ctx.globalAlpha*=cl(k1);rr(250,920,100*w,30,15);ctx.fillStyle=WH;ctx.fill();ctx.restore();monoTag(300,1010,'LAGHU · SHORT',fin(t,'laghu2',0.4,-0.1))}
+ bigTxt('KAA',780,820,120,cl(k2));if(k2>0){const w=seg(t,E('kaa'),E('kaa')+0.8);ctx.save();ctx.globalAlpha*=cl(k2);rr(650,920,260*w,30,15);ctx.fillStyle=OR;ctx.shadowColor=OR;ctx.shadowBlur=16;ctx.fill();ctx.restore();monoTag(780,1010,'GURU · LONG',fin(t,'guru2',0.4,-0.1))}
+ if(k1>0)for(let i=0;i<3;i++){const ph=(t*1.5+i/3)%1;ctx.save();ctx.globalAlpha*=cl(k1)*(1-ph)*0.6;ctx.beginPath();ctx.arc(300,820,80+ph*80,-0.5,0.5);gs(3,LN);ctx.restore()}
+}
+function S7(t,lt){ // two states, like 0/1
+ const a=eo(seg(lt,0,0.5));beat(300,780,false,2.2,pop(t,'laghu3',0.45,-0.1),0.5);beat(780,780,true,2.2,pop(t,'guru3',0.45,-0.1),0.5);
+ monoTag(300,870,'LAGHU',fin(t,'laghu3',0.4,0));monoTag(780,870,'GURU',fin(t,'guru3',0.4,0));
+ const z=pop(t,'zero2',0.5,-0.2);bigTxt('0',300,1060,150,cl(z),WH,20);bigTxt('1',780,1060,150,cl(z));
+ switchIcon(540,1060,1.0,cl(z),Math.sin(t*3)>0);monoTag(540,1200,'SIRF 2 STATES',fin(t,'zero2',0.4,0.3));
+}
+function S8(t,lt){ // 4 syllables: how many rhythms?
+ const c=fin(t,'chaar',0.5,-0.2);for(let i=0;i<4;i++){const x=240+i*200;const fl=Math.floor(t*4+i*1.7)%2===0;slot(x,900,1.2,cl(c*4-i),c>0.9?fl:null)}
+ monoTag(540,1010,'4 AKSHAR',c);const q=pop(t,'rhythm2',0.5,-0.2);if(q>0){ctx.save();ctx.translate(540,1150);ctx.scale(q,q);txt('KITNE?',0,0,'900 80px M',OR,'center',24);ctx.restore()}
+ sage(540,700,0.55,fin(t,'kaviyon',0.4,-0.2)*0.8);
+}
+function S9(t,lt){ // 3D prastaar; 2D counter
+ const n=Math.min(16,Math.floor(seg(t,E('patterns')-0.4,E('solah')-0.2)*16));monoTag(540,640,'PRASTAAR · '+n+' / 16',fin(t,'patterns',0.4,-0.4));
+ badge(540,1255,'16 RHYTHM',pop(t,'solah',0.45,0),{fs:32});
+}
+function S10(t,lt){ // 2x2x2x2
+ for(let i=0;i<4;i++){const x=200+i*227;const p=pop(t,'option',0.45,i*0.15);slot(x,800,0.9,cl(p),null);if(p>0){beat(x,778,false,0.6,cl(p));beat(x,822,true,0.6,cl(p))}bigTxt('2',x,920,64,fin(t,'guna',0.4,i*0.25),GOLD,12);if(i<3)bigTxt('×',x+113,920,48,fin(t,'guna',0.4,i*0.25+0.1),WH,6)}
+ const s=pop(t,'solah2',0.5,-0.1);if(s>0){ctx.save();ctx.translate(540,1110);ctx.scale(s,s);txt('= 16',0,0,'900 120px M',OR,'center',36);ctx.restore()}
+}
+function S11(t,lt){ // 2^n
+ const p=pop(t,'power',0.5,-0.8);if(p>0){ctx.save();ctx.translate(540,800);ctx.scale(p,p);txt('2',-30,0,'900 200px M',OR,'center',40);txt('n',60,-80,'900 100px M',GOLD,'center',20);ctx.restore()}
+ const rows=[[1,2],[2,4],[3,8],[4,16],[5,32]];rows.forEach(([n,v],i)=>{const q=fin(t,'power',0.3,-0.6+i*0.2);ctx.save();ctx.globalAlpha*=q;txt(`n = ${n}`,380,1000+i*48,'500 30px J',WH,'left');txt(`→ ${v}`,600,1000+i*48,'800 32px M',n===4?OR:GOLD,'left');ctx.restore()});
+}
+function S12(t,lt){ // pattern <-> number
+ const a=eo(seg(lt,0,0.5));const pat=PATS[10];pat.forEach((g,i)=>slot(230+i*130,820,0.85,a,g));
+ const n=pop(t,'pnum',0.5,-0.3);card(540,1080,300,150,n,'',null,t);if(n>0)bigTxt('#11',540,1082,80,cl(n));
+ arrow(420,900,470,1000,fin(t,'tareeka',0.5,0),OR,5);arrow(660,1000,710,900,fin(t,'pnum',0.5,0.6),OR,5);
+ monoTag(220,1000,'PATTERN → NUMBER',fin(t,'tareeka',0.4,0.3));monoTag(860,1000,'NUMBER → PATTERN',fin(t,'pnum',0.4,0.8));
+}
+function S13(t,lt){ // decimal -> binary
+ const d=pop(t,'decimal',0.5,-1.0);bigTxt('13',260,860,140,cl(d),WH,16);monoTag(260,980,'DECIMAL',cl(d));
+ const st=[[13,1],[6,0],[3,1],[1,1]];st.forEach(([v,r],i)=>{const q=fin(t,'decimal',0.3,-0.5+i*0.35);ctx.save();ctx.globalAlpha*=q;txt(`${v} ÷ 2 → ${r}`,430,760+i*56,'500 32px J',WH,'left');ctx.restore()});
+ const b=pop(t,'binary2',0.5,0.3);bigTxt('1101',760,1100,110,cl(b));monoTag(760,1200,'BINARY',cl(b));arrow(400,1000,560,1080,fin(t,'binary2',0.5,0),OR,5);
+}
+function S14(t,lt){ // 3D Meru prastaar; 2D tags
+ monoTag(540,640,'10TH CENTURY · HALAYUDHA',fin(t,'halayudha',0.4,-0.6));
+ badge(540,1255,"= PASCAL'S TRIANGLE",pop(t,'pascal',0.45,0),{fs:30});
+}
+function S15(t,lt){ // for poetry, not computers
+ const a=eo(seg(lt,0,0.5));chipIcon(280,860,1.1,a);cross(280,860,80,fin(t,'nahi',0.4,0));monoTag(280,1000,'COMPUTER KE LIYE',a);
+ palmLeaf(780,860,0.6,a,t,2);for(let i=0;i<3;i++){const ph=(t*0.5+i/3)%1;noteIcon(700+i*80,780-ph*80,0.9,a*Math.sin(ph*Math.PI))}check(780,1000,40,fin(t,'kavita2',0.6,0));monoTag(780,1080,'KAVITA KE LIYE',fin(t,'kavita2',0.4,0));
+ badge(540,1255,'RHYTHM KO SAMAJHNE KE LIYE',pop(t,'kavita2',0.45,0.6),{fs:24});
+}
+function S16(t,lt){ // laghu/guru -> 0/1 powering the digital world
+ const m=eio(seg(t,E('digital')-2.4,E('digital')-0.4));const r=rng(7);
+ for(let i=0;i<14;i++){const l=r()<0.5;const x0=120+i*65,y0=700,x1=540+Math.cos(i)*240,y1=1000+Math.sin(i*1.7)*130;const x=lerp(x0,x1,m),y=lerp(y0,y1,m);
+  if(m<0.5)beat(x,y,l,0.45,1-m*2);else bigTxt(l?'1':'0',x,y,44,(m-0.5)*2,l?OR:WH,12)}
+ const p=pop(t,'duniya',0.5,-0.2);phone(540,1000,170,300,cl(p)*0.9,()=>{ctx.fillStyle='rgba(255,138,31,.2)';ctx.fillRect(-90,-160,180,320);const rr2=rng(Math.floor(t*6));for(let k=0;k<30;k++)txt(rr2()<0.5?'0':'1',-70+(k%6)*28,-130+Math.floor(k/6)*50,'700 22px J',GOLD)});
+ monoTag(540,1200,'LAGHU · GURU = 0 · 1',fin(t,'digital',0.4,0));
+}
+function S17(t,lt){ // comment
+ const a=eo(seg(lt,0,0.5));sage(540,1000,1.0,a);speech(780,720,1.1,pop(t,'comments',0.45,-0.6),true,t);badge(540,1255,'COMMENTS MEIN BATAO',pop(t,'comments',0.45,0),{fs:30});
+}
+const SCN=[S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12,S13,S14,S15,S16,S17];

@@ -1,0 +1,23 @@
+[
+["आपका phone, laptop, internet, सब कुछ सिर्फ़ दो अंकों पर चलता है। ज़ीरो और वन।","Aapka phone, laptop, internet, sab kuch sirf do ankon par chalta hai. Zero aur one."],
+["इसे कहते हैं binary number system।","Ise kehte hain binary number system."],
+["ज़्यादातर किताबें कहती हैं कि इसे सत्रह सौ तीन में German गणितज्ञ Leibniz ने दुनिया के सामने रखा।","Zyaadatar kitaabein kehti hain ki ise 1703 mein German ganitagya Leibniz ne duniya ke saamne rakha."],
+["पर उससे लगभग उन्नीस सौ साल पहले, भारत में एक विद्वान ने binary जैसा system लिख दिया था।","Par usse lagbhag 1900 saal pehle, Bharat mein ek vidvaan ne binary jaisa system likh diya tha."],
+["उनका नाम था आचार्य पिंगल।","Unka naam tha Acharya Pingala."],
+["पर सवाल ये है, जब computer था ही नहीं, तो उन्हें binary की ज़रूरत क्यों पड़ी?","Par sawaal yeh hai, jab computer tha hi nahi, toh unhe binary ki zaroorat kyun padi?"],
+["जवाब है, कविता।","Jawaab hai, kavita."],
+["पिंगल ने लिखा छंदःशास्त्र, यानी संस्कृत कविता के rhythm का विज्ञान।","Pingala ne likha Chhandahshastra, yaani Sanskrit kavita ke rhythm ka vigyaan."],
+["संस्कृत में हर अक्षर या तो छोटा होता है, जिसे लघु कहते हैं, या लंबा, जिसे गुरु कहते हैं।","Sanskrit mein har akshar ya toh chhota hota hai, jise laghu kehte hain, ya lamba, jise guru kehte hain."],
+["जैसे क में छोटी आवाज़ है, लघु। और का में लंबी, गुरु।","Jaise ka mein chhoti awaaz hai, laghu. Aur kaa mein lambi, guru."],
+["बस दो चीज़ें। लघु और गुरु। बिल्कुल ज़ीरो और वन की तरह।","Bas do cheezein. Laghu aur guru. Bilkul zero aur one ki tarah."],
+["अब कवियों को जानना था, अगर किसी line में चार अक्षर हों, तो कितने अलग rhythm बन सकते हैं?","Ab kaviyon ko jaanna tha, agar kisi line mein chaar akshar hon, toh kitne alag rhythm ban sakte hain?"],
+["पिंगल ने सारे patterns एक तरीके से लिख डाले, और पाया, सोलह।","Pingala ne saare patterns ek tareeke se likh daale, aur paaya, solah."],
+["हर अक्षर के दो option, तो चार अक्षरों के लिए दो गुणा दो गुणा दो गुणा दो, यानी सोलह।","Har akshar ke do option, toh chaar aksharon ke liye 2 guna 2 guna 2 guna 2, yaani solah."],
+["आज इसे हम लिखते हैं, two to the power n।","Aaj ise hum likhte hain, 2 to the power n."],
+["इतना ही नहीं, उन्होंने ऐसा तरीका भी दिया, जिससे किसी pattern का number निकाला जा सके, और number से pattern।","Itna hi nahi, unhone aisa tareeka bhi diya, jisse kisi pattern ka number nikaala ja sake, aur number se pattern."],
+["ये ठीक वैसा ही है, जैसे आज computer decimal को binary में बदलता है।","Yeh theek waisa hi hai, jaise aaj computer decimal ko binary mein badalta hai."],
+["बाद में दसवीं सदी में हलायुध ने इसे मेरु प्रस्तार के रूप में समझाया, जिसे आज दुनिया Pascal's triangle कहती है।","Baad mein 10th century mein Halayudha ne ise Meru Prastaar ke roop mein samjhaya, jise aaj duniya Pascal's triangle kehti hai."],
+["तो पिंगल ने ये system computer के लिए नहीं, कविता के rhythm को समझने के लिए बनाया।","Toh Pingala ne yeh system computer ke liye nahi, kavita ke rhythm ko samajhne ke liye banaya."],
+["और आज वही लघु और गुरु, ज़ीरो और वन बनकर, पूरी digital दुनिया चला रहे हैं।","Aur aaj wahi laghu aur guru, zero aur one bankar, poori digital duniya chala rahe hain."],
+["क्या आपको ये पता था? Comments में बताओ।","Kya aapko yeh pata tha? Comments mein batao."]
+]
