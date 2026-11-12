@@ -1,0 +1,94 @@
+[
+[
+"पिछले episode में हमने देखा, ऐरे यानी train के numbered डिब्बे।",
+"Pichhle episode mein humne dekha, Array yaani train ke numbered dibbe."
+],
+[
+"पर ऐरे इतना fast क्यों है? और इसकी गिनती zero से क्यों शुरू होती है?",
+"Par Array itna fast kyun hai? Aur iski ginti zero se kyun shuru hoti hai?"
+],
+[
+"आज ऐरे को अंदर से समझते हैं।",
+"Aaj Array ko andar se samajhte hain."
+],
+[
+"Computer की memory एक लंबी गली जैसी है, जिसमें हर घर का अपना address है।",
+"Computer ki memory ek lambi gali jaisi hai, jismein har ghar ka apna address hai."
+],
+[
+"इस गली में ऐरे एक साथ लगे हुए घर book कर लेता है। सब घर बराबर size के, और बिल्कुल अगल बगल।",
+"Is gali mein Array ek saath lage hue ghar book kar leta hai. Sab ghar barabar size ke, aur bilkul agal bagal."
+],
+[
+"इसीलिए computer को सिर्फ़ पहले घर का address याद रखना पड़ता है।",
+"Isiliye computer ko sirf pehle ghar ka address yaad rakhna padta hai."
+],
+[
+"अब index का राज़। Index का मतलब है, पहले घर से कितने घर आगे।",
+"Ab index ka raaz. Index ka matlab hai, pehle ghar se kitne ghar aage."
+],
+[
+"पहला घर, zero घर आगे। इसीलिए गिनती zero से शुरू होती है।",
+"Pehla ghar, zero ghar aage. Isiliye ginti zero se shuru hoti hai."
+],
+[
+"Index तीन चाहिए? पहले घर के address में तीन घर जोड़ो, और सीधे वहीं पहुँचो।",
+"Index teen chahiye? Pehle ghar ke address mein teen ghar jodo, aur seedhe wahin pahuncho."
+],
+[
+"कोई ढूँढना नहीं, कोई line नहीं। चाहे ऐरे में दस चीज़ें हों या दस करोड़, time उतना ही लगता है।",
+"Koi dhoondhna nahi, koi line nahi. Chahe Array mein das cheezein hon ya das crore, time utna hi lagta hai."
+],
+[
+"इसे कहते हैं constant time, यानी बिग ओ ऑफ़ वन।",
+"Ise kehte hain constant time, yaani Big O of 1."
+],
+[
+"पर अगर index पता न हो, और कोई चीज़ ढूँढनी हो, तो हर डिब्बा एक एक करके check करना पड़ेगा।",
+"Par agar index pata na ho, aur koi cheez dhoondhni ho, toh har dibba ek ek karke check karna padega."
+],
+[
+"इसे कहते हैं linear search।",
+"Ise kehte hain linear search."
+],
+[
+"अब ऐरे की कमज़ोरी। Cinema hall की भरी हुई row में, बीच में एक नया दोस्त बिठाना हो, तो सबको एक एक seat खिसकना पड़ेगा।",
+"Ab Array ki kamzori. Cinema hall ki bhari hui row mein, beech mein ek naya dost bithana ho, toh sabko ek ek seat khisakna padega."
+],
+[
+"ऐरे में बीच में insert करना बिल्कुल ऐसा ही है। पीछे वाले सारे items shift होते हैं।",
+"Array mein beech mein insert karna bilkul aisa hi hai. Peeche wale saare items shift hote hain."
+],
+[
+"Delete करने पर भी यही होता है। खाली जगह भरने के लिए सबको आगे खिसकना पड़ता है।",
+"Delete karne par bhi yahi hota hai. Khaali jagah bharne ke liye sabko aage khisakna padta hai."
+],
+[
+"दूसरी कमज़ोरी, size fixed होता है। Train भर गई, तो नया डिब्बा बीच में नहीं जुड़ सकता।",
+"Doosri kamzori, size fixed hota hai. Train bhar gayi, toh naya dibba beech mein nahi jud sakta."
+],
+[
+"तब computer एक नई, दुगनी बड़ी ऐरे बनाता है, और सारा सामान उसमें copy कर देता है।",
+"Tab computer ek nayi, dugni badi Array banata hai, aur saara saamaan usmein copy kar deta hai."
+],
+[
+"फिर भी ऐरे हर जगह है। आपकी photo gallery, music playlist, और game का लीडरबोर्ड।",
+"Phir bhi Array har jagah hai. Aapki photo gallery, music playlist, aur game ka leaderboard."
+],
+[
+"और आपकी screen का हर pixel भी, rows और columns वाली एक टू डी ऐरे में रखा है।",
+"Aur aapki screen ka har pixel bhi, rows aur columns wali ek 2D Array mein rakha hai."
+],
+[
+"तो याद रखो। ऐरे में पहुँचना सबसे तेज़, पर बीच में जोड़ना और हटाना धीमा।",
+"Toh yaad rakho. Array mein pahunchna sabse tez, par beech mein jodna aur hatana dheema."
+],
+[
+"इसी problem का हल है लिंक्ड लिस्ट, यानी treasure hunt। वो अगले episode में।",
+"Isi problem ka hal hai Linked List, yaani treasure hunt. Woh agle episode mein."
+],
+[
+"आप ऐरे को कहाँ कहाँ use होते देखते हो? Comments में बताओ।",
+"Aap Array ko kahan kahan use hote dekhte ho? Comments mein batao."
+]
+]
