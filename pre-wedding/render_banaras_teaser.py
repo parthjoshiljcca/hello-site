@@ -123,8 +123,8 @@ def main():
     small = ImageFont.truetype(f"{FONTS}/cinzel_r.ttf", 26)
     name = ImageFont.truetype(f"{FONTS}/cinzel_b.ttf", 44)
     gold_card([("Ravi & Sakshi", big, 8, 0)], os.path.join(WORK, "names.png"))
-    gold_card([("A Film By", small, 4, 18), ("Parth D. Joshi", name, 6, 0)],
-              os.path.join(WORK, "credit.png"))
+    # closing credit exactly like the film's own (white Cinzel, one line, on black)
+    rb.film_by_png(os.path.join(WORK, "credit.png"))
 
     N = PIC_END - 7 * BEAT   # closing shot starts
     out = os.path.join(OUT, "Ravi_Sakshi_Banaras_Teaser_16x9.mp4")
