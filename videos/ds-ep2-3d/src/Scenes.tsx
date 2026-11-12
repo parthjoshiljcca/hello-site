@@ -68,9 +68,11 @@ const Label: React.FC<{ p: V3; cam: V3; look: V3; a: number; text: string; size?
   const fade = 1 - seg(d, maxD * 0.7, maxD);
   if (fade <= 0) return null;
   const s = project(new THREE.Vector3(...sc(p)), sc(cam), sc(look));
+  const band = seg(s.y, 590, 640) * (1 - seg(s.y, 1190, 1230)) * seg(s.x, 20, 70) * (1 - seg(s.x, 1010, 1060)); // keep labels inside the 3D band
+  if (band <= 0) return null;
   const k = Math.min(1.6, 9 / d);
   return (
-    <div style={{ position: "absolute", left: s.x, top: s.y, transform: "translate(-50%,-50%)", fontFamily: mono ? "J" : "M", fontWeight: mono ? 500 : 900, fontSize: size * k, color: hot ? "#ffb15c" : "#f6efe7", textShadow: "0 0 12px rgba(255,138,31,.9), 0 2px 6px #000", opacity: Math.min(1, a) * fade, whiteSpace: "nowrap" }}>
+    <div style={{ position: "absolute", left: s.x, top: s.y, transform: "translate(-50%,-50%)", fontFamily: mono ? "J" : "M", fontWeight: mono ? 500 : 900, fontSize: size * k, color: hot ? "#ffb15c" : "#f6efe7", textShadow: "0 0 12px rgba(255,138,31,.9), 0 2px 6px #000", opacity: Math.min(1, a) * fade * band, whiteSpace: "nowrap" }}>
       {text}
     </div>
   );
