@@ -1,0 +1,102 @@
+const SC=[
+ {pill:'THE WHY SPACES · DS SERIES · EP 04',title:'Har <em>Undo</em> Ke Peeche?',sub:'Ek data structure chhupa hai',tag:'THE · WHY'},
+ {pill:'EP 04',title:'<em>Stack</em>',sub:'Aaj poora samjhenge',tag:'DEEP · DIVE'},
+ {pill:'01 · ANALOGY',title:'Plates Ka <em>Dher</em>',sub:'Nayi plate hamesha upar',tag:'SHAADI · PLATES'},
+ {pill:'01 · ANALOGY',title:'Upar Wali <em>Pehle</em>',sub:'Neeche wali baad mein',tag:'TOP · FIRST'},
+ {pill:'02 · RULE',title:'Aakhir Mein Rakhi, <em>Pehle</em> Nikli',sub:'Ulta order',tag:'REVERSE · ORDER'},
+ {pill:'02 · RULE',title:'<em>LIFO</em>',sub:'Last In, First Out',tag:'LAST · IN · FIRST · OUT'},
+ {pill:'03 · TOP',title:'Sirf Ek <em>Darwaaza</em>',sub:'Upar wala: top',tag:'TOP'},
+ {pill:'04 · PUSH',title:'Upar Rakho = <em>Push</em>',sub:'Naya item top par',tag:'PUSH'},
+ {pill:'05 · POP',title:'Upar Se Nikalo = <em>Pop</em>',sub:'Top wala bahar',tag:'POP'},
+ {pill:'06 · PEEK',title:'Bas Dekho = <em>Peek</em>',sub:'Nikaale bina',tag:'PEEK'},
+ {pill:'07 · SPEED',title:'Teeno <em>O(1)</em>',sub:'Sab kuch top par',tag:'CONSTANT · TIME'},
+ {pill:'08 · KAMZORI',title:'Beech Wali <em>Plate</em>?',sub:'Upar ki sab hatao',tag:'NO · RANDOM · ACCESS'},
+ {pill:'09 · OVERFLOW',title:'Stack <em>Overflow</em>',sub:'Bhara hua, phir bhi push',tag:'FULL'},
+ {pill:'10 · UNDERFLOW',title:'Stack <em>Underflow</em>',sub:'Khaali, phir bhi pop',tag:'EMPTY'},
+ {pill:'11 · REAL LIFE',title:'<em>Undo</em> Button',sub:'Badlaav = push · undo = pop',tag:'CTRL + Z'},
+ {pill:'12 · REAL LIFE',title:'Brackets <em>Check</em>',sub:'Khula = push · band = pop',tag:'{ ( [ ] ) }'},
+ {pill:'13 · REAL LIFE',title:'Call <em>Stack</em>',sub:'Function ke andar function',tag:'FUNCTIONS'},
+ {pill:'RECAP',title:'Stack = <em>LIFO</em>',sub:'Push · Pop · Peek = O(1)',tag:'YAAD · RAKHO'},
+ {pill:'NEXT · EP 05',title:'Next: <em>Queue</em>',sub:'Chai ki dukaan wali line',tag:'FOLLOW · SERIES'},
+ {pill:'AAPKI BAARI',title:'Kitni Baar <em>Undo</em>?',sub:'Comments mein batao',tag:'COMMENT · KARO'},
+];
+const HL=['linked','list','undo','stack','plates','plate','upar','pehle','aakhir','lifo','last','first','top','darwaaza','push','pop','peek','big','o','1','kamzori','beech','overflow','underflow','khaali','brackets','bracket','function','call','queue','chai','comments'];
+
+// ---------- Ep 4 primitives ----------
+// a vertical stack column: items bottom -> top; the top one glows. fly = {label, x, y, a} drawn on top
+function stackCol(x,y,w,a,items,opt={}){if(a<=0)return;const ih=opt.ih||62,H=opt.H||(ih*(opt.cap||6)+20);ctx.save();ctx.globalAlpha*=a;
+ ctx.beginPath();ctx.moveTo(x-w/2,y-H);ctx.lineTo(x-w/2,y);ctx.lineTo(x+w/2,y);ctx.lineTo(x+w/2,y-H);gs(4,opt.red?'#ff5a3c':LN,opt.red?20:0);
+ items.forEach((l,i)=>{const top=i===items.length-1&&!opt.noTop;const yy=y-10-(i+1)*ih;rr(x-w/2+10,yy,w-20,ih-8,10);ctx.fillStyle=top?'rgba(255,138,31,.5)':(opt.hl===i?'rgba(124,196,255,.45)':'rgba(243,236,228,.13)');ctx.fill();gs(2,top?OR:(opt.hl===i?'#7cc4ff':'rgba(243,236,228,.55)'),top?16:0);txt(l,x,yy+(ih-8)/2+1,`800 ${opt.fs||26}px M`,WH)});
+ if(opt.topTag&&items.length){const yy=y-10-items.length*ih+(ih-8)/2;arrow(x+w/2+90,yy,x+w/2+16,yy,1,OR,4);txt('TOP',x+w/2+130,yy,'500 22px J',GOLD)}ctx.restore()}
+function flyItem(x,y,w,a,label,col){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;rr(x-w/2+10,y,w-20,54,10);ctx.fillStyle=col||'rgba(255,177,92,.6)';ctx.fill();gs(2.5,GOLD,18);txt(label,x,y+28,'800 26px M',WH);ctx.restore()}
+function plateSide(x,y,s,a,hot){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);ctx.beginPath();ctx.ellipse(0,0,110,22,0,0,7);ctx.fillStyle=hot?'rgba(124,196,255,.55)':'rgba(243,236,228,.9)';ctx.fill();gs(3,hot?'#7cc4ff':OR,hot?24:6);ctx.beginPath();ctx.ellipse(0,-3,70,11,0,0,7);gs(2,'rgba(26,15,6,.35)');ctx.restore()}
+function frameBox(x,y,w,a,name,hot){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;rr(x-w/2,y-34,w,68,12);ctx.fillStyle=hot?'rgba(255,138,31,.45)':'rgba(22,15,11,.95)';ctx.fill();gs(2.5,hot?OR:'rgba(243,236,228,.6)',hot?18:0);txt(name,x,y+1,'800 28px J',WH);ctx.restore()}
+
+// ---------- scenes ----------
+function S0(t,lt){ // 3D chain -> stack tower; 2D badges
+ badge(300,1255,'LINKED LIST ✓',pop(t,'linked',0.45,0),{fs:26});badge(780,1255,'UNDO KE PEECHHE?',pop(t,'undo',0.45,0),{fs:26});
+}
+function S1(t,lt){ // title
+ const p=pop(t,'stack',0.5,-0.5);if(p>0){ctx.save();ctx.translate(540,760);ctx.scale(p,p);txt('STACK',0,0,'900 170px M',OR,'center',44);ctx.restore()}
+ const n=Math.min(4,Math.floor(seg(lt,0.1,1.5)*4)+1);stackCol(540,1180,300,eo(seg(lt,0,0.4)),['10','20','30','40'].slice(0,n),{cap:4,ih:58});
+ monoTag(540,640,'THE WHY SPACES · DS SERIES · EP 04',fin(t,'stack',0.4,-0.6));
+}
+function S2(t,lt){badge(540,1255,'NAYI PLATE = UPAR',pop(t,'upar',0.45,0),{fs:28})}
+function S3(t,lt){badge(540,1255,'UPAR WALI HI UTHTI HAI',pop(t,'upar2',0.45,0),{fs:28})}
+function S4(t,lt){badge(540,1255,'AAKHIR MEIN RAKHI → PEHLE NIKLI',pop(t,'pehle',0.45,0),{fs:24})}
+function S5(t,lt){badge(540,1255,'LAST IN · FIRST OUT',pop(t,'first',0.45,0),{fs:28})}
+function S6(t,lt){badge(540,1255,'SIRF EK DARWAAZA: TOP',pop(t,'top',0.45,0),{fs:28})}
+function S7(t,lt){badge(540,1255,'PUSH → TOP PAR',pop(t,'push',0.45,0),{fs:30})}
+function S8(t,lt){badge(540,1255,'POP ← TOP SE',pop(t,'pop',0.45,0),{fs:30})}
+function S9(t,lt){badge(540,1255,'PEEK · SIRF DEKHO',pop(t,'peek',0.45,0),{fs:30})}
+function S10(t,lt){badge(540,1255,'PUSH · POP · PEEK = O(1)',pop(t,'bigo',0.45,0),{fs:26})}
+function S11(t,lt){ // middle plate: remove all plates above first
+ const a=eo(seg(lt,0,0.5));const N=7,HOT=3;const t0=E('hatani')-1.2;
+ for(let i=0;i<N;i++){let x=540,y=1150-i*46,al=a;if(i>HOT){const k=N-1-i;const u=eio(seg(t,t0+k*0.4,t0+k*0.4+0.5));x=lerp(540,880,u);y=lerp(y,1150-(k)*46,u);}
+  if(i===HOT){const u=eio(seg(t,t0+1.4,t0+2.0));x=lerp(540,250,u);y=lerp(y,1000,u)}plateSide(x,y,1,al,i===HOT)}
+ monoTag(540,700,'CHAHIYE: BEECH WALI',fin(t,'beech',0.4,-0.1));
+ const k=Math.min(3,Math.floor(seg(t,t0,t0+1.2)*3+0.001));if(t>t0)txt(`${k} PLATES HATAANI PADI`,800,820,'800 26px M',GOLD);
+ badge(540,1255,'BEECH TAK PAHUNCHNA · O(n)',pop(t,'hatani',0.45,0),{fs:26});
+}
+function S12(t,lt){badge(540,1255,'STACK OVERFLOW',pop(t,'overflow',0.45,0),{fs:30})}
+function S13(t,lt){badge(540,1255,'STACK UNDERFLOW',pop(t,'underflow',0.45,0),{fs:30})}
+function S14(t,lt){ // undo: edits pushed, undo pops
+ const a=eo(seg(lt,0,0.5));const acts=['Type "Hi"','Bold','Color'];const np=Math.min(3,Math.floor(seg(t,E('undo2')-0.2,E('push3')+0.6)*3+0.001)+ (t>E('undo2')-0.2?1:0));
+ const popped=t>E('pop3')-0.1;const shown=acts.slice(0,Math.min(3,np)-(popped?1:0));
+ editor(330,900,0.95,a,['Hi Why Spaces',shown.length>=2?'+ Bold':'',shown.length>=3?'+ Orange color':''].filter(Boolean),t);
+ stackCol(820,1140,280,a,shown,{cap:4,ih:60,fs:22});txt('UNDO STACK',820,840,'500 22px J',GOLD);
+ if(popped){const u=eo(seg(t,E('pop3')-0.1,E('pop3')+0.5));flyItem(820+u*60,lerp(1140-10-3*60,700,u),280,1-u,'Color')}
+ const z=pop(t,'pop3',0.45,-0.3);if(z>0){ctx.save();ctx.translate(820,700);ctx.scale(z,z);rr(-90,-30,180,60,14);ctx.fillStyle='rgba(255,138,31,.25)';ctx.fill();gs(3,OR,18);txt('CTRL + Z',0,2,'800 26px J',WH);ctx.restore()}
+ badge(540,1255,'UNDO = POP',pop(t,'pop3',0.45,0.2),{fs:30});
+}
+function S15(t,lt){ // brackets check
+ const a=eo(seg(lt,0,0.5));const S='{([])}';const t0=E('khula')-0.6,dt=(E('band')+0.9-t0)/6;const k=Math.floor(seg(t,t0,t0+6*dt)*6+0.0001);
+ const st=[];for(let i=0;i<Math.min(k,6);i++){if('{(['.includes(S[i]))st.push(S[i]);else st.pop()}
+ for(let i=0;i<6;i++){const on=i===k&&k<6;const done=i<k;const op='{(['.includes(S[i]);ctx.save();ctx.globalAlpha*=a;rr(170+i*80-34,680,68,90,12);ctx.fillStyle=on?'rgba(255,138,31,.5)':done?'rgba(243,236,228,.08)':'rgba(22,15,11,.95)';ctx.fill();gs(2.5,on?OR:'rgba(243,236,228,.5)',on?18:0);txt(S[i],170+i*80,727,'900 52px J',done?'rgba(243,236,228,.45)':WH);txt(op?'PUSH':'POP',170+i*80,800,'500 16px J',op?GOLD:'#7cc4ff');ctx.restore()}
+ stackCol(800,1160,220,a,st,{cap:3,ih:64,fs:34});txt('STACK',800,920,'500 22px J',GOLD);
+ if(k>=6){check(820,1060,70,fin(t,'band',0.5,0.9));monoTag(400,1000,'STACK KHAALI = SAB MATCH',fin(t,'band',0.4,1.0))}
+ badge(540,1255,'KHULA = PUSH · BAND = POP',pop(t,'khula',0.45,0),{fs:26});
+}
+function S16(t,lt){ // call stack
+ const a=eo(seg(lt,0,0.5));const F=['main()','order()','pay()'];const t0=E('function')-0.3;const n=Math.min(3,1+Math.floor(seg(t,t0,E('call')+0.6)*2+0.001));
+ const ret=seg(t,E('callstack')+0.8,E('callstack')+2.2);const m=Math.max(1,n-Math.floor(ret*2+0.001));
+ for(let i=0;i<m;i++)frameBox(540,1150-i*90,360,a*back(seg(t,t0+i*0.6,t0+i*0.6+0.4)),F[i],i===m-1);
+ for(let i=0;i<m-1;i++)arrow(740,1150-i*90,740,1150-(i+1)*90+20,a,OR,3);
+ txt('CALL STACK',540,760,'800 30px J',GOLD,'center',10);if(ret>0)monoTag(820,860,'RETURN → POP',cl(ret*3));
+ badge(540,1255,'FUNCTION → CALL STACK',pop(t,'callstack',0.45,0),{fs:26});
+}
+function S17(t,lt){ // recap table
+ const rows=[['PUSH (top par)','O(1)','TEZ',1,'lifo2',0.6],['POP (top se)','O(1)','TEZ',1,'lifo2',1.1],['PEEK (top dekho)','O(1)','TEZ',1,'lifo2',1.6],['BEECH TAK','O(n)','DHEEMA',0,'big2',0.4]];
+ monoTag(540,640,'LIFO · LAST IN FIRST OUT',fin(t,'lifo2',0.4,-0.2));
+ rows.forEach(([n,o,s,good,e,off],i)=>{const p=pop(t,e,0.45,off);const y=760+i*125;card(540,y,860,105,p,'',null,t);if(p>0){ctx.save();ctx.globalAlpha*=cl(p);txt(n,150,y+2,'800 32px M',WH,'left');txt(o,660,y+2,'900 40px M',good?OR:'#ff5a3c','center',good?16:0);txt(s,870,y+2,'800 28px M',good?GOLD:'rgba(243,236,228,.7)','center');ctx.restore()}});
+}
+function S18(t,lt){ // next: queue
+ const a=eo(seg(lt,0,0.5));card(540,900,640,440,a,'',null,t);if(a>0){ctx.save();ctx.globalAlpha*=a;txt('EP 05',540,740,'900 40px J',GOLD);txt('QUEUE',540,820,'900 96px M',OR,'center',30);ctx.restore();
+  chaiStall(330,1040,0.7,a,t);for(let i=0;i<4;i++)stickman(470+i*70,1070,0.9,a*fin(t,'chai',0.4,-0.6+i*0.12));monoTag(620,960,'FIRST IN · FIRST OUT',fin(t,'chai',0.4,0.3))}
+ badge(540,1255,'AGLE EPISODE MEIN',pop(t,'queue',0.45,0),{fs:30});
+}
+function S19(t,lt){ // comments
+ const a=eo(seg(lt,0,0.5));stackCol(540,1180,300,a,['?','?','?','?'],{cap:4,ih:58});
+ speech(540,760,1.3,pop(t,'comments',0.45,-0.8),false,t);badge(540,1255,'COMMENTS MEIN BATAO',pop(t,'comments',0.45,0),{fs:30});
+}
+const SCN=[S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12,S13,S14,S15,S16,S17,S18,S19];

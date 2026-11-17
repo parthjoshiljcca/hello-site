@@ -1,0 +1,86 @@
+[
+[
+"पिछले episode में हमने लिंक्ड लिस्ट देखी, जहाँ हर नोड अगले का पता बताता है।",
+"Pichhle episode mein humne Linked List dekhi, jahan har node agle ka pata batata hai."
+],
+[
+"आज बात उस data structure की, जो आपके हर अनडू के पीछे छुपा है।",
+"Aaj baat us data structure ki, jo aapke har undo ke peeche chhupa hai."
+],
+[
+"इसका नाम है स्टैक।",
+"Iska naam hai Stack."
+],
+[
+"शादी में plates का ढेर देखा है? नई plate हमेशा सबसे ऊपर रखी जाती है।",
+"Shaadi mein plates ka dher dekha hai? Nayi plate hamesha sabse upar rakhi jaati hai."
+],
+[
+"और जब कोई plate उठाता है, तो सबसे ऊपर वाली ही उठाता है।",
+"Aur jab koi plate uthata hai, toh sabse upar wali hi uthata hai."
+],
+[
+"यानी जो plate सबसे आख़िर में रखी गई, वही सबसे पहले निकली।",
+"Yaani jo plate sabse aakhir mein rakhi gayi, wahi sabse pehle nikli."
+],
+[
+"इसे कहते हैं लाइफ़ो, यानी लास्ट इन, फ़र्स्ट आउट।",
+"Ise kehte hain LIFO, yaani Last In, First Out."
+],
+[
+"स्टैक का सिर्फ़ एक ही दरवाज़ा होता है, ऊपर वाला। इसे कहते हैं टॉप।",
+"Stack ka sirf ek hi darwaaza hota hai, upar wala. Ise kehte hain top."
+],
+[
+"ऊपर कुछ रखना, यानी पुश।",
+"Upar kuch rakhna, yaani push."
+],
+[
+"ऊपर से निकालना, यानी पॉप।",
+"Upar se nikaalna, yaani pop."
+],
+[
+"और बिना निकाले, बस ऊपर वाला देखना, यानी पीक।",
+"Aur bina nikaale, bas upar wala dekhna, yaani peek."
+],
+[
+"तीनों काम सिर्फ़ टॉप पर होते हैं, इसलिए तीनों बिग ओ ऑफ़ वन।",
+"Teenon kaam sirf top par hote hain, isliye teenon Big O of 1."
+],
+[
+"पर कमज़ोरी भी है। बीच वाली plate चाहिए, तो ऊपर की सारी plates हटानी पड़ेंगी।",
+"Par kamzori bhi hai. Beech wali plate chahiye, toh upar ki saari plates hatani padengi."
+],
+[
+"और स्टैक भर जाने के बाद भी पुश करो, तो होता है स्टैक ओवरफ़्लो।",
+"Aur Stack bhar jaane ke baad bhi push karo, toh hota hai Stack Overflow."
+],
+[
+"वहीं खाली स्टैक से पॉप करो, तो अंडरफ़्लो।",
+"Wahin khaali Stack se pop karo, toh underflow."
+],
+[
+"अब असली जगहें। आपका अनडू button। हर बदलाव स्टैक में पुश होता है, और अनडू दबाते ही पॉप।",
+"Ab asli jagahein. Aapka undo button. Har badlaav Stack mein push hota hai, aur undo dabaate hi pop."
+],
+[
+"Code में brackets check करना भी स्टैक से होता है। हर खुला bracket पुश, हर बंद bracket पॉप।",
+"Code mein brackets check karna bhi Stack se hota hai. Har khula bracket push, har band bracket pop."
+],
+[
+"और जब एक function दूसरे को call करता है, तो computer उन्हें कॉल स्टैक में रखता है।",
+"Aur jab ek function doosre ko call karta hai, toh computer unhe call stack mein rakhta hai."
+],
+[
+"तो याद रखो। स्टैक यानी लाइफ़ो। पुश, पॉप और पीक, सब टॉप पर, सब बिग ओ ऑफ़ वन।",
+"Toh yaad rakho. Stack yaani LIFO. Push, pop aur peek, sab top par, sab Big O of 1."
+],
+[
+"अगले episode में क्यू, यानी चाय की दुकान वाली line। Series follow कर लो।",
+"Agle episode mein Queue, yaani chai ki dukaan wali line. Series follow kar lo."
+],
+[
+"आपने आज कितनी बार अनडू दबाया? Comments में बताओ।",
+"Aapne aaj kitni baar undo dabaya? Comments mein batao."
+]
+]
