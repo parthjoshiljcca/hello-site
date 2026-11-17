@@ -8,8 +8,8 @@
 "Toh kya koi aisa tareeka hai, jismein kisi ko khisakna hi na pade?"
 ],
 [
-"हाँ है। इसका नाम है लिंक्ड लिस्ट।",
-"Haan hai. Iska naam hai Linked List."
+"हाँ, बिल्कुल है। इसका नाम है लिंक्ड लिस्ट।",
+"Haan, bilkul hai. Iska naam hai Linked List."
 ],
 [
 "कभी treasure hunt खेला है? हर clue पर लिखा होता है, कि अगला clue कहाँ छुपा है।",
@@ -20,7 +20,7 @@
 "Linked List bilkul aisi hi hai. Iske har dibbe ko kehte hain node."
 ],
 [
-"हर नोड में दो चीज़ें होती हैं। एक data, और अगले नोड का address, जिसे कहते हैं pointer।",
+"हर नोड में दो चीज़ें होती हैं। एक डेटा, और अगले नोड का address, जिसे कहते हैं pointer।",
 "Har node mein do cheezein hoti hain. Ek data, aur agle node ka address, jise kehte hain pointer."
 ],
 [
@@ -28,8 +28,8 @@
 "Aur ye nodes memory mein kahin bhi bikhre ho sakte hain. Agal bagal hona zaroori nahi."
 ],
 [
-"Computer बस पहले नोड को याद रखता है, जिसे कहते हैं head।",
-"Computer bas pehle node ko yaad rakhta hai, jise kehte hain head."
+"Computer बस पहले नोड को याद रखता है। इसे कहते हैं हेड।",
+"Computer bas pehle node ko yaad rakhta hai. Ise kehte hain head."
 ],
 [
 "आख़िरी नोड का pointer कहीं नहीं जाता। वो होता है null, यानी यहाँ लिस्ट ख़त्म।",
@@ -60,7 +60,7 @@
 "Par ek kamzori hai. Paanchvaan node chahiye? Toh head se shuru karke, ek ek clue follow karna padega."
 ],
 [
-"सीधे वहाँ नहीं पहुँच सकते, जैसे ऐरे में पहुँचते थे। इसलिए access होता है बिग ओ ऑफ़ एन।",
+"सीधे वहाँ नहीं पहुँच सकते, जैसे Array में पहुँचते थे। इसलिए access होता है बिग ओ ऑफ़ एन।",
 "Seedhe wahan nahi pahunch sakte, jaise Array mein pahunchte the. Isliye access hota hai Big O of n."
 ],
 [
@@ -76,8 +76,8 @@
 "Yahan har node ke do pointer hote hain, aage aur peeche. Ise kehte hain Doubly Linked List."
 ],
 [
-"तो याद रखो। लिंक्ड लिस्ट में जोड़ना और हटाना तेज़, पर किसी नोड तक पहुँचना धीमा।",
-"Toh yaad rakho. Linked List mein jodna aur hatana tez, par kisi node tak pahunchna dheema."
+"तो याद रखो। लिंक्ड लिस्ट में नोड जोड़ना और हटाना तेज़ है, लेकिन किसी नोड तक पहुँचना धीमा।",
+"Toh yaad rakho. Linked List mein node jodna aur hatana tez hai, lekin kisi node tak pahunchna dheema."
 ],
 [
 "अगले episode में स्टैक, यानी शादी वाली plates का ढेर। Series follow कर लो।",
