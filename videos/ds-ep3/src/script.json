@@ -1,0 +1,90 @@
+[
+[
+"पिछले episode में हमने देखा, ऐरे में बीच में जोड़ना और हटाना धीमा है।",
+"Pichhle episode mein humne dekha, Array mein beech mein jodna aur hatana dheema hai."
+],
+[
+"तो क्या कोई ऐसा तरीका है, जिसमें किसी को खिसकना ही न पड़े?",
+"Toh kya koi aisa tareeka hai, jismein kisi ko khisakna hi na pade?"
+],
+[
+"हाँ है। इसका नाम है लिंक्ड लिस्ट।",
+"Haan hai. Iska naam hai Linked List."
+],
+[
+"कभी treasure hunt खेला है? हर clue पर लिखा होता है, कि अगला clue कहाँ छुपा है।",
+"Kabhi treasure hunt khela hai? Har clue par likha hota hai, ki agla clue kahan chhupa hai."
+],
+[
+"लिंक्ड लिस्ट बिल्कुल ऐसी ही है। इसके हर डिब्बे को कहते हैं नोड।",
+"Linked List bilkul aisi hi hai. Iske har dibbe ko kehte hain node."
+],
+[
+"हर नोड में दो चीज़ें होती हैं। एक data, और अगले नोड का address, जिसे कहते हैं pointer।",
+"Har node mein do cheezein hoti hain. Ek data, aur agle node ka address, jise kehte hain pointer."
+],
+[
+"और ये नोड्स memory में कहीं भी बिखरे हो सकते हैं। अगल बगल होना ज़रूरी नहीं।",
+"Aur ye nodes memory mein kahin bhi bikhre ho sakte hain. Agal bagal hona zaroori nahi."
+],
+[
+"Computer बस पहले नोड को याद रखता है, जिसे कहते हैं head।",
+"Computer bas pehle node ko yaad rakhta hai, jise kehte hain head."
+],
+[
+"आख़िरी नोड का pointer कहीं नहीं जाता। वो होता है null, यानी यहाँ लिस्ट ख़त्म।",
+"Aakhri node ka pointer kahin nahi jaata. Woh hota hai null, yaani yahan list khatam."
+],
+[
+"अब असली जादू। बीच में नया नोड जोड़ना है?",
+"Ab asli jaadu. Beech mein naya node jodna hai?"
+],
+[
+"बस दो pointer बदलो। नया नोड अगले को point करे, और पिछला नोड नए को।",
+"Bas do pointer badlo. Naya node agle ko point kare, aur pichhla node naye ko."
+],
+[
+"कोई shifting नहीं। जगह पता हो, तो जोड़ना बिग ओ ऑफ़ वन।",
+"Koi shifting nahi. Jagah pata ho, toh jodna Big O of 1."
+],
+[
+"हटाना भी उतना ही आसान। पिछले नोड का pointer, सीधा अगले वाले से जोड़ दो।",
+"Hatana bhi utna hi aasaan. Pichhle node ka pointer, seedha agle wale se jod do."
+],
+[
+"और size की कोई टेंशन नहीं। जब चाहो, नया नोड जोड़ते जाओ।",
+"Aur size ki koi tension nahi. Jab chaaho, naya node jodte jao."
+],
+[
+"पर एक कमज़ोरी है। पाँचवाँ नोड चाहिए? तो head से शुरू करके, एक एक clue follow करना पड़ेगा।",
+"Par ek kamzori hai. Paanchvaan node chahiye? Toh head se shuru karke, ek ek clue follow karna padega."
+],
+[
+"सीधे वहाँ नहीं पहुँच सकते, जैसे ऐरे में पहुँचते थे। इसलिए access होता है बिग ओ ऑफ़ एन।",
+"Seedhe wahan nahi pahunch sakte, jaise Array mein pahunchte the. Isliye access hota hai Big O of n."
+],
+[
+"और हर नोड को pointer रखने के लिए, थोड़ी extra memory भी चाहिए।",
+"Aur har node ko pointer rakhne ke liye, thodi extra memory bhi chahiye."
+],
+[
+"फिर भी लिंक्ड लिस्ट हर जगह है। म्यूज़िक प्लेयर में next और previous song, और browser का back और forward button।",
+"Phir bhi Linked List har jagah hai. Music player mein next aur previous song, aur browser ka back aur forward button."
+],
+[
+"यहाँ हर नोड के दो pointer होते हैं, आगे और पीछे। इसे कहते हैं डबली लिंक्ड लिस्ट।",
+"Yahan har node ke do pointer hote hain, aage aur peeche. Ise kehte hain Doubly Linked List."
+],
+[
+"तो याद रखो। लिंक्ड लिस्ट में जोड़ना और हटाना तेज़, पर किसी नोड तक पहुँचना धीमा।",
+"Toh yaad rakho. Linked List mein jodna aur hatana tez, par kisi node tak pahunchna dheema."
+],
+[
+"अगले episode में स्टैक, यानी शादी वाली plates का ढेर। Series follow कर लो।",
+"Agle episode mein Stack, yaani shaadi wali plates ka dher. Series follow kar lo."
+],
+[
+"आपने लिंक्ड लिस्ट कहाँ कहाँ use होते देखी? Comments में बताओ।",
+"Aapne Linked List kahan kahan use hote dekhi? Comments mein batao."
+]
+]

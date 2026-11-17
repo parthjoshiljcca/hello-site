@@ -1,0 +1,116 @@
+const SC=[
+ {pill:'THE WHY SPACES · DS SERIES · EP 03',title:'Kisi Ko <em>Khisakna</em> Na Pade?',sub:'Array ki sabse badi problem',tag:'THE · WHY'},
+ {pill:'EP 03',title:'<em>Linked</em> List',sub:'Aaj poora samjhenge',tag:'DEEP · DIVE'},
+ {pill:'01 · ANALOGY',title:'Treasure <em>Hunt</em>',sub:'Har clue agle ka pata batata hai',tag:'CLUE → CLUE'},
+ {pill:'02 · NODE',title:'Har Dibba = <em>Node</em>',sub:'Clue jaisa',tag:'NODE'},
+ {pill:'03 · ANDAR',title:'Data + <em>Pointer</em>',sub:'Pointer = agle node ka address',tag:'DATA · NEXT'},
+ {pill:'04 · MEMORY',title:'Kahin Bhi <em>Bikhre</em>',sub:'Agal bagal zaroori nahi',tag:'NON-CONTIGUOUS'},
+ {pill:'05 · HEAD',title:'Sirf <em>Head</em> Yaad',sub:'Pehla node',tag:'HEAD · POINTER'},
+ {pill:'06 · NULL',title:'Aakhri Pointer = <em>Null</em>',sub:'Yahan list khatam',tag:'END · OF · LIST'},
+ {pill:'07 · INSERT',title:'Asli <em>Jaadu</em>',sub:'Beech mein naya node',tag:'INSERT'},
+ {pill:'07 · INSERT',title:'Bas 2 <em>Pointer</em> Badlo',sub:'Naya → agla · pichhla → naya',tag:'REWIRE'},
+ {pill:'07 · INSERT',title:'No <em>Shifting</em>',sub:'Jagah pata ho toh',tag:'O(1)'},
+ {pill:'08 · DELETE',title:'Hatana Bhi <em>Aasaan</em>',sub:'Pichhla → seedha agla',tag:'O(1)'},
+ {pill:'09 · SIZE',title:'Size Ki <em>Tension</em> Nahi',sub:'Jab chaaho node jodo',tag:'DYNAMIC'},
+ {pill:'10 · KAMZORI',title:'Paanchvaan <em>Node</em>?',sub:'Head se ek ek clue',tag:'TRAVERSAL'},
+ {pill:'10 · KAMZORI',title:'Access <em>O(n)</em>',sub:'Array jaisa seedha nahi',tag:'NO · INDEX'},
+ {pill:'11 · KAMZORI 2',title:'Extra <em>Memory</em>',sub:'Har node ka pointer',tag:'OVERHEAD'},
+ {pill:'12 · REAL LIFE',title:'Linked List Har <em>Jagah</em>',sub:'Music player · Browser',tag:'USES'},
+ {pill:'13 · DOUBLY',title:'Aage + <em>Peeche</em>',sub:'Doubly Linked List',tag:'PREV · NEXT'},
+ {pill:'RECAP',title:'Jodna-Hatana <em>Tez</em>',sub:'Pahunchna dheema',tag:'YAAD · RAKHO'},
+ {pill:'NEXT · EP 04',title:'Next: <em>Stack</em>',sub:'Shaadi wali plates',tag:'FOLLOW · SERIES'},
+ {pill:'AAPKI BAARI',title:'Linked List <em>Kahan</em> Dekhi?',sub:'Comments mein batao',tag:'COMMENT · KARO'},
+];
+const HL=['array','dheema','khisakna','linked','list','treasure','hunt','clue','agla','node','nodes','data','address','pointer','memory','bikhre','head','null','khatam','jaadu','naya','shifting','big','o','1','n','hatana','aasaan','tension','kamzori','paanchvaan','follow','access','extra','doubly','tez','stack','plates','comments'];
+
+// ---------- Ep 3 primitives ----------
+function cellBox(x,y,w,h,a,val,hot,idx){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;rr(x-w/2,y-h/2,w,h,10);ctx.fillStyle=hot?'rgba(255,138,31,.45)':'rgba(22,15,11,.95)';ctx.fill();gs(3,hot?OR:'rgba(243,236,228,.7)',hot?24:4);
+ if(val!==null&&val!==undefined)txt(String(val),x,y+2,`900 ${Math.round(h*0.42)}px M`,hot?'#fff':WH);if(idx!==undefined)txt('['+idx+']',x,y+h/2+26,'500 22px J',hot?GOLD:'rgba(243,236,228,.55)');ctx.restore()}
+// a linked-list node: data box + pointer box (dot) ; returns the pointer-dot position
+function nodeBox(x,y,a,data,hot,opt={}){if(a<=0)return;const w=opt.w||170,h=opt.h||96,pw=w*0.34;ctx.save();ctx.globalAlpha*=a;
+ rr(x-w/2,y-h/2,w,h,14);ctx.fillStyle=hot?'rgba(255,138,31,.38)':'rgba(22,15,11,.96)';ctx.fill();gs(3,hot?OR:'rgba(243,236,228,.75)',hot?22:4);
+ ctx.beginPath();ctx.moveTo(x+w/2-pw,y-h/2+8);ctx.lineTo(x+w/2-pw,y+h/2-8);gs(2,'rgba(243,236,228,.45)');
+ if(opt.prev){ctx.beginPath();ctx.moveTo(x-w/2+pw,y-h/2+8);ctx.lineTo(x-w/2+pw,y+h/2-8);gs(2,'rgba(243,236,228,.45)');ctx.beginPath();ctx.arc(x-w/2+pw/2,y,9,0,7);ctx.fillStyle='#7cc4ff';ctx.shadowColor='#7cc4ff';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0}
+ const dx=opt.prev?x:x-pw/2;txt(String(data),dx,y+2,`900 ${Math.round(h*0.4)}px M`,hot?'#fff':WH);
+ ctx.beginPath();ctx.arc(x+w/2-pw/2,y,9,0,7);ctx.fillStyle=opt.ptrHot?GOLD:OR;ctx.shadowColor=OR;ctx.shadowBlur=opt.ptrHot?26:12;ctx.fill();ctx.shadowBlur=0;
+ if(opt.lab){txt('DATA',dx,y-h/2-22,'500 18px J','rgba(243,236,228,.6)');txt('NEXT',x+w/2-pw/2,y-h/2-22,'500 18px J',GOLD)}ctx.restore()}
+function nullMark(x,y,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.beginPath();ctx.moveTo(x,y-26);ctx.lineTo(x,y);ctx.moveTo(x-24,y);ctx.lineTo(x+24,y);ctx.moveTo(x-15,y+10);ctx.lineTo(x+15,y+10);ctx.moveTo(x-7,y+20);ctx.lineTo(x+7,y+20);gs(3.5,'rgba(243,236,228,.8)');txt('NULL',x,y+50,'500 20px J','rgba(243,236,228,.7)');ctx.restore()}
+// a chain of nodes on one row, with arrows drawn in by p
+function chain(x0,y,gap,vals,a,p,hot=-1,opt={}){const w=opt.w||150;vals.forEach((v,i)=>{const q=back(cl(p*vals.length*1.2-i));nodeBox(x0+i*gap,y,a*cl(q),v,i===hot,{w,h:opt.h||86})});
+ vals.forEach((v,i)=>{const q=cl(p*vals.length*1.2-i-0.6);const x1=x0+i*gap+w/2-w*0.17,x2=i<vals.length-1?x0+(i+1)*gap-w/2-6:x1+70;if(q>0){ctx.save();ctx.globalAlpha*=a;arrow(x1,y,x2,y,eo(q),OR,4);ctx.restore()}});
+ if(opt.nul)nullMark(x0+(vals.length-1)*gap+w/2-w*0.17+90,y+6,a*cl(p*vals.length*1.2-vals.length-0.2))}
+function playerCard(x,y,p,t,hot){card(x,y,400,440,p,'',null,t);if(p<=0)return;ctx.save();ctx.globalAlpha*=cl(p);rr(x-120,y-170,240,170,16);ctx.fillStyle='rgba(255,138,31,.25)';ctx.fill();gs(2,LN);
+ ctx.beginPath();ctx.arc(x,y-85,42,0,7);gs(3,GOLD,10);ctx.beginPath();ctx.arc(x,y-85,8,0,7);ctx.fillStyle=GOLD;ctx.fill();
+ txt('Song 2',x,y+30,'800 30px M',WH);rr(x-140,y+66,280,8,4);ctx.fillStyle='rgba(243,236,228,.2)';ctx.fill();rr(x-140,y+66,280*((t*0.12)%1),8,4);ctx.fillStyle=OR;ctx.fill();
+ const bt=(bx,dir,h)=>{ctx.save();ctx.translate(bx,y+130);ctx.scale(dir,1);ctx.beginPath();ctx.moveTo(-14,-16);ctx.lineTo(10,0);ctx.lineTo(-14,16);ctx.closePath();ctx.fillStyle=h?GOLD:WH;ctx.shadowColor=OR;ctx.shadowBlur=h?24:0;ctx.fill();ctx.fillRect(12,-16,5,32);ctx.restore()};
+ bt(x-90,-1,hot===1);bt(x+90,1,hot===0);ctx.beginPath();ctx.arc(x,y+130,30,0,7);gs(3,OR,10);ctx.fillStyle=WH;ctx.fillRect(x-9,y+117,6,26);ctx.fillRect(x+3,y+117,6,26);
+ txt('PREV',x-90,y+178,'500 18px J','rgba(243,236,228,.6)');txt('NEXT',x+90,y+178,'500 18px J','rgba(243,236,228,.6)');ctx.restore()}
+function browserCard(x,y,p,t,hot){card(x,y,400,440,p,'',null,t);if(p<=0)return;ctx.save();ctx.globalAlpha*=cl(p);rr(x-170,y-190,340,320,14);ctx.fillStyle='rgba(243,236,228,.06)';ctx.fill();gs(2,LN);
+ rr(x-170,y-190,340,56,14);ctx.fillStyle='rgba(255,138,31,.2)';ctx.fill();
+ const ar=(bx,dir,h)=>{ctx.save();ctx.translate(bx,y-162);ctx.scale(dir,1);ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(-10,0);ctx.moveTo(-2,-9);ctx.lineTo(-10,0);ctx.lineTo(-2,9);ctx.lineCap='round';gs(4,h?GOLD:WH,h?20:0);ctx.restore()};
+ ar(x-140,1,hot===0);ar(x-104,-1,hot===1);rr(x-80,y-178,236,32,16);ctx.fillStyle='rgba(10,8,7,.7)';ctx.fill();txt('thewhyspaces.com',x-64,y-161,'500 16px J','rgba(243,236,228,.7)','left');
+ for(let i=0;i<3;i++){const px=x-110+i*110,on=Math.floor(t*0.9)%3===i;rr(px-44,y-60,88,110,10);ctx.fillStyle=on?'rgba(255,138,31,.45)':'rgba(243,236,228,.1)';ctx.fill();gs(2,on?OR:'rgba(243,236,228,.5)',on?14:0);txt('PAGE '+(i+1),px,y-5,'800 16px M',WH);if(i<2)arrow(px+46,y-5,px+62,y-5,1,OR,3)}
+ txt('BACK · FORWARD',x,y+170,'500 20px J',GOLD);ctx.restore()}
+
+// ---------- scenes ----------
+function S0(t,lt){ // 3D array shifting pain; 2D badges
+ badge(320,1255,'JODNA-HATANA DHEEMA',pop(t,'dheema',0.45,0),{fs:26});badge(780,1255,'BINA KHISKAYE?',pop(t,'khisakna',0.45,0),{fs:26});
+}
+function S1(t,lt){ // title
+ const p=pop(t,'linked',0.5,-0.25);if(p>0){ctx.save();ctx.translate(540,800);ctx.scale(p,p);txt('LINKED LIST',0,0,'900 128px M',OR,'center',44);ctx.restore()}
+ chain(170,1060,210,['A','B','C','D'],1,eo(seg(lt,0.1,1.6)),-1,{w:150,nul:true});
+ monoTag(540,660,'THE WHY SPACES · DS SERIES · EP 03',fin(t,'linked',0.4,-0.6));
+}
+function S2(t,lt){ // treasure hunt: clue -> clue -> clue -> chest
+ const P=[[220,1130],[430,820],[700,1070],[880,760]];const a=eo(seg(lt,0,0.5));
+ const k=seg(t,E('clue')-0.2,E('agla')+0.9);
+ for(let i=0;i<3;i++){const q=cl(k*3-i);if(q>0){ctx.save();ctx.setLineDash([14,12]);ctx.beginPath();ctx.moveTo(P[i][0],P[i][1]);ctx.lineTo(lerp(P[i][0],P[i+1][0],eo(q)),lerp(P[i][1],P[i+1][1],eo(q)));gs(4,'rgba(255,138,31,.85)',12);ctx.restore()}}
+ for(let i=0;i<3;i++){const on=k*3>=i;note(P[i][0],P[i][1],1.35,a,'CLUE '+(i+1),[-0.1,0.08,-0.06][i]);if(on&&k>0){ctx.save();ctx.globalAlpha*=0.5+0.5*Math.sin(t*6+i);ctx.beginPath();ctx.arc(P[i][0],P[i][1],96,0,7);gs(3,OR,20);ctx.restore()}}
+ chest(P[3][0],P[3][1]+20,1.3,a,eo(seg(t,E('agla')+0.6,E('agla')+1.2)));
+ if(k>0){const u=k*3,i=Math.min(2,Math.floor(u)),f=eio(u-i);const mx=lerp(P[i][0],P[i+1][0],f),my=lerp(P[i][1],P[i+1][1],f)-40;ctx.save();ctx.beginPath();ctx.arc(mx,my,16,0,7);ctx.fillStyle=GOLD;ctx.shadowColor=OR;ctx.shadowBlur=30;ctx.fill();ctx.restore()}
+ monoTag(540,650,'HAR CLUE → AGLE CLUE KA PATA',fin(t,'clue',0.4,0));badge(540,1255,'AGLA CLUE KAHAN?',pop(t,'agla',0.45,0),{fs:28});
+}
+function S3(t,lt){badge(540,1255,'HAR DIBBA = NODE',pop(t,'node',0.45,0),{fs:30})}
+function S4(t,lt){badge(540,1255,'DATA + POINTER',pop(t,'pointer',0.45,0),{fs:30})}
+function S5(t,lt){badge(540,1255,'KAHIN BHI · BIKHRE',pop(t,'bikhre',0.45,0),{fs:28})}
+function S6(t,lt){badge(540,1255,'HEAD = PEHLA NODE',pop(t,'head',0.45,0),{fs:28})}
+function S7(t,lt){badge(540,1255,'NULL = LIST KHATAM',pop(t,'null',0.45,0),{fs:28})}
+function S8(t,lt){badge(540,1255,'BEECH MEIN NAYA NODE',pop(t,'naya',0.45,0),{fs:28})}
+function S9(t,lt){badge(540,1255,'SIRF 2 POINTER BADLE',pop(t,'naye',0.45,0),{fs:28})}
+function S10(t,lt){badge(540,1255,'INSERT · O(1)',pop(t,'bigo',0.45,0),{fs:30})}
+function S11(t,lt){badge(540,1255,'DELETE · O(1)',pop(t,'jod',0.45,0),{fs:30})}
+function S12(t,lt){badge(540,1255,'SIZE FIXED NAHI',pop(t,'tension',0.45,0),{fs:30})}
+function S13(t,lt){badge(540,1255,'HEAD SE EK EK HOP',pop(t,'follow',0.45,0),{fs:28})}
+function S14(t,lt){badge(540,1255,'ACCESS · O(n)',pop(t,'bigon',0.45,0),{fs:30})}
+function S15(t,lt){ // extra memory: array cell vs node
+ const a=eo(seg(lt,0,0.5));const e=fin(t,'extra',0.5,-0.2);
+ card(290,900,400,440,a,'',null,t);card(790,900,400,440,a,'',null,t);
+ if(a>0){ctx.save();ctx.globalAlpha*=a;txt('ARRAY',290,730,'900 40px M',WH);txt('NODE',790,730,'900 40px M',OR,'center',14);ctx.restore();
+  cellBox(290,900,150,120,a,'7',false);txt('SIRF DATA',290,1050,'500 22px J','rgba(243,236,228,.7)');
+  nodeBox(790,900,a,'7',false,{w:250,h:120,lab:true,ptrHot:e>0.5});txt('DATA + POINTER',790,1060,'500 22px J',GOLD)}
+ if(e>0){ctx.save();ctx.globalAlpha*=e;rr(790+250/2-85-6,900-60-6,97,132,14);gs(4,GOLD,30*(0.6+0.4*Math.sin(t*6)));txt('+ EXTRA',832,995,'800 24px M',GOLD,'center',12);ctx.restore()}
+ badge(540,1255,'POINTER = EXTRA MEMORY',pop(t,'extra',0.45,0),{fs:26});
+}
+function S16(t,lt){ // uses
+ const m=pop(t,'music',0.45,-0.15),b=pop(t,'browser',0.45,-0.15);
+ const nh=t>E('next')-0.1&&t<E('next')+0.5?0:(t>E('next')+0.5&&t<E('next')+1.1?1:-1);
+ const bh=t>E('back')-0.1&&t<E('back')+0.6?0:(t>E('back')+0.6&&t<E('back')+1.4?1:-1);
+ playerCard(290,900,m,t,nh);browserCard(790,900,b,t,bh);
+ if(m>0)txt('MUSIC PLAYER',290,1170,'900 28px M',OR);if(b>0)txt('BROWSER',790,1170,'900 28px M',OR);
+}
+function S17(t,lt){badge(540,1255,'DOUBLY LINKED LIST',pop(t,'doubly',0.45,0),{fs:30})}
+function S18(t,lt){ // recap table
+ const rows=[['INSERT (jagah pata)','O(1)','TEZ',1,'jodna',-0.6],['DELETE (jagah pata)','O(1)','TEZ',1,'tez',-0.3],['ACCESS · SEARCH','O(n)','DHEEMA',0,'pahunchna',-0.1],['EXTRA MEMORY','POINTER','',0,'dheema2',0.1]];
+ rows.forEach(([n,o,s,good,e,off],i)=>{const p=pop(t,e,0.45,off);const y=720+i*130;card(540,y,860,110,p,'',null,t);if(p>0){ctx.save();ctx.globalAlpha*=cl(p);txt(n,150,y+2,'800 32px M',WH,'left');txt(o,660,y+2,`900 ${o.length>4?30:40}px M`,good?OR:'#ff5a3c','center',good?16:0);txt(s,870,y+2,'800 28px M',good?GOLD:'rgba(243,236,228,.7)','center');ctx.restore()}});
+}
+function S19(t,lt){ // next: stack
+ const a=eo(seg(lt,0,0.5));card(540,900,640,440,a,'',null,t);if(a>0){ctx.save();ctx.globalAlpha*=a;txt('EP 04',540,740,'900 40px J',GOLD);txt('STACK',540,830,'900 96px M',OR,'center',30);ctx.restore();
+  const n=Math.min(6,Math.floor(seg(t,E('plates')-0.4,E('plates')+0.8)*6)+1);plates2D(540,1060,1.3,a,n);
+  const top=fin(t,'series',0.5,-0.4);if(top>0)arrow(700,1060-n*21,700,940-n*21,top,OR,4);monoTag(830,1000-n*21,'LAST IN · FIRST OUT',top)}
+ badge(540,1255,'AGLE EPISODE MEIN',pop(t,'stack',0.45,0),{fs:30});
+}
+function S20(t,lt){ // comments
+ const a=eo(seg(lt,0,0.5));chain(150,1060,200,['?','?','?','?'],a,1,Math.floor(t*2)%4,{w:140});
+ speech(540,800,1.4,pop(t,'comments',0.45,-0.8),false,t);badge(540,1255,'COMMENTS MEIN BATAO',pop(t,'comments',0.45,0),{fs:30});
+}
+const SCN=[S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12,S13,S14,S15,S16,S17,S18,S19,S20];
