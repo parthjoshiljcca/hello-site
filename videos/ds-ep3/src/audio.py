@@ -143,7 +143,7 @@ def riser(d=0.9):
     for i in range(len(n)): y+=a[i]*(n[i]-y);out[i]=y
     return out*x**2*1.2
 for i,s in enumerate(scn[1:],1):
-    add(whoosh(),s['start']-0.1,0.1,(-1)**i*0.3);add(riser(),s['start']-0.85,0.08)
+    add(whoosh(),s['start']-0.05,0.1,(-1)**i*0.3);add(riser(0.45),s['start']-0.45,0.08)   # riser starts after the previous scene's last word
     u=tt(0.5);add(np.sin(2*np.pi*np.cumsum(40+60*np.exp(-u*20))/SR)*np.exp(-u*6),s['start']+0.05,0.3)
 # hook: array insert -> everyone shifts (strain) -> the row breaks into linked nodes
 tS=ev['dheema']-1.6

@@ -41,6 +41,7 @@ Each has the 2D camera motion (`CAM2D`).
 ## Narration
 - Locked voice: Sarvam `bulbul:v3`, kabir, pace 1.2, default temperature, **no audio processing**.
 - Devanagari only where Latin was misread: नोड / नोड्स (otherwise "node" drifted toward "note"), म्यूज़िक प्लेयर, लिंक्ड लिस्ट, डबली, स्टैक, बिग ओ ऑफ़ वन / एन. "Array" is written ऐरे and never at the start of a sentence.
+- Scene gap: 0.75 s (`GAP` in `build.py`), not the locked ~0.42 s. With 0.42 s, the transition riser and the visual fade landed on each scene's last word, so it sounded cut off halfway. Now the last word finishes, its tail decays naturally (+0.22 s, 80 ms fade), the visual fade starts 0.2 s after the voice ends, and the riser starts after the word.
 - Take selection: up to five takes per scene, scored with `saarika:v2.5` (scene keywords present, nothing truncated, नोड recognised) and the median pitch within about 1 semitone of 109 Hz.
 
 ## Mix

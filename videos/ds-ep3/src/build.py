@@ -7,6 +7,7 @@ def gaps_of(f):
     out=subprocess.run(['ffmpeg','-i',f,'-af','silencedetect=n=-40dB:d=0.07','-f','null','-'],capture_output=True,text=True).stderr
     return list(zip([float(x) for x in re.findall(r'silence_start: (-?[0-9.]+)',out)],[float(x) for x in re.findall(r'silence_end: ([0-9.]+)',out)]))
 PUN=r'(,|\.\.\.|\?|!|\.|:)$'
+GAP=0.75   # pause between scenes: the last word finishes and breathes before the transition
 t=0.35;sent=[None]*len(sc);scenes=[];pieces=[]
 for g,ss in enumerate(G):
     f=f'{W}/g{g}.wav';a=load(f);env=np.abs(a)>0.008;idx=np.where(env)[0];s0=idx[0]/SR;e0=idx[-1]/SR
@@ -37,14 +38,14 @@ for g,ss in enumerate(G):
     for i in ss:
         ks=[k for k in range(len(words)) if sidx[k]==i]
         sent[i]=dict(words=[words[k] for k in ks],wt=[wt[k] for k in ks],start=wt[ks[0]],end=round(clend[i],3),scene=g)
-    pieces.append((g,s0-0.04,e0+0.1,start-0.04))
+    pieces.append((g,s0-0.04,e0+0.22,start-0.04))
     scenes.append(dict(start=round(start-0.3 if g else 0,3),sent=ss))
-    t=start+(e0-s0)+0.42
-TOT=round(t-0.42+1.4,2)
+    t=start+(e0-s0)+GAP
+TOT=round(t-GAP+1.4,2)
 for g in range(len(scenes)): scenes[g]['end']=scenes[g+1]['start'] if g+1<len(scenes) else TOT
 N=int(TOT*SR);voice=np.zeros(N)
 for g,a0,b0,dst in pieces:
-    a=load(f'{W}/g{g}.wav');seg=a[max(0,int(a0*SR)):int(b0*SR)].copy();f=int(0.01*SR);seg[:f]*=np.linspace(0,1,f);seg[-3*f:]*=np.linspace(1,0,3*f)
+    a=load(f'{W}/g{g}.wav');seg=a[max(0,int(a0*SR)):int(b0*SR)].copy();f=int(0.01*SR);seg[:f]*=np.linspace(0,1,f);seg[-8*f:]*=np.linspace(1,0,8*f)
     o=int(dst*SR);voice[o:o+len(seg)]+=seg[:N-o]
 np.save(f'{W}/voice.npy',voice)
 fr=SR//30;nf=int(TOT*30);amp=[float(np.sqrt(np.mean(voice[i*fr:(i+1)*fr]**2))) for i in range(nf)];m=max(amp);amp=[round(min(1,x/m*1.2),3) for x in amp]
