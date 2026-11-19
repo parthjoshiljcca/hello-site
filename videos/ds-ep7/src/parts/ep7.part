@@ -1,0 +1,75 @@
+const SC=[
+ {pill:'THE WHY SPACES · DS SERIES · EP 07',title:'Har Taraf Se <em>Jude</em>',sub:'Asli duniya tree jaisi nahi',tag:'THE · WHY'},
+ {pill:'EP 07',title:'<em>Graph</em>',sub:'Aaj poora samjhenge',tag:'DEEP · DIVE'},
+ {pill:'01 · ANALOGY',title:'Metro <em>Map</em>',sub:'Har station kai stations se juda',tag:'METRO · MAP'},
+ {pill:'02 · TERMS',title:'Vertex + <em>Edge</em>',sub:'Station = vertex · line = edge',tag:'V · E'},
+ {pill:'03 · NO ROOT',title:'Kai <em>Raaste</em>',sub:'Koi root nahi',tag:'MANY · PATHS'},
+ {pill:'04 · DIRECTED',title:'Ek Tarfa <em>Follow</em>',sub:'Instagram',tag:'DIRECTED'},
+ {pill:'05 · UNDIRECTED',title:'Dono Taraf <em>Dosti</em>',sub:'Facebook',tag:'UNDIRECTED'},
+ {pill:'06 · WEIGHTED',title:'Edge Par <em>Doori</em>',sub:'Distance ya time',tag:'WEIGHTED'},
+ {pill:'07 · STORAGE',title:'Adjacency <em>List</em>',sub:'Har station ke padosi',tag:'A → B, C, G'},
+ {pill:'08 · BFS',title:'<em>BFS</em>',sub:'Breadth First Search',tag:'SEARCH · 1'},
+ {pill:'08 · BFS',title:'Paani Ki <em>Lehrein</em>',sub:'Padosi, phir padosi ke padosi',tag:'LEVEL · BY · LEVEL'},
+ {pill:'09 · DFS',title:'<em>Bhool-Bhulaiya</em>',sub:'Aakhir tak jao, phir wapas',tag:'DEPTH · FIRST'},
+ {pill:'10 · SHORTEST',title:'Sabse Chhota <em>Raasta</em>',sub:'Google Maps ka tareeka',tag:'WEIGHTS · JODO'},
+ {pill:'11 · REAL LIFE',title:'Friend <em>Suggestions</em>',sub:'Doston ke dost',tag:'SOCIAL · GRAPH'},
+ {pill:'RECAP',title:'Graph = <em>Jaal</em>',sub:'BFS lehrein · DFS gehraai',tag:'YAAD · RAKHO'},
+ {pill:'NEXT · EP 08',title:'Next: <em>Hash Table</em>',sub:'Locker room',tag:'FOLLOW · SERIES'},
+ {pill:'AAPKI BAARI',title:'Kitne <em>Stations</em>?',sub:'Ghar se office tak',tag:'COMMENT · KARO'},
+];
+const HL=['tree','parent','judi','graph','metro','map','station','stations','vertex','edge','root','raaste','instagram','follow','tarfa','directed','facebook','dosti','dono','undirected','doori','weighted','padosiyon','padosi','adjacency','list','bfs','lehrein','dfs','aakhir','wapas','bhool-bhulaiya','chhota','raasta','google','maps','wazan','kam','friend','suggestions','doston','jaal','gehraai','hash','table','locker','comments'];
+
+// ---------- Ep 7 primitives ----------
+function gnode(x,y,r,a,label,opt={}){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=opt.hot?'rgba(255,138,31,.5)':(opt.cool?'rgba(124,196,255,.35)':'rgba(22,15,11,.96)');ctx.fill();gs(3,opt.hot?OR:(opt.cool?'#7cc4ff':'rgba(243,236,228,.7)'),opt.hot?20:0);txt(label,x,y+2,`800 ${opt.fs||Math.round(r*0.6)}px M`,WH);ctx.restore()}
+function gedge(x1,y1,x2,y2,a,col,dash){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;if(dash)ctx.setLineDash([10,10]);ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);gs(3,col||'rgba(255,138,31,.7)',6);ctx.restore()}
+const GV={A:[180,820],B:[330,720],C:[310,920],D:[460,820],E:[450,1040],F:[600,930],G:[170,1060]};
+const GE=[['A','B'],['A','C'],['A','G'],['B','D'],['C','D'],['C','E'],['G','E'],['D','F'],['E','F']];
+
+// ---------- scenes ----------
+function S0(t,lt){badge(300,1255,'TREE = EK PARENT',pop(t,'parent',0.45,0),{fs:28});badge(780,1255,'HAR TARAF SE JUDE',pop(t,'judi',0.45,0),{fs:28})}
+function S1(t,lt){ // title
+ const p=pop(t,'graph',0.5,-0.5);if(p>0){ctx.save();ctx.translate(540,740);ctx.scale(p,p);txt('GRAPH',0,0,'900 170px M',OR,'center',44);ctx.restore()}
+ const a=eo(seg(lt,0,0.5));ctx.save();ctx.translate(180,90);GE.forEach(([u,v],k)=>gedge(GV[u][0],GV[u][1]+80,GV[v][0],GV[v][1]+80,a*cl(seg(lt,0.2+k*0.08,0.5+k*0.08))));Object.keys(GV).forEach(k=>gnode(GV[k][0],GV[k][1]+80,30,a,k));ctx.restore();
+ monoTag(540,640,'THE WHY SPACES · DS SERIES · EP 07',fin(t,'graph',0.4,-0.6));
+}
+function S2(t,lt){badge(540,1255,'HAR STATION KAI SE JUDA',pop(t,'kai',0.45,0),{fs:28})}
+function S3(t,lt){badge(540,1255,'STATION = VERTEX · LINE = EDGE',pop(t,'edge',0.45,0),{fs:24})}
+function S4(t,lt){badge(540,1255,'KOI ROOT NAHI · KAI RAASTE',pop(t,'raaste',0.45,0),{fs:26})}
+function S5(t,lt){badge(540,1255,'DIRECTED GRAPH',pop(t,'directed',0.45,0),{fs:30})}
+function S6(t,lt){badge(540,1255,'UNDIRECTED GRAPH',pop(t,'undirected',0.45,0),{fs:30})}
+function S7(t,lt){badge(540,1255,'WEIGHTED GRAPH',pop(t,'weighted',0.45,0),{fs:30})}
+function S8(t,lt){ // adjacency list
+ const a=eo(seg(lt,0,0.5));const k0=E('padosi')-0.4;const rows=[['A','B, C, G'],['B','A, D'],['C','A, D, E'],['D','B, C, F'],['E','C, G, F'],['F','D, E'],['G','A, E']];
+ const cur=Math.min(6,Math.floor(seg(t,k0,E('adjacency')+1.0)*7));
+ GE.forEach(([u,v])=>{const on=(u===rows[cur][0]||v===rows[cur][0])&&t>k0;gedge(GV[u][0],GV[u][1],GV[v][0],GV[v][1],a,on?OR:'rgba(243,236,228,.3)')});
+ Object.keys(GV).forEach(k=>gnode(GV[k][0],GV[k][1],30,a,k,{hot:t>k0&&k===rows[cur][0],cool:t>k0&&rows[cur][1].includes(k)}));
+ rows.forEach(([v,n],i)=>{const p=fin(t,'padosi',0.35,-0.4+i*0.25);if(p<=0)return;const y=720+i*58;ctx.save();ctx.globalAlpha*=p*a;rr(690,y-24,330,48,10);ctx.fillStyle=i===cur&&t>k0?'rgba(255,138,31,.35)':'rgba(22,15,11,.95)';ctx.fill();gs(2,i===cur&&t>k0?OR:'rgba(243,236,228,.4)');txt(v,720,y+1,'900 26px M',OR,'left');txt('→  '+n,760,y+1,'800 24px J',WH,'left');ctx.restore()});
+ badge(540,1255,'ADJACENCY LIST',pop(t,'adjacency',0.45,0),{fs:30});
+}
+function S9(t,lt){badge(540,1255,'BFS = BREADTH FIRST',pop(t,'bfs',0.45,0),{fs:28})}
+function S10(t,lt){badge(540,1255,'LEVEL BY LEVEL · LEHREIN',pop(t,'lehrein',0.45,0),{fs:26})}
+function S11(t,lt){badge(540,1255,'DFS = GEHRAAI PEHLE',pop(t,'bhool',0.45,0),{fs:28})}
+function S12(t,lt){badge(540,1255,'SABSE KAM WAZAN = 7',pop(t,'kam',0.45,0),{fs:28})}
+function S13(t,lt){ // friend suggestions
+ const a=eo(seg(lt,0,0.5));const cx=540,cy=880;const F=[['RIYA',-1],['ZAID',1],['NEHA',3]];const FF=[['AMAN',-1.4,0],['SARA',-0.6,0],['KABIR',0.6,1],['MIRA',1.4,1],['DEV',2.6,2],['ISHA',3.4,2]];
+ const s=fin(t,'doston',0.5,-0.4);
+ F.forEach(([n,an])=>{const ang=an*Math.PI/3-Math.PI/2;const x=cx+Math.cos(ang)*170,y=cy+Math.sin(ang)*150;gedge(cx,cy,x,y,a,OR);gnode(x,y,52,a,n,{fs:20})});
+ FF.forEach(([n,an,pi])=>{const ang=an*Math.PI/3-Math.PI/2,pang=F[pi][1]*Math.PI/3-Math.PI/2;const x=cx+Math.cos(ang)*350,y=cy+Math.sin(ang)*250,px=cx+Math.cos(pang)*170,py=cy+Math.sin(pang)*150;const q=a*fin(t,'friend',0.4,0);
+  gedge(px,py,x,y,q,'rgba(124,196,255,.8)',true);gnode(x,y,44,q,n,{cool:true,fs:16});if(s>0){ctx.save();ctx.globalAlpha*=s;txt('SUGGESTED',x,y+64,'500 15px J','#7cc4ff');ctx.restore()}});
+ gnode(cx,cy,64,a,'AAP',{hot:true,fs:28});
+ badge(540,1255,'DOSTON KE DOST = SUGGESTIONS',pop(t,'doston',0.45,0),{fs:24});
+}
+function S14(t,lt){ // recap
+ const rows=[['GRAPH','VERTEX + EDGE','',1,'jaal',-0.3],['BFS','LEHREIN','O(V+E)',1,'bfs2',0],['DFS','GEHRAAI','O(V+E)',1,'dfs2',0],['SHORTEST PATH','WAZAN JODO','',1,'dfs2',0.8]];
+ rows.forEach(([n,o,s,good,e,off],i)=>{const p=pop(t,e,0.45,off);const y=720+i*130;card(540,y,860,110,p,'',null,t);if(p>0){ctx.save();ctx.globalAlpha*=cl(p);txt(n,150,y+2,'800 32px M',WH,'left');txt(o,630,y+2,'900 30px M',OR,'center',14);txt(s,880,y+2,'800 26px J',GOLD,'center');ctx.restore()}});
+}
+function S15(t,lt){ // next: hash table
+ const a=eo(seg(lt,0,0.5));card(540,900,640,440,a,'',null,t);if(a>0){ctx.save();ctx.globalAlpha*=a;txt('EP 08',540,730,'900 40px J',GOLD);txt('HASH TABLE',540,810,'900 76px M',OR,'center',30);ctx.restore();
+  const o=fin(t,'locker',0.5,0);for(let i=0;i<5;i++)locker(380+i*80,1000,66,120,a,'#'+(i+1),i===2?o:0,i===2?o:0);monoTag(540,1100,'NAAM BOLO → SEEDHA LOCKER',fin(t,'locker',0.4,0.4))}
+ badge(540,1255,'AGLE EPISODE MEIN',pop(t,'hash',0.45,0),{fs:30});
+}
+function S16(t,lt){ // comments
+ const a=eo(seg(lt,0,0.5));metroMini(540,1060,2.4,a);
+ speech(540,760,1.2,pop(t,'comments',0.45,-0.8),false,t);badge(540,1255,'COMMENTS MEIN BATAO',pop(t,'comments',0.45,0),{fs:30});
+}
+const SCN=[S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12,S13,S14,S15,S16];

@@ -1,0 +1,74 @@
+[
+[
+"पिछले episode में ट्री देखा, जहाँ हर नोड का बस एक पैरेंट होता है।",
+"Pichhle episode mein Tree dekha, jahan har node ka bas ek parent hota hai."
+],
+[
+"पर असली दुनिया में, चीज़ें हर तरफ़ से जुड़ी होती हैं।",
+"Par asli duniya mein, cheezein har taraf se judi hoti hain."
+],
+[
+"इसके लिए है ग्राफ़।",
+"Iske liye hai Graph."
+],
+[
+"Metro map देखो। हर station, कई stations से जुड़ा है।",
+"Metro map dekho. Har station, kai stations se juda hai."
+],
+[
+"ग्राफ़ में हर station को कहते हैं वर्टेक्स, और उन्हें जोड़ने वाली लाइन को एज।",
+"Graph mein har station ko kehte hain vertex, aur unhe jodne wali line ko edge."
+],
+[
+"ग्राफ़ में कोई रूट नहीं होता, और एक जगह से दूसरी जगह जाने के कई रास्ते हो सकते हैं।",
+"Graph mein koi root nahi hota, aur ek jagah se doosri jagah jaane ke kai raaste ho sakte hain."
+],
+[
+"Instagram पर follow, एक तरफ़ा होता है। इसे कहते हैं डायरेक्टेड ग्राफ़।",
+"Instagram par follow, ek tarfa hota hai. Ise kehte hain Directed Graph."
+],
+[
+"पर Facebook पर दोस्ती, दोनों तरफ़ से होती है। यानी अनडायरेक्टेड ग्राफ़।",
+"Par Facebook par dosti, dono taraf se hoti hai. Yaani Undirected Graph."
+],
+[
+"और जब हर एज पर दूरी या समय लिखा हो, तो वो वेटेड ग्राफ़।",
+"Aur jab har edge par doori ya samay likha ho, toh woh Weighted Graph."
+],
+[
+"Computer ग्राफ़ को कैसे याद रखता है? हर station के साथ, उसके पड़ोसियों की एक लिस्ट। इसे कहते हैं एडजेसेंसी लिस्ट।",
+"Computer Graph ko kaise yaad rakhta hai? Har station ke saath, uske padosiyon ki ek list. Ise kehte hain Adjacency List."
+],
+[
+"अब ग्राफ़ में ढूँढें कैसे? पहला तरीका, बीएफ़एस।",
+"Ab Graph mein dhoondhein kaise? Pehla tareeka, BFS."
+],
+[
+"पहले सारे पड़ोसी, फिर पड़ोसियों के पड़ोसी। जैसे पानी में पत्थर फेंकने पर लहरें।",
+"Pehle saare padosi, phir padosiyon ke padosi. Jaise paani mein patthar phenkne par lehrein."
+],
+[
+"दूसरा तरीका, डीएफ़एस। एक रास्ते पर आख़िर तक जाओ, फिर वापस आकर दूसरा रास्ता। भूलभुलैया की तरह।",
+"Doosra tareeka, DFS. Ek raaste par aakhir tak jao, phir wapas aakar doosra raasta. Bhool-bhulaiya ki tarah."
+],
+[
+"और सबसे छोटा रास्ता? Google Maps हर एज का वज़न जोड़कर, सबसे कम वाला रास्ता चुनता है।",
+"Aur sabse chhota raasta? Google Maps har edge ka wazan jodkar, sabse kam wala raasta chunta hai."
+],
+[
+"Instagram के friend suggestions भी, आपके दोस्तों के दोस्तों से ही आते हैं।",
+"Instagram ke friend suggestions bhi, aapke doston ke doston se hi aate hain."
+],
+[
+"तो याद रखो। ग्राफ़ यानी वर्टेक्स और एज का जाल। बीएफ़एस लहरों में फैलता है, और डीएफ़एस गहराई में जाता है।",
+"Toh yaad rakho. Graph yaani vertex aur edge ka jaal. BFS lehron mein failta hai, aur DFS gehraai mein jaata hai."
+],
+[
+"अगले episode में हैश टेबल, यानी locker room। Series follow कर लो।",
+"Agle episode mein Hash Table, yaani locker room. Series follow kar lo."
+],
+[
+"आपके घर से office तक, कितने metro stations पड़ते हैं? Comments में बताओ।",
+"Aapke ghar se office tak, kitne metro stations padte hain? Comments mein batao."
+]
+]
