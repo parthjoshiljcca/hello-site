@@ -1,0 +1,32 @@
+
+// ---------- GTA-vibe theme for the illustration band (header, captions, bottom bar and credit stay The Why Spaces) ----------
+// Loaded last: these function declarations replace the base ones of the same name.
+const PK='#ff3fa4',PK2='#ff7fc8',TL='#2ee6d6',SUN='#ff7a3a',PU='#8a3cff';
+function bg(t){
+ ctx.fillStyle='#0b0612';ctx.fillRect(0,0,W,H);
+ // sunset sky band behind the illustration
+ let g=ctx.createLinearGradient(0,480,0,1340);g.addColorStop(0,'rgba(138,60,255,0)');g.addColorStop(0.2,'rgba(138,60,255,0.10)');g.addColorStop(0.6,'rgba(255,63,164,0.13)');g.addColorStop(0.85,'rgba(255,122,58,0.09)');g.addColorStop(1,'rgba(255,122,58,0)');ctx.fillStyle=g;ctx.fillRect(0,480,W,860);
+ ctx.strokeStyle='rgba(255,120,200,0.03)';ctx.lineWidth=1;ctx.beginPath();
+ for(let x=0;x<=W;x+=60){ctx.moveTo(x+.5,0);ctx.lineTo(x+.5,H)}for(let y=0;y<=H;y+=60){ctx.moveTo(0,y+.5);ctx.lineTo(W,y+.5)}ctx.stroke();
+ const gx=540+Math.sin(t*.4)*60, gy=1000+Math.cos(t*.3)*40;
+ g=ctx.createRadialGradient(gx,gy,0,gx,gy,640);g.addColorStop(0,'rgba(255,63,164,0.18)');g.addColorStop(.5,'rgba(138,60,255,0.07)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ g=ctx.createRadialGradient(540,300,0,540,300,500);g.addColorStop(0,'rgba(255,122,58,0.07)');g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ const r=rng(3);for(let i=0;i<60;i++){const x=(r()*W+t*(10+r()*20))%W,y=(r()*H-t*(15+r()*25)+H*50)%H;ctx.fillStyle=i%3?`rgba(255,150,210,${0.12+0.3*r()})`:`rgba(46,230,214,${0.12+0.3*r()})`;ctx.beginPath();ctx.arc(x,y,1+r()*2,0,7);ctx.fill()}
+}
+function badge(x,y,s,p,opt={}){if(p<=0)return;ctx.save();ctx.globalAlpha*=cl(p*1.5);ctx.translate(x,y);ctx.scale(p,p);const fs=opt.fs||32;ctx.font=`800 ${fs}px M`;const w=ctx.measureText(s).width+fs*1.5;rr(-w/2,-fs,w,fs*2,fs);ctx.fillStyle='rgba(255,63,164,.16)';ctx.fill();gs(2.5,PK,18);txt(s,0,2,`800 ${fs}px M`,'#ffd1ea');ctx.restore()}
+function monoTag(x,y,s,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.font='500 22px J';const w=ctx.measureText(s).width+30;rr(x-w/2,y-20,w,40,8);ctx.fillStyle='rgba(46,230,214,.10)';ctx.fill();ctx.strokeStyle='rgba(46,230,214,.65)';ctx.lineWidth=1.5;ctx.stroke();txt(s,x,y+1,'500 22px J',TL);ctx.restore()}
+function card(x,y,w,h,p,label,icon,t){if(p<=0)return;ctx.save();ctx.globalAlpha*=cl(p*1.4);ctx.translate(x,y);ctx.scale(p,p);rr(-w/2,-h/2,w,h,22);
+ const g=ctx.createLinearGradient(0,-h/2,0,h/2);g.addColorStop(0,'rgba(40,14,48,.94)');g.addColorStop(1,'rgba(22,10,24,.94)');ctx.fillStyle=g;ctx.fill();gs(2.5,'rgba(255,63,164,.8)',18);
+ if(icon){ctx.save();ctx.translate(-w/2+50,0);icon(1,t||0);ctx.restore()}txt(label,icon?-w/2+92:0,2,'800 30px M',WH,icon?'left':'center');ctx.restore()}
+
+// ---------- optional image slots: drop your own images in src/images/s<scene>.jpg (e.g. s6.jpg) ----------
+// Only images you have the right to use (your own gameplay captures, licensed press assets). Missing files are simply skipped.
+const IMG={};const IMGP=[];
+[1,2,6,7,8,9,13,17].forEach(i=>{const im=new Image();IMGP.push(new Promise(res=>{im.onload=()=>{IMG[i]=im;res()};im.onerror=()=>res()}));im.src=`images/s${i}.jpg`});
+function drawSlot(i,lt,dur){const im=IMG[i];if(!im)return;const bw=980,bh=560,bx=50,by=640;const u=cl(lt/Math.max(1,dur));const z=1.06+0.08*u;
+ const s=Math.max(bw/im.width,bh/im.height)*z;const dw=im.width*s,dh=im.height*s;ctx.save();rr(bx,by,bw,bh,26);ctx.clip();
+ ctx.drawImage(im,bx+(bw-dw)/2+lerp(-18,18,u),by+(bh-dh)/2,dw,dh);
+ const g=ctx.createLinearGradient(0,by,0,by+bh);g.addColorStop(0,'rgba(11,6,18,.55)');g.addColorStop(0.5,'rgba(11,6,18,.15)');g.addColorStop(1,'rgba(11,6,18,.75)');ctx.fillStyle=g;ctx.fillRect(bx,by,bw,bh);ctx.restore();
+ rr(bx,by,bw,bh,26);gs(3,PK,20)}
+for(let i=0;i<SCN.length;i++){const f=SCN[i];SCN[i]=(t,lt,dur)=>{drawSlot(i,lt,dur);f(t,lt,dur)}}
+{const _init=window.init;window.init=async d=>{await Promise.all(IMGP);return _init(d)}}

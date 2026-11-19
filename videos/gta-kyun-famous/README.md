@@ -46,6 +46,18 @@ This is a standalone short, not part of the DS series. It covers why Grand Theft
 - the city, film and duniya bottom line;
 - the controller comment prompt.
 
+## Look: GTA-vibe colours, The Why Spaces frame
+- **2D theme:** `src/parts/gtatheme.part` loads last and replaces `bg`, `badge`, `monoTag` and `card` for the illustration band only. The background gets a sunset sky band (purple → pink → orange), the badges are hot pink, the mono tags are teal, and the cards have a purple-pink glow.
+- **3D theme:** the city uses a pink and purple neon grid, pink key light, and buildings in hot pink, teal, sunset orange and purple.
+- **What stays The Why Spaces:** the header, pill, title, captions, bottom bar, progress bar and the credit are unchanged.
+- **No game art:** the palette is the only nod to the games. No Rockstar logos, fonts, screenshots or characters are used.
+
+## Image slots (your own images)
+Put images in `src/images/` as `s<scene>.jpg`, and copy that folder next to `index.html` before rendering. A missing slot is simply skipped. Each image fills the 980x560 illustration band with a slow Ken Burns move, a dark gradient and a pink border, and the scene's own graphics draw on top.
+- **2D scenes with slots:** 1 (1997), 2 (top-down), 6 (cyber cafe), 7 (film/radio/satire), 8 ($1B), 9 (23 crore), 13 (Rockstar), 17 (bottom line).
+- **No slots on 3D scenes:** scenes 0, 3–5, 10–12 and 14–16 are 3D and draw over the band, so images there would be covered.
+- **Rights:** only use images you have the right to use, such as your own gameplay captures or licensed press assets. Official trailer or screenshot material can trigger copyright claims on YouTube or Instagram.
+
 ## Narration
 - Locked voice: Sarvam `bulbul:v3`, kabir, pace 1.2, default temperature, **no audio processing**. The scene gap is 0.75 s.
 - Rewordings found with the word-by-word saarika check:

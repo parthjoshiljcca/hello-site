@@ -21,17 +21,17 @@ const span = (t: number, a: number, b: number) => seg(t, SCN[a].start, SCN[a].st
 const Lights: React.FC = () => (
   <>
     <ambientLight intensity={0.5} />
-    <directionalLight position={[-2, 4, 4]} intensity={2.2} color="#ffe2bf" />
-    <pointLight position={[2, 2, 3]} intensity={10} color="#ff8a1f" />
+    <directionalLight position={[-2, 4, 4]} intensity={2.2} color="#ffd6f0" />
+    <pointLight position={[2, 2, 3]} intensity={10} color="#ff3fa4" />
   </>
 );
 const Floor: React.FC = () => (
   <>
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
       <planeGeometry args={[90, 90]} />
-      <meshBasicMaterial color="#060403" />
+      <meshBasicMaterial color="#07040c" />
     </mesh>
-    <gridHelper args={[90, 90, "#c8621a", "#5a2c0e"]} />
+    <gridHelper args={[90, 90, "#ff3fa4", "#4a1a5e"]} />
   </>
 );
 /** a box with neon edges and an emissive top plate */
@@ -100,12 +100,12 @@ const Orb: React.FC<{ p: V3; s?: number; col?: string }> = ({ p, s = 1, col = "#
 /* ---------- GTA: an original neon city (no logos, no game art) ---------- */
 function rnd(s: number) { return () => { s |= 0; s = (s + 0x6d2b79f5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 const GN = 7, GS = 2.2; // 7x7 blocks, 2.2 apart (roads in between)
-const BLOCKS = (() => { const r = rnd(11); const out: { x: number; z: number; h: number; c: string }[] = []; for (let i = 0; i < GN; i++) for (let j = 0; j < GN; j++) { const d = Math.hypot(i - 3, j - 3); out.push({ x: (i - 3) * GS, z: (j - 3) * GS, h: 0.6 + r() * 3.2 * (1.2 - d / 5), c: r() < 0.25 ? "#ff3fa4" : r() < 0.5 ? "#7cc4ff" : "#ff8a1f" }); } return out; })();
+const BLOCKS = (() => { const r = rnd(11); const out: { x: number; z: number; h: number; c: string }[] = []; for (let i = 0; i < GN; i++) for (let j = 0; j < GN; j++) { const d = Math.hypot(i - 3, j - 3); out.push({ x: (i - 3) * GS, z: (j - 3) * GS, h: 0.6 + r() * 3.2 * (1.2 - d / 5), c: ["#ff3fa4", "#2ee6d6", "#ff7a3a", "#8a3cff"][Math.floor(r() * 4)] }); } return out; })();
 /** the city: blocks rise from flat plates (rise 0) to buildings (rise 1) */
 const City: React.FC<{ rise: number; glow?: number; tint?: (i: number) => number }> = ({ rise, glow = 0.35, tint }) => (
   <>
     {BLOCKS.map((b, i) => (
-      <Slab key={i} p={[b.x, 0, b.z]} w={1.5} d={1.5} h={Math.max(0.06, b.h * rise)} glow={glow + (tint ? tint(i) : 0)} col={rise > 0.3 ? b.c : "#ff8a1f"} />
+      <Slab key={i} p={[b.x, 0, b.z]} w={1.5} d={1.5} h={Math.max(0.06, b.h * rise)} glow={glow + (tint ? tint(i) : 0)} col={rise > 0.3 ? b.c : "#ff3fa4"} />
     ))}
   </>
 );
