@@ -1,0 +1,86 @@
+[
+[
+"पिछले episode में क्यू देखा, जहाँ सब एक line में खड़े थे।",
+"Pichhle episode mein Queue dekha, jahan sab ek line mein khade the."
+],
+[
+"पर हर data line में नहीं रहता। कुछ data, पेड़ की शाखाओं की तरह फैलता है।",
+"Par har data line mein nahi rehta. Kuch data, ped ki shaakhaon ki tarah failta hai."
+],
+[
+"इसके लिए है ट्री।",
+"Iske liye hai Tree."
+],
+[
+"अपना family tree सोचो। सबसे ऊपर दादा जी, उनके नीचे पापा और चाचा, और पापा के नीचे आप।",
+"Apna family tree socho. Sabse upar Dada ji, unke neeche Papa aur Chacha, aur Papa ke neeche aap."
+],
+[
+"ट्री में हर डिब्बे को कहते हैं नोड, और सबसे ऊपर वाले नोड को रूट।",
+"Tree mein har dibbe ko kehte hain node, aur sabse upar wale node ko root."
+],
+[
+"ऊपर वाला नोड पैरेंट, और उसके नीचे वाले चाइल्ड।",
+"Upar wala node parent, aur uske neeche wale child."
+],
+[
+"और जिनके नीचे कोई नहीं, उन्हें कहते हैं लीफ़, यानी पत्ते।",
+"Aur jinke neeche koi nahi, unhe kehte hain leaf, yaani patte."
+],
+[
+"रूट से किसी भी नोड तक, बस एक ही रास्ता होता है।",
+"Root se kisi bhi node tak, bas ek hi raasta hota hai."
+],
+[
+"अब सबसे काम का ट्री, बाइनरी सर्च ट्री।",
+"Ab sabse kaam ka Tree, Binary Search Tree."
+],
+[
+"इसमें हर नोड के ज़्यादा से ज़्यादा दो बच्चे। छोटा नंबर बाईं तरफ़, और बड़ा नंबर दाईं तरफ़।",
+"Ismein har node ke zyada se zyada do bachche. Chhota number baayin taraf, aur bada number daayin taraf."
+],
+[
+"चालीस ढूँढना है? पचास से छोटा है, तो बाएँ जाओ।",
+"40 dhoondhna hai? 50 se chhota hai, toh baayein jao."
+],
+[
+"तीस से बड़ा है, तो दाएँ। और मिल गया!",
+"30 se bada hai, toh daayein. Aur mil gaya!"
+],
+[
+"हर कदम पर आधा ट्री छूट जाता है। इसलिए search होता है बिग ओ ऑफ़ लॉग एन।",
+"Har kadam par aadha Tree chhoot jaata hai. Isliye search hota hai Big O of log n."
+],
+[
+"एक करोड़ नंबरों में भी, बस चौबीस के आसपास कदम।",
+"Ek crore numbers mein bhi, bas 24 ke aaspaas kadam."
+],
+[
+"पर एक शर्त है। ट्री balanced रहना चाहिए।",
+"Par ek shart hai. Tree balanced rehna chahiye."
+],
+[
+"अगर नंबर पहले से sorted आएँ, तो ट्री एक तरफ़ लंबी line बन जाता है, और search फिर से बिग ओ ऑफ़ एन।",
+"Agar number pehle se sorted aayein, toh Tree ek taraf lambi line ban jaata hai, aur search phir se Big O of n."
+],
+[
+"आपके phone में folder के अंदर folder, ये भी एक ट्री है।",
+"Aapke phone mein folder ke andar folder, ye bhi ek Tree hai."
+],
+[
+"हर website का HTML, और company का org chart भी ट्री ही है।",
+"Har website ka HTML, aur company ka org chart bhi Tree hi hai."
+],
+[
+"तो याद रखो। ट्री यानी रूट से नीचे फैलती शाखाएँ। और बाइनरी सर्च ट्री में search, बिग ओ ऑफ़ लॉग एन।",
+"Toh yaad rakho. Tree yaani root se neeche failti shaakhaayein. Aur Binary Search Tree mein search, Big O of log n."
+],
+[
+"अगले episode में ग्राफ़, यानी metro map। Series follow कर लो।",
+"Agle episode mein Graph, yaani metro map. Series follow kar lo."
+],
+[
+"आपके family tree में कितनी पीढ़ियाँ हैं? Comments में बताओ।",
+"Aapke family tree mein kitni peedhiyaan hain? Comments mein batao."
+]
+]

@@ -1,0 +1,85 @@
+const SC=[
+ {pill:'THE WHY SPACES · DS SERIES · EP 06',title:'Data Ki <em>Shaakhaayein</em>',sub:'Har data line mein nahi rehta',tag:'THE · WHY'},
+ {pill:'EP 06',title:'<em>Tree</em>',sub:'Aaj poora samjhenge',tag:'DEEP · DIVE'},
+ {pill:'01 · ANALOGY',title:'Family <em>Tree</em>',sub:'Dada ji → Papa, Chacha → Aap',tag:'FAMILY · TREE'},
+ {pill:'02 · NODE',title:'Node + <em>Root</em>',sub:'Sabse upar wala = root',tag:'ROOT'},
+ {pill:'03 · RISHTE',title:'Parent → <em>Child</em>',sub:'Upar parent, neeche child',tag:'PARENT · CHILD'},
+ {pill:'04 · LEAF',title:'Leaf = <em>Patte</em>',sub:'Jinke neeche koi nahi',tag:'LEAF · NODES'},
+ {pill:'05 · PATH',title:'Ek Hi <em>Raasta</em>',sub:'Root se har node tak',tag:'UNIQUE · PATH'},
+ {pill:'06 · BST',title:'Binary Search <em>Tree</em>',sub:'Sabse kaam ka tree',tag:'BST'},
+ {pill:'06 · BST',title:'Chhota ← <em>Bada</em> →',sub:'Max do bachche',tag:'LEFT < ROOT < RIGHT'},
+ {pill:'07 · SEARCH',title:'40 <em>Dhoondho</em>',sub:'50 se chhota → baayein',tag:'STEP 1'},
+ {pill:'07 · SEARCH',title:'Mil <em>Gaya!</em>',sub:'30 se bada → daayein',tag:'STEP 2'},
+ {pill:'08 · SPEED',title:'Aadha <em>Chhoota</em>',sub:'Har kadam par',tag:'O(log n)'},
+ {pill:'08 · SPEED',title:'1 Crore → <em>~24</em> Kadam',sub:'Log ka jaadu',tag:'LOG₂ · 10⁷ ≈ 23.3'},
+ {pill:'09 · SHART',title:'Tree <em>Balanced</em> Ho',sub:'Dono taraf barabar',tag:'BALANCED'},
+ {pill:'09 · SHART',title:'Sorted = <em>Line</em>',sub:'Search phir se O(n)',tag:'UNBALANCED'},
+ {pill:'10 · REAL LIFE',title:'Folder Ke Andar <em>Folder</em>',sub:'Phone ka file system',tag:'FILE · TREE'},
+ {pill:'11 · REAL LIFE',title:'HTML + <em>Org Chart</em>',sub:'Sab tree hi hai',tag:'DOM · ORG'},
+ {pill:'RECAP',title:'Tree = <em>Shaakhaayein</em>',sub:'BST search = O(log n)',tag:'YAAD · RAKHO'},
+ {pill:'NEXT · EP 07',title:'Next: <em>Graph</em>',sub:'Metro map',tag:'FOLLOW · SERIES'},
+ {pill:'AAPKI BAARI',title:'Kitni <em>Peedhiyaan</em>?',sub:'Comments mein batao',tag:'COMMENT · KARO'},
+];
+const HL=['queue','line','shaakhaon','tree','family','dada','papa','chacha','node','root','parent','child','leaf','patte','raasta','binary','search','chhota','bada','baayin','daayin','baayein','daayein','40','50','30','mil','gaya','aadha','big','o','log','n','crore','24','shart','balanced','sorted','lambi','folder','website','html','org','chart','graph','metro','comments','peedhiyaan'];
+
+// ---------- Ep 6 primitives ----------
+function tnode(x,y,r,a,label,opt={}){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=opt.hot?'rgba(255,138,31,.5)':(opt.cool?'rgba(124,196,255,.35)':'rgba(22,15,11,.96)');ctx.fill();gs(3,opt.hot?OR:(opt.cool?'#7cc4ff':'rgba(243,236,228,.7)'),opt.hot?22:0);txt(label,x,y+2,`800 ${opt.fs||Math.round(r*0.62)}px M`,WH);ctx.restore()}
+function tedge(x1,y1,x2,y2,p,a,col){if(a<=0||p<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(lerp(x1,x2,p),lerp(y1,y2,p));gs(3.5,col||'rgba(255,138,31,.7)',8);ctx.restore()}
+function folderIco(x,y,s,a,label,hot){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);ctx.beginPath();ctx.moveTo(-60,-34);ctx.lineTo(-20,-34);ctx.lineTo(-10,-22);ctx.lineTo(60,-22);ctx.lineTo(60,34);ctx.lineTo(-60,34);ctx.closePath();ctx.fillStyle=hot?'rgba(255,138,31,.45)':'rgba(255,177,92,.18)';ctx.fill();gs(2.5,hot?OR:GOLD,hot?18:4);txt(label,0,6,'800 20px M',WH);ctx.restore()}
+
+// ---------- scenes ----------
+function S0(t,lt){badge(300,1255,'QUEUE = EK LINE',pop(t,'queue',0.45,0),{fs:28});badge(780,1255,'SHAAKHAAYEIN?',pop(t,'shaakh',0.45,0),{fs:28})}
+function S1(t,lt){ // title
+ const p=pop(t,'tree',0.5,-0.5);if(p>0){ctx.save();ctx.translate(540,740);ctx.scale(p,p);txt('TREE',0,0,'900 180px M',OR,'center',44);ctx.restore()}
+ treeNodes(540,1040,0.75,eo(seg(lt,0,0.4)),seg(lt,0.1,1.4),['ROOT','','','','','','']);
+ monoTag(540,640,'THE WHY SPACES · DS SERIES · EP 06',fin(t,'tree',0.4,-0.6));
+}
+function S2(t,lt){badge(540,1255,'FAMILY TREE',pop(t,'aap',0.45,0),{fs:30})}
+function S3(t,lt){badge(540,1255,'HAR DIBBA = NODE · UPAR = ROOT',pop(t,'root',0.45,0),{fs:24})}
+function S4(t,lt){badge(540,1255,'PARENT → CHILD',pop(t,'child',0.45,0),{fs:30})}
+function S5(t,lt){badge(540,1255,'LEAF = PATTE',pop(t,'patte',0.45,0),{fs:30})}
+function S6(t,lt){badge(540,1255,'ROOT SE EK HI RAASTA',pop(t,'raasta',0.45,0),{fs:28})}
+function S7(t,lt){ // BST title
+ const p=pop(t,'binary',0.5,-0.2);if(p>0){ctx.save();ctx.translate(540,760);ctx.scale(p,p);txt('BINARY',0,-60,'900 96px M',WH);txt('SEARCH TREE',0,50,'900 96px M',OR,'center',30);ctx.restore()}
+ const a=eo(seg(lt,0.3,0.9));tnode(540,1010,52,a,'50',{hot:true});tnode(380,1140,44,a,'30');tnode(700,1140,44,a,'70');tedge(510,1050,405,1105,a,1);tedge(570,1050,675,1105,a,1);
+ txt('CHHOTA',330,1210,'500 20px J','#7cc4ff');txt('BADA',750,1210,'500 20px J',GOLD);
+}
+function S8(t,lt){badge(540,1255,'CHHOTA ← · → BADA',pop(t,'daayin',0.45,0),{fs:30})}
+function S9(t,lt){badge(540,1255,'40 < 50 → BAAYEIN',pop(t,'baayein',0.45,0),{fs:30})}
+function S10(t,lt){badge(540,1255,'40 > 30 → DAAYEIN ✓',pop(t,'mil',0.45,0),{fs:30})}
+function S11(t,lt){badge(540,1255,'SEARCH = O(log n)',pop(t,'log',0.45,0),{fs:30})}
+function S12(t,lt){ // 1 crore -> ~24 steps
+ const a=eo(seg(lt,0,0.5));const k=Math.min(24,Math.floor(seg(t,E('crore')-0.2,E('k24')+0.2)*24+0.001));let n=1e7;for(let i=0;i<k;i++)n=Math.max(1,Math.ceil(n/2));
+ card(540,900,760,440,a,'',null,t);if(a>0){ctx.save();ctx.globalAlpha*=a;txt('1,00,00,000',540,760,'900 64px M',WH);txt('NUMBERS',540,820,'500 22px J',GOLD);
+  rr(200,870,680,26,13);ctx.fillStyle='rgba(243,236,228,.12)';ctx.fill();rr(200,870,680*Math.max(0.004,n/1e7),26,13);ctx.fillStyle=OR;ctx.fill();
+  txt(`KADAM ${k}`,540,960,'900 70px M',OR,'center',22);txt(`bache: ${n.toLocaleString('en-IN')}`,540,1040,'500 26px J','rgba(243,236,228,.75)');ctx.restore()}
+ badge(540,1255,'1 CRORE → SIRF ~24 KADAM',pop(t,'k24',0.45,0),{fs:28});
+}
+function S13(t,lt){badge(540,1255,'BALANCED = TEZ',pop(t,'balanced',0.45,0),{fs:30})}
+function S14(t,lt){badge(540,1255,'SORTED → LINE → O(n)',pop(t,'bign',0.45,0),{fs:28})}
+function S15(t,lt){ // folders
+ const a=eo(seg(lt,0,0.5));const p=seg(t,E('folder')-0.3,E('andar')+1.2);const N=[[540,720,'PHONE'],[330,880,'PHOTOS'],[750,880,'MUSIC'],[220,1050,'2025'],[440,1050,'TRIP'],[750,1050,'SONGS']];const Ed=[[0,1],[0,2],[1,3],[1,4],[2,5]];
+ Ed.forEach(([i,j],k)=>tedge(N[i][0],N[i][1]+36,N[j][0],N[j][1]-36,cl(p*6-k-0.5),a));
+ N.forEach(([x,y,l],i)=>folderIco(x,y,1.25,a*back(cl(p*6-i)),l,i===4&&p>0.95));
+ monoTag(540,1170,'PHONE / PHOTOS / TRIP',fin(t,'andar',0.4,1.0));badge(540,1255,'FOLDERS = TREE',pop(t,'andar',0.45,0.4),{fs:30});
+}
+function S16(t,lt){ // HTML + org chart
+ const h=pop(t,'website',0.45,-0.15),o=pop(t,'org',0.45,-0.15);
+ card(290,900,420,460,h,'',null,t);if(h>0){ctx.save();ctx.globalAlpha*=cl(h);const L=[['<html>',0],['<head>',1],['<title>',2],['<body>',1],['<h1>',2],['<p>',2]];L.forEach(([s,d],i)=>txt(s,140+d*40,730+i*52,'800 26px J',d===0?OR:(d===1?GOLD:WH),'left'));txt('HTML',290,1080,'900 28px M',OR);ctx.restore()}
+ card(790,900,420,460,o,'',null,t);if(o>0){ctx.save();ctx.globalAlpha*=cl(o);tnode(790,760,46,1,'CEO',{hot:true,fs:22});tnode(690,900,40,1,'CTO',{fs:20});tnode(890,900,40,1,'CFO',{fs:20});tnode(640,1020,30,1,'DEV',{fs:14});tnode(740,1020,30,1,'QA',{fs:14});
+  tedge(770,800,700,862,1,1);tedge(810,800,880,862,1,1);tedge(680,938,648,992,1,1);tedge(700,938,735,992,1,1);txt('ORG CHART',790,1080,'900 26px M',OR);ctx.restore()}
+}
+function S17(t,lt){ // recap
+ const rows=[['BST SEARCH','O(log n)','TEZ',1,'tree2',0.8],['BST INSERT','O(log n)','TEZ',1,'binary2',0],['UNBALANCED (line)','O(n)','DHEEMA',0,'log2',0.2],['ROOT → NODE','1 RAASTA','',1,'log2',0.7]];
+ monoTag(540,640,'ROOT · PARENT · CHILD · LEAF',fin(t,'tree2',0.4,-0.2));
+ rows.forEach(([n,o,s,good,e,off],i)=>{const p=pop(t,e,0.45,off);const y=760+i*125;card(540,y,860,105,p,'',null,t);if(p>0){ctx.save();ctx.globalAlpha*=cl(p);txt(n,150,y+2,'800 30px M',WH,'left');txt(o,660,y+2,`900 ${o.length>5?32:40}px M`,good?OR:'#ff5a3c','center',good?16:0);txt(s,880,y+2,'800 28px M',good?GOLD:'rgba(243,236,228,.7)','center');ctx.restore()}});
+}
+function S18(t,lt){ // next: graph
+ const a=eo(seg(lt,0,0.5));card(540,900,640,440,a,'',null,t);if(a>0){ctx.save();ctx.globalAlpha*=a;txt('EP 07',540,730,'900 40px J',GOLD);txt('GRAPH',540,810,'900 96px M',OR,'center',30);ctx.restore();metroMini(540,990,2.0,a*fin(t,'metro',0.5,-0.4));monoTag(540,1170,'HAR STATION KAI STATIONS SE JUDA',fin(t,'metro',0.4,0.4))}
+ badge(540,1255,'AGLE EPISODE MEIN',pop(t,'graph',0.45,0),{fs:30});
+}
+function S19(t,lt){ // comments
+ const a=eo(seg(lt,0,0.5));treeNodes(540,1030,0.55,a,1,['?','?','?','?','?','?','?']);
+ speech(540,730,1.1,pop(t,'comments',0.45,-0.8),false,t);badge(540,1255,'COMMENTS MEIN BATAO',pop(t,'comments',0.45,0),{fs:30});
+}
+const SCN=[S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12,S13,S14,S15,S16,S17,S18,S19];
