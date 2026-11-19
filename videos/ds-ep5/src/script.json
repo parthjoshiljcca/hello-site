@@ -1,0 +1,82 @@
+[
+[
+"पिछले episode में स्टैक देखा, जहाँ आख़िरी वाला सबसे पहले निकलता है।",
+"Pichhle episode mein Stack dekha, jahan aakhri wala sabse pehle nikalta hai."
+],
+[
+"पर असल ज़िंदगी में तो, जो पहले आता है, उसका काम पहले होता है।",
+"Par asal zindagi mein toh, jo pehle aata hai, uska kaam pehle hota hai."
+],
+[
+"इसके लिए है क्यू।",
+"Iske liye hai Queue."
+],
+[
+"चाय की दुकान पर line देखी है? नया आदमी हमेशा line के पीछे लगता है।",
+"Chai ki dukaan par line dekhi hai? Naya aadmi hamesha line ke peeche lagta hai."
+],
+[
+"और चाय, सबसे आगे वाले को मिलती है।",
+"Aur chai, sabse aage wale ko milti hai."
+],
+[
+"जो पहले आया, चाय भी उसे पहले मिली। इसे कहते हैं फ़ीफ़ो, यानी फ़र्स्ट इन, फ़र्स्ट आउट।",
+"Jo pehle aaya, chai bhi use pehle mili. Ise kehte hain FIFO, yaani First In, First Out."
+],
+[
+"क्यू के दो सिरे होते हैं। आगे वाला फ़्रंट, और पीछे वाला रियर।",
+"Queue ke do sire hote hain. Aage wala front, aur peeche wala rear."
+],
+[
+"पीछे से जोड़ना, यानी एनक्यू।",
+"Peeche se jodna, yaani enqueue."
+],
+[
+"आगे से निकालना, यानी डीक्यू।",
+"Aage se nikaalna, yaani dequeue."
+],
+[
+"और आगे वाले को बस देखना, यानी पीक।",
+"Aur aage wale ko bas dekhna, yaani peek."
+],
+[
+"सही तरीके से बनाओ, तो तीनों काम बिग ओ ऑफ़ वन।",
+"Sahi tareeke se banao, toh teenon kaam Big O of 1."
+],
+[
+"पर एक trap है। हर डीक्यू पर पूरी line को आगे खिसकाओ, तो काम बिग ओ ऑफ़ एन हो जाता है।",
+"Par ek trap hai. Har dequeue par poori line ko aage khiskaao, toh kaam Big O of n ho jaata hai."
+],
+[
+"इसका हल है सर्कुलर क्यू। लोग अपनी जगह रहते हैं, बस फ़्रंट और रियर आगे बढ़ते हैं।",
+"Iska hal hai Circular Queue. Log apni jagah rehte hain, bas front aur rear aage badhte hain."
+],
+[
+"और आख़िरी जगह तक पहुँचकर, फिर शुरू से घूम जाते हैं।",
+"Aur aakhri jagah tak pahunchkar, phir shuru se ghoom jaate hain."
+],
+[
+"अब असली जगहें। Printer पर भेजे गए pages, एक क्यू में लगते हैं।",
+"Ab asli jagahein. Printer par bheje gaye pages, ek Queue mein lagte hain."
+],
+[
+"Keyboard पर type किए गए letters भी, एक क्यू से होकर screen तक पहुँचते हैं।",
+"Keyboard par type kiye gaye letters bhi, ek Queue se hokar screen tak pahunchte hain."
+],
+[
+"और customer care पर, आपकी call भी क्यू में इंतज़ार करती है।",
+"Aur customer care par, aapki call bhi Queue mein intezaar karti hai."
+],
+[
+"तो याद रखो। क्यू यानी फ़ीफ़ो। पीछे से एनक्यू, आगे से डीक्यू, दोनों बिग ओ ऑफ़ वन।",
+"Toh yaad rakho. Queue yaani FIFO. Peeche se enqueue, aage se dequeue, dono Big O of 1."
+],
+[
+"अगले episode में ट्री, यानी family tree। Series follow कर लो।",
+"Agle episode mein Tree, yaani family tree. Series follow kar lo."
+],
+[
+"आप आज किस क्यू में सबसे ज़्यादा देर खड़े रहे? Comments में बताओ।",
+"Aap aaj kis Queue mein sabse zyada der khade rahe? Comments mein batao."
+]
+]

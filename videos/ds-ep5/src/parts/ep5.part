@@ -1,0 +1,93 @@
+const SC=[
+ {pill:'THE WHY SPACES · DS SERIES · EP 05',title:'Pehle Aaya, <em>Pehle</em> Kaam',sub:'Asal zindagi ka rule',tag:'THE · WHY'},
+ {pill:'EP 05',title:'<em>Queue</em>',sub:'Aaj poora samjhenge',tag:'DEEP · DIVE'},
+ {pill:'01 · ANALOGY',title:'Chai Ki <em>Line</em>',sub:'Naya aadmi peeche lagta hai',tag:'CHAI · STALL'},
+ {pill:'01 · ANALOGY',title:'Chai <em>Aage</em> Wale Ko',sub:'Sabse aage wala pehle',tag:'FRONT · FIRST'},
+ {pill:'02 · RULE',title:'<em>FIFO</em>',sub:'First In, First Out',tag:'FIRST · IN · FIRST · OUT'},
+ {pill:'03 · DO SIRE',title:'<em>Front</em> + Rear',sub:'Aage front · peeche rear',tag:'TWO · ENDS'},
+ {pill:'04 · ENQUEUE',title:'Peeche Jodo = <em>Enqueue</em>',sub:'Rear par naya item',tag:'ENQUEUE'},
+ {pill:'05 · DEQUEUE',title:'Aage Nikalo = <em>Dequeue</em>',sub:'Front wala bahar',tag:'DEQUEUE'},
+ {pill:'06 · PEEK',title:'Bas Dekho = <em>Peek</em>',sub:'Front ko, nikaale bina',tag:'PEEK'},
+ {pill:'07 · SPEED',title:'Teeno <em>O(1)</em>',sub:'Sahi tareeke se banao toh',tag:'CONSTANT · TIME'},
+ {pill:'08 · TRAP',title:'Sabko <em>Khiskaana</em>?',sub:'Har dequeue par poori line',tag:'O(n) · TRAP'},
+ {pill:'09 · HAL',title:'Circular <em>Queue</em>',sub:'Log wahin · pointers aage',tag:'RING · BUFFER'},
+ {pill:'09 · HAL',title:'Phir Se <em>Shuru</em>',sub:'Aakhri jagah ke baad wrap',tag:'WRAP · AROUND'},
+ {pill:'10 · REAL LIFE',title:'Printer <em>Queue</em>',sub:'Pages line mein',tag:'PRINT · JOBS'},
+ {pill:'11 · REAL LIFE',title:'Keyboard <em>Buffer</em>',sub:'Letters queue se screen tak',tag:'INPUT · QUEUE'},
+ {pill:'12 · REAL LIFE',title:'Customer <em>Care</em>',sub:'Aapki call line mein',tag:'CALL · QUEUE'},
+ {pill:'RECAP',title:'Queue = <em>FIFO</em>',sub:'Enqueue · Dequeue = O(1)',tag:'YAAD · RAKHO'},
+ {pill:'NEXT · EP 06',title:'Next: <em>Tree</em>',sub:'Family tree',tag:'FOLLOW · SERIES'},
+ {pill:'AAPKI BAARI',title:'Kis <em>Queue</em> Mein Khade?',sub:'Comments mein batao',tag:'COMMENT · KARO'},
+];
+const HL=['stack','aakhri','pehle','queue','chai','line','peeche','aage','fifo','first','in','out','front','rear','enqueue','dequeue','peek','big','o','1','n','trap','khiskaao','circular','ghoom','printer','pages','keyboard','letters','screen','customer','care','call','tree','family','comments'];
+
+// ---------- Ep 5 primitives ----------
+// horizontal queue: items[0] is the FRONT (left); slots at x0 + i*gap
+function qRow(x0,y,gap,a,items,opt={}){if(a<=0)return;const w=opt.w||gap-16,h=opt.h||96;ctx.save();ctx.globalAlpha*=a;
+ items.forEach((it,i)=>{if(it===null)return;const x=x0+i*gap+(opt.dx?opt.dx(i):0);const fr=i===(opt.front??0)&&!opt.noFront;rr(x-w/2,y-h/2,w,h,12);ctx.fillStyle=fr?'rgba(255,138,31,.45)':(opt.hot===i?'rgba(124,196,255,.4)':'rgba(22,15,11,.95)');ctx.fill();gs(2.5,fr?OR:(opt.hot===i?'#7cc4ff':'rgba(243,236,228,.6)'),fr?18:0);txt(String(it),x,y+2,`800 ${opt.fs||30}px M`,WH)});ctx.restore()}
+function printer(x,y,s,a,t,busy){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);rr(-120,-50,240,110,16);ctx.fillStyle='rgba(30,22,16,.98)';ctx.fill();gs(3,LN);rr(-80,-90,160,44,6);ctx.fillStyle='rgba(243,236,228,.85)';ctx.fill();rr(-90,10,180,12,4);ctx.fillStyle='rgba(10,8,7,1)';ctx.fill();ctx.beginPath();ctx.arc(90,-24,7,0,7);ctx.fillStyle=busy&&Math.sin(t*10)>0?'#7cc46b':GOLD;ctx.fill();ctx.restore()}
+function page(x,y,s,a,label,col){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);rr(-46,-60,92,120,6);ctx.fillStyle='rgba(243,236,228,.92)';ctx.fill();gs(2,col||OR,8);for(let i=0;i<4;i++){rr(-32,-30+i*18,i%2?44:64,6,3);ctx.fillStyle='rgba(26,15,6,.35)';ctx.fill()}txt(label,0,-46,'900 16px J','#1a0f06');ctx.restore()}
+function keycap(x,y,a,ch,down){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;const d=down?6:0;rr(x-38,y-38+d,76,76,12);ctx.fillStyle=down?'rgba(255,138,31,.55)':'rgba(30,22,16,.98)';ctx.fill();gs(2.5,down?OR:LN,down?18:0);txt(ch,x,y+d+2,'900 34px M',WH);ctx.restore()}
+
+// ---------- scenes ----------
+function S0(t,lt){badge(300,1255,'STACK = LIFO',pop(t,'stack',0.45,0),{fs:28});badge(780,1255,'PEHLE AAYA → PEHLE?',pop(t,'pehle',0.45,0),{fs:26})}
+function S1(t,lt){ // title
+ const p=pop(t,'queue',0.5,-0.6);if(p>0){ctx.save();ctx.translate(540,780);ctx.scale(p,p);txt('QUEUE',0,0,'900 170px M',OR,'center',44);ctx.restore()}
+ const a=eo(seg(lt,0,0.4));qRow(270,1080,135,a,['A','B','C','D','E'],{w:116,h:96});
+ arrow(110,1080,40,1080,a,OR,5);txt('OUT',75,1150,'500 22px J',GOLD);arrow(1040,1080,970,1080,a,'#7cc4ff',5);txt('IN',1005,1150,'500 22px J','#7cc4ff');
+ monoTag(540,650,'THE WHY SPACES · DS SERIES · EP 05',fin(t,'queue',0.4,-0.6));
+}
+function S2(t,lt){badge(540,1255,'NAYA = LINE KE PEECHHE',pop(t,'peeche',0.45,0),{fs:28})}
+function S3(t,lt){badge(540,1255,'CHAI = SABSE AAGE WALE KO',pop(t,'milti',0.45,0),{fs:26})}
+function S4(t,lt){badge(540,1255,'FIRST IN · FIRST OUT',pop(t,'out',0.45,0),{fs:30})}
+function S5(t,lt){badge(540,1255,'FRONT ← · → REAR',pop(t,'rear',0.45,0),{fs:30})}
+function S6(t,lt){badge(540,1255,'ENQUEUE → REAR',pop(t,'enq',0.45,0),{fs:30})}
+function S7(t,lt){badge(540,1255,'DEQUEUE ← FRONT',pop(t,'deq',0.45,0),{fs:30})}
+function S8(t,lt){badge(540,1255,'PEEK · SIRF DEKHO',pop(t,'peek',0.45,0),{fs:30})}
+function S9(t,lt){badge(540,1255,'ENQUEUE · DEQUEUE · PEEK = O(1)',pop(t,'bigo',0.45,0),{fs:24})}
+function S10(t,lt){ // trap: dequeue then shift everyone left
+ const a=eo(seg(lt,0,0.5));const tD=E('deq2')-0.1,tS=E('khisk')-0.4;const out=eo(seg(t,tD,tD+0.5));
+ const vals=['A','B','C','D','E','F'];const G=140,X0=190;
+ for(let i=0;i<6;i++){ctx.save();ctx.globalAlpha*=a*0.5;rr(X0+i*G-60,1000,120,110,12);gs(2,'rgba(243,236,228,.35)');txt('['+i+']',X0+i*G,1140,'500 20px J','rgba(243,236,228,.5)');ctx.restore()}
+ vals.forEach((v,i)=>{let x=X0+i*G,y=1055,al=a;if(i===0){x-=out*160;y-=out*120;al*=1-out}else{const u=eio(seg(t,tS+(i-1)*0.32,tS+(i-1)*0.32+0.35));x-=u*G}
+  ctx.save();ctx.globalAlpha*=al;rr(x-56,y-48,112,96,12);ctx.fillStyle=i===1&&t>tS+0.35?'rgba(255,138,31,.45)':'rgba(22,15,11,.95)';ctx.fill();gs(2.5,i>0&&t>tS&&t<tS+2?'#ff5a3c':'rgba(243,236,228,.6)',0);txt(v,x,y+2,'800 34px M',WH);ctx.restore()});
+ const k=Math.min(5,Math.floor(seg(t,tS,tS+5*0.32+0.2)*5+0.001));if(t>tS)txt(`${k} SHIFTS`,540,880,'900 44px M','#ff5a3c','center',14);
+ monoTag(540,700,'DEQUEUE() → A',fin(t,'deq2',0.4,-0.1));badge(540,1255,'HAR DEQUEUE = O(n)',pop(t,'bigon',0.45,0),{fs:28});
+}
+function S11(t,lt){badge(540,1255,'CIRCULAR QUEUE',pop(t,'circular',0.45,0),{fs:30})}
+function S12(t,lt){badge(540,1255,'AAKHRI KE BAAD → [0]',pop(t,'ghoom',0.45,0),{fs:28})}
+function S13(t,lt){ // printer queue
+ const a=eo(seg(lt,0,0.5));printer(250,1000,1.3,a,t,true);const p=seg(t,E('pages')-0.2,E('pages')+2.4);
+ const docs=['DOC 1','DOC 2','DOC 3','DOC 4'];docs.forEach((d,i)=>{const pr=i===0?eo(seg(p,0.25,0.75)):0;const sh=eio(seg(p,0.75,1));page(lerp(560+i*130,i===0?250:560+(i-1)*130,i===0?pr:sh),lerp(1000,i===0?870:1000,pr),1,a*(1-(i===0?seg(pr,0.8,1):0)),d,i===0?OR:'rgba(243,236,228,.6)')});
+ if(a>0){arrow(980,1100,620,1100,a*0.8,'#7cc4ff',3);txt('NAYE PAGES →  PEECHHE',800,1140,'500 18px J','#7cc4ff')}
+ monoTag(540,700,'PRINT QUEUE · FIFO',fin(t,'printer',0.4,0));badge(540,1255,'PEHLE BHEJA → PEHLE PRINT',pop(t,'pages',0.45,0.6),{fs:26});
+}
+function S14(t,lt){ // keyboard buffer
+ const a=eo(seg(lt,0,0.5));const ks=['H','E','L','L','O'];const t0=E('keyboard')+0.1,dt=0.36;
+ ks.forEach((k,i)=>{const d=t>t0+i*dt&&t<t0+i*dt+0.18;keycap(200+i*100,1130,a,k,d)});
+ const typed=Math.min(5,Math.floor(seg(t,t0,t0+5*dt)*5+0.001)+(t>t0?1:0));const shown=Math.min(5,Math.floor(seg(t,E('screen')-0.6,E('screen')+0.6)*5+0.001)+(t>E('screen')-0.6?1:0));
+ const q=ks.slice(shown,typed);qRow(260,960,96,a,q,{w:80,h:80,fs:32});txt('BUFFER (QUEUE)',420,890,'500 20px J',GOLD);
+ if(a>0){ctx.save();ctx.globalAlpha*=a;rr(680,700,320,200,14);ctx.fillStyle='rgba(22,15,11,.95)';ctx.fill();gs(3,LN);txt(ks.slice(0,shown).join(''),840,800,'900 54px M',OR,'center',16);txt('SCREEN',840,930,'500 20px J','rgba(243,236,228,.6)');ctx.restore();arrow(620,960,700,880,a,OR,3)}
+ badge(540,1255,'JO PEHLE TYPE → PEHLE SCREEN',pop(t,'screen',0.45,0.3),{fs:24});
+}
+function S15(t,lt){ // customer care
+ const a=eo(seg(lt,0,0.5));const pos=Math.max(1,4-Math.floor(seg(t,E('call')-0.2,E('intezaar')+1.2)*3+0.001));
+ phone(240,960,230,420,a,(w,h)=>{txt('CUSTOMER',0,-120,'800 22px M',GOLD);txt('CARE',0,-90,'800 22px M',GOLD);txt('Aap',0,-20,'800 26px M',WH);txt('#'+pos,0,40,'900 80px M',OR,'center',20);txt('position par',0,110,'500 18px J','rgba(243,236,228,.7)')});
+ const calls=['CALL 1','CALL 2','CALL 3','AAP'].slice(4-pos);qRow(500,960,145,a,calls,{w:128,h:84,fs:22,hot:calls.length-1});
+ badge(540,1255,'CALLS BHI QUEUE MEIN',pop(t,'call',0.45,0),{fs:28});
+}
+function S16(t,lt){ // recap
+ const rows=[['ENQUEUE (rear)','O(1)','TEZ',1,'enq2',0],['DEQUEUE (front)','O(1)','TEZ',1,'deq3',0],['PEEK (front)','O(1)','TEZ',1,'big2',0],['BEECH TAK','O(n)','DHEEMA',0,'big2',0.6]];
+ monoTag(540,640,'FIFO · FIRST IN FIRST OUT',fin(t,'fifo2',0.4,-0.2));
+ rows.forEach(([n,o,s,good,e,off],i)=>{const p=pop(t,e,0.45,off);const y=760+i*125;card(540,y,860,105,p,'',null,t);if(p>0){ctx.save();ctx.globalAlpha*=cl(p);txt(n,150,y+2,'800 32px M',WH,'left');txt(o,660,y+2,'900 40px M',good?OR:'#ff5a3c','center',good?16:0);txt(s,870,y+2,'800 28px M',good?GOLD:'rgba(243,236,228,.7)','center');ctx.restore()}});
+}
+function S17(t,lt){ // next: tree
+ const a=eo(seg(lt,0,0.5));card(540,900,640,440,a,'',null,t);if(a>0){ctx.save();ctx.globalAlpha*=a;txt('EP 06',540,730,'900 40px J',GOLD);txt('TREE',540,805,'900 90px M',OR,'center',30);ctx.restore();
+  treeNodes(540,1000,0.62,a,seg(t,E('tree')-0.2,E('family')+1.0),['DADA','PAPA','CHACHA','AAP','BHAI','','']);}
+ badge(540,1255,'AGLE EPISODE MEIN',pop(t,'tree',0.45,0),{fs:30});
+}
+function S18(t,lt){ // comments
+ const a=eo(seg(lt,0,0.5));qRow(270,1100,135,a,['?','?','?','?','?'],{w:116,h:90,front:Math.floor(t*2)%5});
+ speech(540,800,1.4,pop(t,'comments',0.45,-0.8),false,t);badge(540,1255,'COMMENTS MEIN BATAO',pop(t,'comments',0.45,0),{fs:30});
+}
+const SCN=[S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12,S13,S14,S15,S16,S17,S18];
