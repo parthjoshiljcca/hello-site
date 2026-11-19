@@ -1,0 +1,99 @@
+const SC=[
+ {pill:'THE WHY SPACES · GAMING',title:'GTA Itni <em>Famous</em> Kyun?',sub:'13 saal ka intezaar khatam',tag:'THE · WHY'},
+ {pill:'01 · 1997',title:'Ek Chhoti <em>Company</em>',sub:'DMA Design · Scotland',tag:'THE · START'},
+ {pill:'01 · 1997',title:'Upar Se <em>2D</em>',sub:'Seedha saadha top-down game',tag:'TOP · DOWN'},
+ {pill:'02 · 2001',title:'Duniya <em>Badal</em> Gayi',sub:'GTA III',tag:'3D · CITY'},
+ {pill:'02 · 2001',title:'Open <em>World</em>',sub:'Jahan chaaho jao, jo chaaho karo',tag:'FREEDOM'},
+ {pill:'02 · 2001',title:'Level Nahi, <em>Shehar</em>',sub:'Poora shehar tumhara',tag:'SANDBOX'},
+ {pill:'03 · 2002–04',title:'Cyber Cafe <em>Era</em>',sub:'Vice City · San Andreas',tag:'CHEAT · CODES'},
+ {pill:'04 · VIBE',title:'Ek <em>Zinda</em> Shehar',sub:'Film · Radio · Satire',tag:'STORY · WORLD'},
+ {pill:'05 · 2013',title:'3 Din, <em>$1 Arab</em>',sub:'GTA V ka launch',tag:'RECORD'},
+ {pill:'05 · 2013',title:'<em>23 Crore+</em> Copies',sub:'Aur abhi bhi bik raha hai',tag:'BEST · SELLER'},
+ {pill:'06 · GAME CHANGER',title:'GTA <em>Online</em>',sub:'Game jo khatam hi nahi hota',tag:'UPDATES · FOREVER'},
+ {pill:'06 · GAME CHANGER',title:'Live <em>Service</em>',sub:'Ab har bada game yahi karta hai',tag:'BUSINESS · MODEL'},
+ {pill:'06 · GAME CHANGER',title:'<em>Roleplay</em> Servers',sub:'Police · Doctor · Gang',tag:'STREAMING'},
+ {pill:'07 · ROCKSTAR',title:'Saalon Ki <em>Mehnat</em>',sub:'Chhoti se chhoti detail',tag:'ROCKSTAR · GAMES'},
+ {pill:'08 · GTA VI',title:'Trailer = <em>Record</em>',sub:'24 ghante · 9 crore views',tag:'WORLD · RECORD'},
+ {pill:'08 · GTA VI',title:'Wapas <em>Vice City</em>',sub:'Leonida · Lucia + Jason',tag:'LEONIDA'},
+ {pill:'08 · GTA VI',title:'Intezaar <em>Khatam</em>',sub:'Do delay · phir rave reviews',tag:'19 · NOV · 2026'},
+ {pill:'SAAR',title:'Game Se <em>Zyada</em>',sub:'Shehar · Film · Duniya',tag:'THE · WHY'},
+ {pill:'AAPKI BAARI',title:'Pehli GTA <em>Yaad</em>?',sub:'Comments mein batao',tag:'COMMENT · KARO'},
+];
+const HL=['gta','6','5','3','paagal','1997','2001','2013','scotland','dma','design','2d','3d','badal','open','world','shehar','line','level','vice','city','san','andreas','cyber','cheat','codes','films','radio','america','mazaak','zinda','teen','arab','dollar','23','crore','copies','online','updates','live','service','roleplay','police','doctor','gang','stream','rockstar','games','detail','trailer','24','9','views','record','leonida','lucia','jason','perfect','score','film','duniya','comments'];
+
+// ---------- GTA primitives (original line art; no logos or game art) ----------
+function carTop(x,y,s,a,rot,col){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.rotate(rot||0);ctx.scale(s,s);rr(-16,-9,32,18,4);ctx.fillStyle=col||OR;ctx.fill();rr(-6,-7,12,14,3);ctx.fillStyle='rgba(10,8,7,.7)';ctx.fill();ctx.restore()}
+function crt(x,y,s,a,screen){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);rr(-90,-70,180,140,14);ctx.fillStyle='rgba(30,22,16,.98)';ctx.fill();gs(3,LN);rr(-74,-56,148,104,10);ctx.fillStyle='#0d1a14';ctx.fill();ctx.save();rr(-74,-56,148,104,10);ctx.clip();if(screen)screen();ctx.restore();rr(-40,70,80,16,4);ctx.fillStyle='rgba(30,22,16,.98)';ctx.fill();gs(2.5,LN);ctx.restore()}
+function clapper(x,y,s,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);rr(-60,-20,120,80,8);ctx.fillStyle='rgba(22,15,11,.96)';ctx.fill();gs(3,LN);ctx.save();ctx.translate(-60,-20);ctx.rotate(-0.25);rr(0,-24,120,24,4);ctx.fillStyle='rgba(243,236,228,.9)';ctx.fill();for(let i=0;i<4;i++){ctx.beginPath();ctx.moveTo(10+i*30,-24);ctx.lineTo(25+i*30,0);gs(6,'#1a0f06')}ctx.restore();ctx.restore()}
+function radio(x,y,s,a,t){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);rr(-70,-40,140,90,14);ctx.fillStyle='rgba(22,15,11,.96)';ctx.fill();gs(3,LN);ctx.beginPath();ctx.arc(-30,8,24,0,7);gs(3,OR,10);rr(10,-14,48,8,4);ctx.fillStyle=GOLD;ctx.fill();rr(10,4,48,8,4);ctx.fillStyle='rgba(243,236,228,.4)';ctx.fill();ctx.beginPath();ctx.moveTo(40,-40);ctx.lineTo(60,-80);gs(3,LN);
+ for(let k=0;k<3;k++){const ph=(t*1.2+k/3)%1;ctx.beginPath();ctx.arc(60,-80,10+ph*40,-1.2,-0.2);ctx.globalAlpha=a*(1-ph);gs(3,OR,8)}ctx.restore()}
+function mask(x,y,s,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);ctx.beginPath();ctx.moveTo(-50,-40);ctx.quadraticCurveTo(0,-60,50,-40);ctx.quadraticCurveTo(56,30,0,50);ctx.quadraticCurveTo(-56,30,-50,-40);ctx.fillStyle='rgba(255,177,92,.25)';ctx.fill();gs(3,GOLD,10);ctx.beginPath();ctx.ellipse(-20,-10,10,6,0,0,7);ctx.ellipse(20,-10,10,6,0,0,7);ctx.fillStyle='#1a0f06';ctx.fill();ctx.beginPath();ctx.arc(0,12,20,0.2,Math.PI-0.2);gs(4,'#1a0f06');ctx.restore()}
+function pad(x,y,s,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);ctx.beginPath();ctx.moveTo(-80,-30);ctx.quadraticCurveTo(0,-44,80,-30);ctx.quadraticCurveTo(110,40,80,50);ctx.quadraticCurveTo(50,56,30,20);ctx.lineTo(-30,20);ctx.quadraticCurveTo(-50,56,-80,50);ctx.quadraticCurveTo(-110,40,-80,-30);ctx.fillStyle='rgba(22,15,11,.96)';ctx.fill();gs(3,LN);
+ ctx.fillStyle=OR;ctx.fillRect(-58,-6,28,8);ctx.fillRect(-48,-16,8,28);[[50,-14],[62,-2],[50,10],[38,-2]].forEach(([u,v])=>{ctx.beginPath();ctx.arc(u,v,5,0,7);ctx.fill()});ctx.restore()}
+function infinity(x,y,s,a,t){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);ctx.beginPath();for(let i=0;i<=80;i++){const u=i/80*Math.PI*2;const d=1+Math.sin(u)**2;ctx.lineTo(60*Math.cos(u)/d,60*Math.sin(u)*Math.cos(u)/d)}gs(5,OR,16);const u=t*2%(Math.PI*2),d=1+Math.sin(u)**2;ctx.beginPath();ctx.arc(60*Math.cos(u)/d,60*Math.sin(u)*Math.cos(u)/d,7,0,7);ctx.fillStyle=GOLD;ctx.fill();ctx.restore()}
+function skyline(x,y,s,a){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);ctx.scale(s,s);const B=[[-70,60],[-48,100],[-24,70],[0,120],[24,80],[48,96],[70,56]];B.forEach(([bx,h])=>{rr(bx-11,-h,22,h,2);ctx.fillStyle='rgba(22,15,11,.96)';ctx.fill();gs(2,LN);for(let k=0;k<h/18-1;k++){ctx.fillStyle=k%2?GOLD:'rgba(255,177,92,.4)';ctx.fillRect(bx-5,-h+8+k*18,4,6)}});ctx.restore()}
+
+// ---------- scenes ----------
+function S0(t,lt){badge(300,1255,'13 SAAL KA INTEZAAR',pop(t,'gta6',0.45,0),{fs:26});badge(780,1255,'ITNI PAAGAL KYUN?',pop(t,'paagal',0.45,0),{fs:26})}
+function S1(t,lt){ // 1997 · DMA Design · Scotland
+ const a=eo(seg(lt,0,0.5));crt(540,930,2.1,a,()=>{txt('1997',0,-16,'900 52px J',OR,'center',18);txt('DMA DESIGN',0,30,'800 22px J','#7cc46b')});
+ monoTag(540,690,'SCOTLAND · DUNDEE',fin(t,'scotland',0.4,0));badge(540,1255,'EK CHHOTI SI COMPANY',pop(t,'dma',0.45,0),{fs:28});
+}
+function S2(t,lt){ // top-down 2D game
+ const a=eo(seg(lt,0,0.5));crt(540,930,2.4,a,()=>{ctx.fillStyle='#163024';ctx.fillRect(-74,-56,148,104);ctx.fillStyle='#2b2b2b';for(let i=-1;i<=1;i++){ctx.fillRect(-74,i*34-5,148,10);ctx.fillRect(i*48-5,-56,10,104)}
+  ctx.fillStyle='rgba(255,177,92,.5)';for(let i=-1;i<=1;i++)for(let j=-1;j<=1;j++)ctx.fillRect(i*48+9,j*34+8,26,14);const u=(lt*0.25)%1;carTop(lerp(-70,70,u),-1,0.4,1,0,OR);carTop(-1,lerp(50,-50,(lt*0.33)%1),0.4,1,Math.PI/2,'#7cc4ff')});
+ monoTag(540,690,'UPAR SE DIKHNE WALA',fin(t,'upar',0.4,-0.1));badge(540,1255,'SEEDHA SAADHA 2D',pop(t,'d2',0.45,0),{fs:30});
+}
+function S3(t,lt){badge(540,1255,'2001 · GTA III',pop(t,'y2001',0.45,0),{fs:30})}
+function S4(t,lt){badge(540,1255,'OPEN WORLD',pop(t,'open',0.45,0),{fs:32})}
+function S5(t,lt){badge(540,1255,'POORA SHEHAR TUMHARA',pop(t,'shehar',0.45,0),{fs:28})}
+function S6(t,lt){ // cyber cafe
+ const a=eo(seg(lt,0,0.5));const code='HESOYAM';const n=Math.min(code.length,Math.floor(seg(t,E('cheat')-0.3,E('cheat')+1.2)*code.length+0.001));
+ for(let i=0;i<3;i++){const on=i===1;crt(240+i*300,920,1.3,a,()=>{ctx.fillStyle=on?'#0f2a1d':'#101a16';ctx.fillRect(-74,-56,148,104);skyline(0,40,0.6,0.7);if(on){txt(code.slice(0,n)+(Math.sin(t*8)>0?'_':''),0,-30,'900 22px J','#7cc46b','center',10)}})}
+ for(let i=0;i<3;i++)stickman(240+i*300,1110,0.9,a);
+ monoTag(540,690,'VICE CITY 2002 · SAN ANDREAS 2004',fin(t,'vice',0.4,-0.1));badge(540,1255,'CHEAT CODES RATKE',pop(t,'cheat',0.45,0.3),{fs:28});
+}
+function S7(t,lt){ // film, radio, satire
+ const f=pop(t,'films',0.45,-0.15),r=pop(t,'radio',0.45,-0.15),s=pop(t,'america',0.45,-0.15);
+ card(200,920,300,340,f,'',null,t);clapper(200,890,1.1,cl(f));if(f>0)txt('FILM JAISI KAHANI',200,1050,'800 20px M',OR);
+ card(540,920,300,340,r,'',null,t);radio(540,910,1.1,cl(r),t);if(r>0)txt('RADIO STATIONS',540,1050,'800 20px M',OR);
+ card(880,920,300,340,s,'',null,t);mask(880,890,1.1,cl(s));if(s>0)txt('SATIRE',880,1050,'800 20px M',OR);
+ badge(540,1255,'GAME KAM, ZINDA SHEHAR ZYADA',pop(t,'zinda',0.45,0),{fs:24});
+}
+function S8(t,lt){ // $1B in 3 days
+ const a=eo(seg(lt,0,0.5));const p=seg(t,E('teen')-0.3,E('arab')+0.5);const v=Math.round(1000*eio(p));
+ card(540,900,760,440,a,'',null,t);if(a>0){ctx.save();ctx.globalAlpha*=a;txt('GTA V · 2013',540,740,'800 26px J',GOLD);txt('$'+(v*1e6).toLocaleString('en-US'),540,830,'900 70px M',OR,'center',26);
+  for(let d=0;d<3;d++){const q=cl(p*3-d);rr(250+d*200,960,160,40,10);ctx.fillStyle='rgba(243,236,228,.1)';ctx.fill();rr(250+d*200,960,160*q,40,10);ctx.fillStyle=OR;ctx.fill();txt('DIN '+(d+1),330+d*200,1030,'500 20px J','rgba(243,236,228,.7)')}ctx.restore()}
+ badge(540,1255,'3 DIN · 1 ARAB DOLLAR',pop(t,'arab',0.45,0),{fs:28});
+}
+function S9(t,lt){ // 23 crore copies
+ const a=eo(seg(lt,0,0.5));const p=eo(seg(t,E('crore')-0.6,E('copies')+0.8));
+ for(let i=0;i<23;i++){const q=cl(p*23-i);if(q<=0)continue;const col=i%2;ctx.save();ctx.globalAlpha*=a*q;ctx.beginPath();ctx.ellipse(540+(col?18:-18),1190-i*16,120,20,0,0,7);ctx.fillStyle=i===22?'rgba(255,138,31,.6)':'rgba(243,236,228,.18)';ctx.fill();gs(2,i===22?OR:'rgba(243,236,228,.6)',i===22?16:0);ctx.restore()}
+ const n=Math.round(23*p);txt(n+' CRORE+',540,690,'900 80px M',OR,'center',24);monoTag(540,760,'GTA V · COPIES SOLD',a);
+ badge(540,1255,'23 CRORE SE ZYADA',pop(t,'crore',0.45,0),{fs:30});
+}
+function S10(t,lt){badge(540,1255,'GTA ONLINE · 2013',pop(t,'online',0.45,0),{fs:30})}
+function S11(t,lt){badge(540,1255,'LIVE SERVICE MODEL',pop(t,'live',0.45,0),{fs:30})}
+function S12(t,lt){badge(540,1255,'ROLEPLAY SERVERS',pop(t,'roleplay',0.45,0),{fs:30})}
+function S13(t,lt){ // Rockstar: years of work, detail
+ const a=eo(seg(lt,0,0.5));const Y=[['1997','GTA'],['2001','GTA III'],['2004','SAN ANDREAS'],['2008','GTA IV'],['2013','GTA V'],['2026','GTA VI']];const p=seg(t,E('rockstar')-0.4,E('mehnat')+1.0);
+ ctx.save();ctx.globalAlpha*=a;ctx.beginPath();ctx.moveTo(130,900);ctx.lineTo(lerp(130,950,p),900);gs(4,OR,10);ctx.restore();
+ Y.forEach(([y,n],i)=>{const q=back(cl(p*6-i));const x=130+i*164;if(q<=0)return;ctx.save();ctx.globalAlpha*=a*cl(q);ctx.beginPath();ctx.arc(x,900,14*q,0,7);ctx.fillStyle=i===5?OR:WH;ctx.fill();txt(y,x,i%2?960:840,'800 26px J',i===5?OR:WH);txt(n,x,i%2?995:805,'500 16px J','rgba(243,236,228,.7)');ctx.restore()});
+ const d=fin(t,'detail',0.5,-0.2);if(d>0){ctx.save();ctx.globalAlpha*=d;ctx.translate(800,1080);ctx.beginPath();ctx.arc(0,0,60,0,7);gs(6,LN);ctx.beginPath();ctx.moveTo(42,42);ctx.lineTo(90,90);gs(12,LN);txt('DETAIL',0,2,'800 20px J',GOLD);ctx.restore()}
+ monoTag(540,690,'ROCKSTAR GAMES · 1998',fin(t,'rockstar',0.4,0));badge(540,1255,'SAALON KI MEHNAT',pop(t,'mehnat',0.45,0),{fs:28});
+}
+function S14(t,lt){badge(540,1255,'24 GHANTE · 9 CRORE VIEWS',pop(t,'record',0.45,0),{fs:26})}
+function S15(t,lt){badge(540,1255,'LEONIDA · LUCIA + JASON',pop(t,'jason',0.45,0),{fs:28})}
+function S16(t,lt){badge(540,1255,'LAGBHAG PERFECT REVIEWS',pop(t,'perfect',0.45,0),{fs:26})}
+function S17(t,lt){ // meaning
+ const c=pop(t,'shehar2',0.45,-0.2),f=pop(t,'film',0.45,-0.2),d=pop(t,'duniya',0.45,-0.2);
+ card(200,920,300,320,c,'',null,t);skyline(200,960,1.2,cl(c));if(c>0)txt('SHEHAR',200,1040,'900 26px M',OR);
+ card(540,920,300,320,f,'',null,t);clapper(540,900,1.1,cl(f));if(f>0)txt('FILM',540,1040,'900 26px M',OR);
+ card(880,920,300,320,d,'',null,t);infinity(880,900,1.3,cl(d),t);if(d>0)txt('DUNIYA',880,1040,'900 26px M',OR);
+ badge(540,1255,'GTA = SIRF GAME NAHI',pop(t,'shehar2',0.45,-0.6),{fs:28});
+}
+function S18(t,lt){ // comments
+ const a=eo(seg(lt,0,0.5));pad(540,1050,2.0,a);
+ speech(540,760,1.2,pop(t,'comments',0.45,-0.8),false,t);badge(540,1255,'COMMENTS MEIN BATAO',pop(t,'comments',0.45,0),{fs:30});
+}
+const SCN=[S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12,S13,S14,S15,S16,S17,S18];
