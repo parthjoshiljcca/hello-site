@@ -114,3 +114,5 @@ ol.route-list li { display: flex; gap: 1em; padding: .28em 0; border-bottom: .4p
 ol.route-list .day { font: 8.5pt Marcellus; letter-spacing: .12em; text-transform: uppercase; min-width: 4.2em; color: #555; }
 section#sources ol, section#sources ul { padding-left: 1.2em; font-size: 8.8pt; }
 section#sources li { margin: .3em 0; text-align: left; }
+section#about p { text-indent: 0; text-align: left; margin: 0 0 .7em; }
+section#about p.colophon { font-size: 7.5pt; line-height: 1.5; color: #555; text-align: center; margin-top: 1.6em; }

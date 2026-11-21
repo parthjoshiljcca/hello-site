@@ -45,6 +45,15 @@ def clean(markup, sid):
     return gray(markup)
 
 
+# About the Author for print: the website's version, rewritten to be more engaging and to not tie
+# the author to a few subjects (used inside the book and on the back cover)
+ABOUT = [
+    '<p>By day, <span class="sc">Prof. Parth D. Joshi</span> teaches young minds how machines think. By night, he writes code while the house sleeps. And somewhere in between, he collects stories — of gods, ghosts, and the places where the two meet.</p>',
+    '<p>For twelve years he has been an Assistant Professor at L. J. College of Computer Applications (LJCCA), Ahmedabad, where his students know him as the professor who answers a doubt with a story. He is the founder and mentor of CodeSprint Labs and AiRA Lab.</p>',
+    '<p>A believer who codes, he lights a diya every evening, has never once passed a mandir without folding his hands — and still has not googled <i>Nanda Kot 1967</i>.</p>',
+    '<p><i>Hidden Uttarakhand</i> is his first novel.</p>',
+]
+
 ORDER = ['cast', 'preface', 'note', 'intro', 'prologue',
          'part1', 'ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'part2', 'ch6', 'ch7', 'ch8', 'ch9', 'ch10',
          'part3', 'ch11', 'ch12', 'ch13', 'ch14', 'ch15', 'epilogue', 'route', 'sources', 'about']
@@ -56,6 +65,9 @@ body, toc = [], []
 for sid in ORDER:
     kind, inner = sections[sid]
     inner = clean(inner, sid)
+    if sid == 'about':   # keep the header and closing colophon, replace the paragraphs
+        first, last = inner.index('<p>'), inner.index('</p>', inner.rindex('first novel')) + 4
+        inner = inner[:first] + ''.join(ABOUT) + inner[last:]
     title = attr(sid, 'data-title')
     if 'class="part"' in attrs[sid]:
         body.append(f'<section class="part" id="{sid}">{inner}</section>')
