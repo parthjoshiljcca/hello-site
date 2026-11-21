@@ -54,7 +54,7 @@ const page = `<!doctype html><html><head><meta charset="utf-8"><style>
     <div class="hook">“Up here, after dark, if the forest calls your name, you don't answer. You don't turn round. You don't even say ‘who's there.’ You let it call.”<small>Overheard at Khaliya Top</small></div>
     <div class="rule"><span></span><b>ABOUT THE AUTHOR</b><span></span></div>
     <p>${paras}</p>
-    <img class="author" src="../roopkund/assets/author-logo.png">
+    <img class="author" src="cover/author-logo.png">
   </div>
   <div class="tag">Places · People · Culture<br>Untold Stories</div>
   <div class="barcode"></div></div>
