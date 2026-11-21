@@ -1,0 +1,78 @@
+[
+[
+"पिछले episode में ग्राफ़ देखा, जहाँ हर station कई stations से जुड़ा था।",
+"Pichhle episode mein Graph dekha, jahan har station kai stations se juda tha."
+],
+[
+"आज बात उस data structure की, जो कुछ भी लगभग तुरंत ढूँढ लेता है।",
+"Aaj baat us data structure ki, jo kuch bhi lagbhag turant dhoondh leta hai."
+],
+[
+"इसका नाम है हैश टेबल।",
+"Iska naam hai Hash Table."
+],
+[
+"Gym का locker room सोचो। हर member का locker पहले से तय है।",
+"Gym ka locker room socho. Har member ka locker pehle se tay hai."
+],
+[
+"नाम बोलो, और सीधे उसी locker पर जाओ। कोई ढूँढना नहीं।",
+"Naam bolo, aur seedhe usi locker par jao. Koi dhoondhna nahi."
+],
+[
+"हैश टेबल में नाम को कहते हैं key, और उसके सामान को value।",
+"Hash Table mein naam ko kehte hain key, aur uske saamaan ko value."
+],
+[
+"असली जादू है हैश फ़ंक्शन। ये key को एक नंबर में बदल देता है, यानी locker का नंबर।",
+"Asli jaadu hai hash function. Ye key ko ek number mein badal deta hai, yaani locker ka number."
+],
+[
+"जैसे Riya के letters के नंबर जोड़ो, तिरेपन। दस से भाग दो, बचा तीन। यानी locker नंबर तीन।",
+"Jaise Riya ke letters ke number jodo, 53. Das se bhaag do, bacha 3. Yaani locker number 3."
+],
+[
+"इसलिए ढूँढना, जोड़ना और हटाना, तीनों औसतन बिग ओ ऑफ़ वन।",
+"Isliye dhoondhna, jodna aur hatana, teenon ausatan Big O of 1."
+],
+[
+"पर दिक्कत तब आती है, जब दो नाम एक ही locker पर पहुँच जाएँ। Kiran का जोड़ भी तिरेपन है। इसे कहते हैं कॉलिज़न।",
+"Par dikkat tab aati hai, jab do naam ek hi locker par pahunch jaayein. Kiran ka jod bhi 53 hai. Ise kehte hain collision."
+],
+[
+"पहला हल, चेनिंग। उसी locker में एक छोटी लिंक्ड लिस्ट बनाओ, और दोनों को रख दो।",
+"Pehla hal, chaining. Usi locker mein ek chhoti Linked List banao, aur dono ko rakh do."
+],
+[
+"दूसरा हल, अगला खाली locker ढूँढो। इसे कहते हैं ओपन एड्रेसिंग।",
+"Doosra hal, agla khaali locker dhoondho. Ise kehte hain open addressing."
+],
+[
+"और जब lockers बहुत भर जाएँ, तो computer दुगना बड़ा locker room बनाता है, और सबको नई जगह भेज देता है।",
+"Aur jab lockers bahut bhar jaayein, toh computer dugna bada locker room banata hai, aur sabko nayi jagah bhej deta hai."
+],
+[
+"आपके phone में contact ढूँढना, हैश टेबल की वजह से ही इतना तेज़ है।",
+"Aapke phone mein contact dhoondhna, Hash Table ki wajah se hi itna tez hai."
+],
+[
+"Instagram पर नया username लेते समय, वो पहले से लिया गया है या नहीं, ये भी हैश टेबल बताता है।",
+"Instagram par naya username lete samay, woh pehle se liya gaya hai ya nahi, ye bhi Hash Table batata hai."
+],
+[
+"और Python की dictionary, और JavaScript का object, अंदर से हैश टेबल ही हैं।",
+"Aur Python ki dictionary, aur JavaScript ka object, andar se Hash Table hi hain."
+],
+[
+"तो याद रखो। हैश टेबल यानी key से सीधा locker। ढूँढना, जोड़ना, हटाना, सब औसतन बिग ओ ऑफ़ वन।",
+"Toh yaad rakho. Hash Table yaani key se seedha locker. Dhoondhna, jodna, hatana, sab ausatan Big O of 1."
+],
+[
+"इसके साथ हमारी data structures series के सातों हिस्से पूरे। ऐरे, लिंक्ड लिस्ट, स्टैक, क्यू, ट्री, ग्राफ़, और हैश टेबल।",
+"Iske saath humari data structures series ke saaton hisse poore. Array, Linked List, Stack, Queue, Tree, Graph, aur Hash Table."
+],
+[
+"अगली series किस topic पर चाहिए? Comments में बताओ।",
+"Agli series kis topic par chahiye? Comments mein batao."
+]
+]

@@ -1,0 +1,97 @@
+const SC=[
+ {pill:'THE WHY SPACES · DS SERIES · EP 08',title:'Lagbhag <em>Turant</em> Search',sub:'Kaise?',tag:'THE · WHY'},
+ {pill:'EP 08',title:'<em>Hash Table</em>',sub:'Aaj poora samjhenge',tag:'DEEP · DIVE'},
+ {pill:'01 · ANALOGY',title:'Gym <em>Locker</em> Room',sub:'Har member ka locker tay',tag:'LOCKERS'},
+ {pill:'01 · ANALOGY',title:'Naam Bolo, <em>Seedhe</em> Jao',sub:'Koi dhoondhna nahi',tag:'DIRECT'},
+ {pill:'02 · TERMS',title:'Key + <em>Value</em>',sub:'Naam = key · saamaan = value',tag:'KEY → VALUE'},
+ {pill:'03 · JAADU',title:'Hash <em>Function</em>',sub:'Key → locker number',tag:'HASH(KEY)'},
+ {pill:'03 · JAADU',title:'Riya → <em>Locker 3</em>',sub:'53 % 10 = 3',tag:'SUM % 10'},
+ {pill:'04 · SPEED',title:'Teeno <em>O(1)</em>',sub:'Average case',tag:'AUSATAN'},
+ {pill:'05 · DIKKAT',title:'<em>Collision</em>',sub:'Kiran bhi 53 → locker 3',tag:'SAME · LOCKER'},
+ {pill:'06 · HAL 1',title:'<em>Chaining</em>',sub:'Locker mein linked list',tag:'CHAIN'},
+ {pill:'07 · HAL 2',title:'Open <em>Addressing</em>',sub:'Agla khaali locker',tag:'PROBE'},
+ {pill:'08 · RESIZE',title:'Dugna <em>Locker Room</em>',sub:'Sab nayi jagah',tag:'REHASH'},
+ {pill:'09 · REAL LIFE',title:'Contact <em>Search</em>',sub:'Itna tez kyun?',tag:'PHONE'},
+ {pill:'10 · REAL LIFE',title:'Username <em>Taken?</em>',sub:'Ek pal mein jawab',tag:'INSTAGRAM'},
+ {pill:'11 · CODE',title:'Dictionary + <em>Object</em>',sub:'Python · JavaScript',tag:'HASH · MAPS'},
+ {pill:'RECAP',title:'Key → <em>Seedha</em> Locker',sub:'Sab average O(1)',tag:'YAAD · RAKHO'},
+ {pill:'SERIES COMPLETE',title:'7 Data <em>Structures</em>',sub:'Array se Hash Table tak',tag:'DS · SERIES'},
+ {pill:'AAPKI BAARI',title:'Agli <em>Series</em>?',sub:'Comments mein batao',tag:'COMMENT · KARO'},
+];
+const HL=['graph','turant','hash','table','gym','locker','naam','seedhe','key','value','jaadu','function','number','riya','53','3','das','bacha','ausatan','big','o','1','dikkat','kiran','collision','chaining','linked','list','khaali','open','addressing','dugna','contact','tez','instagram','username','python','dictionary','javascript','object','seedha','saaton','array','stack','queue','tree','series','comments'];
+
+// ---------- Ep 8 primitives ----------
+function lockerRow(x0,y,n,a,opt={}){for(let i=0;i<n;i++){const hot=opt.hot===i;locker(x0+i*(opt.gap||90),y,opt.w||76,opt.h||130,a,String(i),hot?(opt.open||0):0,hot?1:0)}}
+function hashBox(x,y,a,t,spin){if(a<=0)return;ctx.save();ctx.globalAlpha*=a;ctx.translate(x,y);rr(-150,-90,300,180,24);const g=ctx.createLinearGradient(0,-90,0,90);g.addColorStop(0,'rgba(40,24,14,.98)');g.addColorStop(1,'rgba(22,15,11,.98)');ctx.fillStyle=g;ctx.fill();gs(3,OR,22);
+ gear(-95,12,32,t*2*spin,12);gear(-52,-28,20,-t*3*spin,10);txt('HASH()',55,0,'900 34px J',GOLD,'center',12);ctx.restore()}
+
+// ---------- scenes ----------
+function S0(t,lt){badge(300,1255,'GRAPH ✓',pop(t,'graph',0.45,0),{fs:28});badge(780,1255,'LAGBHAG TURANT',pop(t,'turant',0.45,0),{fs:28})}
+function S1(t,lt){ // title
+ const p=pop(t,'hash',0.5,-0.4);if(p>0){ctx.save();ctx.translate(540,770);ctx.scale(p,p);txt('HASH TABLE',0,0,'900 130px M',OR,'center',44);ctx.restore()}
+ lockerRow(180,1060,5,eo(seg(lt,0,0.5)),{gap:180,w:130,h:170,hot:3,open:eo(seg(lt,0.6,1.2))});
+ monoTag(540,650,'THE WHY SPACES · DS SERIES · EP 08',fin(t,'hash',0.4,-0.6));
+}
+function S2(t,lt){badge(540,1255,'HAR MEMBER KA LOCKER TAY',pop(t,'tay',0.45,0),{fs:26})}
+function S3(t,lt){badge(540,1255,'NAAM → SEEDHA LOCKER',pop(t,'seedhe',0.45,0),{fs:28})}
+function S4(t,lt){badge(540,1255,'KEY → VALUE',pop(t,'value',0.45,0),{fs:30})}
+function S5(t,lt){ // the hash function machine
+ const a=eo(seg(lt,0,0.5));const run=seg(t,E('hashfn')-0.2,E('number')+0.8);hashBox(540,920,a,t,run>0&&run<1?1:0.15);
+ const kin=eo(seg(run,0,0.35)),out=eo(seg(run,0.55,1));
+ if(a>0){ctx.save();ctx.globalAlpha*=a*kin;rr(lerp(40,250,kin)-80,890,160,60,14);ctx.fillStyle='rgba(124,196,255,.25)';ctx.fill();gs(2.5,'#7cc4ff',12);txt('"Riya"',lerp(40,250,kin),921,'800 30px J',WH);ctx.restore();
+  ctx.save();ctx.globalAlpha*=a*out;rr(lerp(690,830,out)-70,890,140,60,14);ctx.fillStyle='rgba(255,138,31,.3)';ctx.fill();gs(2.5,OR,14);txt('3',lerp(690,830,out),921,'900 40px J',WH);ctx.restore()}
+ monoTag(540,700,'KEY → HASH() → LOCKER NUMBER',fin(t,'jaadu',0.4,0));badge(540,1255,'HASH FUNCTION',pop(t,'hashfn',0.45,0),{fs:30});
+}
+function S6(t,lt){ // Riya -> 53 -> 53 % 10 = 3
+ const a=eo(seg(lt,0,0.5));const L=[['R',18],['I',9],['Y',25],['A',1]];const p=seg(t,E('riya')-0.2,E('jodo')+0.6);
+ L.forEach(([c,n],i)=>{const q=back(cl(p*4-i));if(q<=0)return;const x=270+i*180;ctx.save();ctx.globalAlpha*=a*cl(q);rr(x-64,700,128,128,18);ctx.fillStyle='rgba(22,15,11,.96)';ctx.fill();gs(2.5,'rgba(243,236,228,.6)');txt(c,x,750,'900 52px M',WH);txt(String(n),x,805,'800 26px J',GOLD);if(i<3)txt('+',x+90,764,'900 40px M',OR);ctx.restore()});
+ const s=pop(t,'n53',0.45,-0.1);if(s>0){ctx.save();ctx.globalAlpha*=cl(s);txt('= 53',540,900,'900 70px M',OR,'center',22);ctx.restore()}
+ const m=pop(t,'bacha',0.45,-0.4);if(m>0){ctx.save();ctx.globalAlpha*=cl(m);txt('53 % 10 = 3',540,990,'900 54px J',WH);ctx.restore()}
+ lockerRow(135,1150,10,a*0.9,{gap:90,w:74,h:110,hot:3,open:fin(t,'locker3',0.5,-0.1)});
+ badge(540,1255,'RIYA → LOCKER 3',pop(t,'locker3',0.45,0),{fs:30});
+}
+function S7(t,lt){ // O(1) average
+ const ops=[['DHOONDHO','GET'],['JODO','PUT'],['HATAO','DELETE']];const a=eo(seg(lt,0,0.5));
+ ops.forEach(([h,e],i)=>{const p=pop(t,'ausatan',0.45,-1.0+i*0.25);const x=200+i*340;card(x,900,300,320,p,'',null,t);if(p>0){ctx.save();ctx.globalAlpha*=cl(p);txt(h,x,820,'900 34px M',WH);txt(e,x,870,'500 22px J','rgba(243,236,228,.6)');txt('O(1)',x,960,'900 64px M',OR,'center',20);ctx.restore()}});
+ monoTag(540,690,'AUSATAN · AVERAGE CASE',fin(t,'ausatan',0.4,0));badge(540,1255,'TEENO ≈ 1 STEP',pop(t,'bigo',0.45,0),{fs:30});
+}
+function S8(t,lt){badge(540,1255,'COLLISION: DONO → LOCKER 3',pop(t,'collision',0.45,0),{fs:26})}
+function S9(t,lt){badge(540,1255,'CHAINING',pop(t,'chaining',0.45,0),{fs:32})}
+function S10(t,lt){badge(540,1255,'OPEN ADDRESSING',pop(t,'open',0.45,0),{fs:30})}
+function S11(t,lt){badge(540,1255,'DUGNA LOCKER ROOM · REHASH',pop(t,'dugna',0.45,0.3),{fs:26})}
+function S12(t,lt){ // contacts
+ const a=eo(seg(lt,0,0.5));const q='Riya';const n=Math.min(4,Math.floor(seg(t,E('contact')-0.4,E('contact')+0.8)*4+0.001)+(t>E('contact')-0.4?1:0));
+ phone(540,930,330,560,a,()=>{rr(-130,-230,260,50,25);ctx.fillStyle='rgba(243,236,228,.1)';ctx.fill();txt('🔍 '+q.slice(0,n),-110,-204,'800 24px M',WH,'left');
+  const found=n>=4;['Aman','Kabir','Neha','Riya','Zoya'].forEach((c,i)=>{const hot=found&&c==='Riya';rr(-130,-160+i*70,260,58,12);ctx.fillStyle=hot?'rgba(255,138,31,.45)':'rgba(243,236,228,.06)';ctx.fill();if(hot)gs(2,OR,14);txt(c,-100,-130+i*70,'800 24px M',WH,'left')});
+  if(found)txt('0.001 sec',0,220,'800 22px J',GOLD)});
+ badge(540,1255,'CONTACT SEARCH = HASH TABLE',pop(t,'tez',0.45,0),{fs:24});
+}
+function S13(t,lt){ // username taken?
+ const a=eo(seg(lt,0,0.5));const u1=fin(t,'username',0.4,-0.2),u2=fin(t,'username',0.4,1.4);
+ card(540,900,760,420,a,'',null,t);if(a>0){ctx.save();ctx.globalAlpha*=a;txt('NAYA USERNAME',540,750,'500 24px J',GOLD);
+  rr(240,800,600,80,40);ctx.fillStyle='rgba(243,236,228,.08)';ctx.fill();gs(2,'rgba(243,236,228,.5)');txt(u2>0?'@thewhyspaces_2':'@thewhyspaces',270,842,'800 32px M',WH,'left');ctx.restore();
+  if(u1>0&&u2<=0){ctx.save();ctx.globalAlpha*=u1;txt('✕ PEHLE SE LIYA GAYA',540,960,'900 34px M','#ff5a3c');ctx.restore()}
+  if(u2>0){ctx.save();ctx.globalAlpha*=u2;txt('✓ AVAILABLE',540,960,'900 34px M','#7cc46b');ctx.restore()}}
+ badge(540,1255,'EK PAL MEIN JAWAB',pop(t,'username',0.45,0.4),{fs:28});
+}
+function S14(t,lt){ // Python dict / JS object
+ const a=eo(seg(lt,0,0.5));const py=fin(t,'python',0.5,-0.3),js=fin(t,'js',0.5,-0.3);
+ editor(540,800,0.9,a*py,['# Python','lockers = {"Riya": 3}','lockers["Riya"]  # 3'],t);
+ editor(540,1075,0.72,a*js,['// JavaScript','const lockers = { Riya: 3 }'],t);
+ badge(540,1255,'ANDAR SE HASH TABLE',pop(t,'js',0.45,0.6),{fs:28});
+}
+function S15(t,lt){ // recap
+ const rows=[['GET (dhoondho)','O(1)*','TEZ',1,'yaad',0.3],['PUT (jodo)','O(1)*','TEZ',1,'yaad',0.9],['DELETE (hatao)','O(1)*','TEZ',1,'big2',-0.6],['COLLISION','CHAIN · PROBE','',1,'big2',0.2]];
+ monoTag(540,640,'* AUSATAN · AVERAGE CASE',fin(t,'yaad',0.4,0));
+ rows.forEach(([n,o,s,good,e,off],i)=>{const p=pop(t,e,0.45,off);const y=760+i*125;card(540,y,860,105,p,'',null,t);if(p>0){ctx.save();ctx.globalAlpha*=cl(p);txt(n,150,y+2,'800 30px M',WH,'left');txt(o,650,y+2,`900 ${o.length>5?28:40}px M`,OR,'center',16);txt(s,880,y+2,'800 28px M',GOLD,'center');ctx.restore()}});
+}
+function S16(t,lt){ // series wrap-up: all 7
+ const D7=[['ARRAY','train'],['LINKED LIST','hunt'],['STACK','plates'],['QUEUE','chai'],['TREE','tree'],['GRAPH','metro'],['HASH TABLE','locker']];const t0=E('arr')-0.2,t1=E('ht2')+0.3;
+ D7.forEach(([n,ic],i)=>{const p=back(seg(t,t0+(t1-t0)*i/6-0.1,t0+(t1-t0)*i/6+0.35));const x=i<4?195+i*230:310+(i-4)*230,y=i<4?820:1050;if(p<=0)return;ctx.save();ctx.translate(x,y);ctx.scale(0.72,0.72);recapCard(0,0,p,n,ICO[ic],t);ctx.restore()});
+ monoTag(540,670,'THE WHY SPACES · DS SERIES · COMPLETE',fin(t,'saaton',0.4,-0.2));badge(540,1255,'7 / 7 POORE ✓',pop(t,'ht2',0.45,0.6),{fs:30});
+}
+function S17(t,lt){ // comments
+ const a=eo(seg(lt,0,0.5));lockerRow(225,1080,5,a,{gap:160,w:120,h:160,hot:Math.floor(t*1.5)%5,open:0.6});
+ speech(540,760,1.2,pop(t,'comments',0.45,-0.8),false,t);badge(540,1255,'COMMENTS MEIN BATAO',pop(t,'comments',0.45,0),{fs:30});
+}
+const SCN=[S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12,S13,S14,S15,S16,S17];
