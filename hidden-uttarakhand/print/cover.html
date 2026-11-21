@@ -1,0 +1,45 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+  @font-face { font-family: Literata; src: url(fonts/Literata-400.ttf); }
+  @font-face { font-family: Literata; font-style: italic; src: url(fonts/Literata-400i.ttf); }
+  @font-face { font-family: Marcellus; src: url(fonts/Marcellus-400.ttf); }
+  @page { size: 10.87in 8.25in; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 10.87in; height: 8.25in; background: #000; }
+  .panel { position: absolute; top: 0; height: 8.25in; overflow: hidden; }
+  /* back: black, everything kept 0.3 in inside the trim */
+  .back { left: 0; width: 5.125in; background: radial-gradient(ellipse 90% 60% at 50% 35%, #15110a 0%, #000 70%); color: #e8dcc2; }
+  .back .safe { position: absolute; left: 0.575in; right: .45in; top: 0.625in; bottom: 0.525in; }
+  .back .hook { font: italic 10.5pt/1.6 Literata; text-align: center; color: #d7c7a3; }
+  .back .hook small { display: block; margin-top: .6em; font: 6.5pt Marcellus; letter-spacing: .25em; text-transform: uppercase; color: #9c8a63; font-style: normal; }
+  .rule { display: flex; align-items: center; justify-content: center; gap: .12in; margin: .32in 0 .2in; color: #d4a74a; }
+  .rule span { display: block; width: .9in; border-top: .7pt solid #a9813a; }
+  .rule b { font: 9pt Marcellus; letter-spacing: .32em; color: #e2b75a; font-weight: 400; white-space: nowrap; }
+  .back p { font: 9pt/1.55 Literata; text-align: justify; hyphens: auto; margin-bottom: .55em; color: #e3d8bf; }
+  .back p .sc { font-variant: small-caps; letter-spacing: .04em; color: #f0cf86; }
+  .back img.author { display: block; width: 3.1in; margin: .22in auto 0; mix-blend-mode: screen; }
+  .back .barcode { position: absolute; right: .45in; bottom: 0.475in; width: 2in; height: 1.2in; }   /* left clear for the ISBN barcode */
+  .back .tag { position: absolute; left: 0.575in; bottom: 0.575in; font: 7pt Marcellus; letter-spacing: .25em; color: #9c8a63; text-transform: uppercase; line-height: 1.7; }
+  /* spine */
+  .spine { left: 5.125in; width: 0.62in; background: #000; }
+  .spine .txt { position: absolute; left: 50%; top: 50%; width: 7.1in; transform: translate(-50%, -50%) rotate(90deg);
+                display: flex; align-items: center; justify-content: space-between; color: #e2b75a; white-space: nowrap; }
+  .spine .t { font: 14.0pt Marcellus; letter-spacing: .14em; }
+  .spine .a { font: 9.0pt Marcellus; letter-spacing: .18em; color: #c9a45a; }
+  .spine .m { width: 0.24in; }
+  /* front */
+  .front { left: 5.745in; width: 5.125in; }
+  .front img { width: 100%; height: 100%; object-fit: cover; object-position: 0 50%; display: block; }
+</style></head><body>
+  <div class="panel back"><div class="safe">
+    <div class="hook">“Up here, after dark, if the forest calls your name, you don't answer. You don't turn round. You don't even say ‘who's there.’ You let it call.”<small>Overheard at Khaliya Top</small></div>
+    <div class="rule"><span></span><b>ABOUT THE AUTHOR</b><span></span></div>
+    <p><span class="sc">Prof. Parth D. Joshi</span> is a professor, a developer and a storyteller. For twelve years he has taught at L. J. College of Computer Applications (LJCCA), Ahmedabad, where he is an Assistant Professor teaching AI and DevOps. He is a thinker by habit, a believer by heart, and tech-savvy by profession; his students know him as the professor who answers a doubt with a story.</p><p>When he is not teaching, he is writing code: he is the founder and mentor of CodeSprint Labs and AiRA Lab. When he is not writing code, he is telling stories, usually about gods, ghosts and the places where the two meet.</p><p>He lights a diya every evening, has never once passed a mandir without folding his hands, and still has not googled <i>Nanda Kot 1967</i>.</p><p>This is his first novel.</p>
+    <img class="author" src="../roopkund/assets/author-logo.png">
+  </div>
+  <div class="tag">Places · People · Culture<br>Untold Stories</div>
+  <div class="barcode"></div></div>
+  <div class="panel spine"><div class="txt"><span class="t">HIDDEN UTTARAKHAND</span>
+    <svg class="m" viewBox="0 0 64 34"><path d="M2 32 L20 10 L28 18 L40 2 L62 32 Z" fill="none" stroke="#c9a45a" stroke-width="3" stroke-linejoin="round"/></svg>
+    <span class="a">PARTH D. JOSHI</span></div></div>
+  <div class="panel front"><img src="cover/front-art-300dpi.jpg"></div>
+</body></html>
