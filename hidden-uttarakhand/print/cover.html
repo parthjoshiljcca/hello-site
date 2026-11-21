@@ -1,33 +1,35 @@
 <!doctype html><html><head><meta charset="utf-8"><style>
-  @font-face { font-family: Literata; src: url(fonts/Literata-400.ttf); }
-  @font-face { font-family: Literata; font-style: italic; src: url(fonts/Literata-400i.ttf); }
-  @font-face { font-family: Marcellus; src: url(fonts/Marcellus-400.ttf); }
-  @page { size: 10.87in 8.25in; margin: 0; }
+  @font-face { font-family: Alegreya; src: url(fonts/Alegreya-400.ttf); }
+  @font-face { font-family: Alegreya; font-style: italic; src: url(fonts/Alegreya-400i.ttf); }
+  @font-face { font-family: 'Alegreya SC'; src: url(fonts/AlegreyaSC-500.ttf); }
+  @font-face { font-family: Cinzel; src: url(fonts/Cinzel-400.ttf); }
+  @font-face { font-family: Cinzel; font-weight: 600; src: url(fonts/Cinzel-600.ttf); }
+  @page { size: 10.814in 8.278in; margin: 0; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 10.87in; height: 8.25in; background: #000; }
-  .panel { position: absolute; top: 0; height: 8.25in; overflow: hidden; }
-  /* back: black, everything kept 0.3 in inside the trim */
-  .back { left: 0; width: 5.125in; background: radial-gradient(ellipse 90% 60% at 50% 35%, #15110a 0%, #000 70%); color: #e8dcc2; }
-  .back .safe { position: absolute; left: 0.575in; right: .45in; top: 0.625in; bottom: 0.525in; }
-  .back .hook { font: italic 10.5pt/1.6 Literata; text-align: center; color: #d7c7a3; }
-  .back .hook small { display: block; margin-top: .6em; font: 6.5pt Marcellus; letter-spacing: .25em; text-transform: uppercase; color: #9c8a63; font-style: normal; }
+  html, body { width: 10.814in; height: 8.278in; background: #000; }
+  .panel { position: absolute; top: 0; height: 8.278in; overflow: hidden; }
+  /* back: black; text in the template's safe zone, 0.5 in inside the trim */
+  .back { left: 0; width: 5.139in; background: radial-gradient(ellipse 90% 60% at 50% 35%, #15110a 0%, #000 70%); color: #e8dcc2; }
+  .back .safe { position: absolute; left: 0.639in; right: .5in; top: 0.639in; bottom: 1.639in; }
+  .back .hook { font: italic 11pt/1.55 Alegreya; text-align: center; color: #d7c7a3; }
+  .back .hook small { display: block; margin-top: .6em; font: 6.5pt Cinzel; letter-spacing: .25em; text-transform: uppercase; color: #9c8a63; font-style: normal; }
   .rule { display: flex; align-items: center; justify-content: center; gap: .12in; margin: .32in 0 .2in; color: #d4a74a; }
   .rule span { display: block; width: .9in; border-top: .7pt solid #a9813a; }
-  .rule b { font: 9pt Marcellus; letter-spacing: .32em; color: #e2b75a; font-weight: 400; white-space: nowrap; }
-  .back p { font: 9pt/1.55 Literata; text-align: justify; hyphens: auto; margin-bottom: .55em; color: #e3d8bf; }
-  .back p .sc { font-variant: small-caps; letter-spacing: .04em; color: #f0cf86; }
-  .back img.author { display: block; width: 3.1in; margin: .22in auto 0; mix-blend-mode: screen; }
-  .back .barcode { position: absolute; right: .45in; bottom: 0.475in; width: 2in; height: 1.2in; }   /* left clear for the ISBN barcode */
-  .back .tag { position: absolute; left: 0.575in; bottom: 0.575in; font: 7pt Marcellus; letter-spacing: .25em; color: #9c8a63; text-transform: uppercase; line-height: 1.7; }
+  .rule b { font: 9pt Cinzel; letter-spacing: .32em; color: #e2b75a; font-weight: 400; white-space: nowrap; }
+  .back p { font: 9.6pt/1.5 Alegreya; text-align: justify; hyphens: auto; margin-bottom: .55em; color: #e3d8bf; }
+  .back p .sc { font-family: 'Alegreya SC'; letter-spacing: .03em; color: #f0cf86; }
+  .back img.author { display: block; width: 3.1in; margin: .22in auto 0; }
+  .back .barcode { position: absolute; left: 2.659in; top: 6.719in; width: 1.75in; height: 1.08in; }   /* the template's barcode & MRP box: left clear */
+  .back .tag { position: absolute; left: 0.639in; bottom: 0.459in; font: 7pt Cinzel; letter-spacing: .25em; color: #9c8a63; text-transform: uppercase; line-height: 1.7; }
   /* spine */
-  .spine { left: 5.125in; width: 0.62in; background: #000; }
+  .spine { left: 5.139in; width: 0.536in; background: #000; }
   .spine .txt { position: absolute; left: 50%; top: 50%; width: 7.1in; transform: translate(-50%, -50%) rotate(90deg);
                 display: flex; align-items: center; justify-content: space-between; color: #e2b75a; white-space: nowrap; }
-  .spine .t { font: 14.0pt Marcellus; letter-spacing: .14em; }
-  .spine .a { font: 9.0pt Marcellus; letter-spacing: .18em; color: #c9a45a; }
-  .spine .m { width: 0.24in; }
+  .spine .t { font: 14.0pt Cinzel; letter-spacing: .14em; }
+  .spine .a { font: 9.0pt Cinzel; letter-spacing: .18em; color: #c9a45a; }
+  .spine .m { width: 0.20in; }
   /* front */
-  .front { left: 5.745in; width: 5.125in; }
+  .front { left: 5.675000000000001in; width: 5.139in; }
   .front img { width: 100%; height: 100%; object-fit: cover; object-position: 0 50%; display: block; }
 </style></head><body>
   <div class="panel back"><div class="safe">

@@ -1,5 +1,5 @@
-// Lays out interior.html with Paged.js in headless Chromium and prints it to a 5x8 in PDF for
-// Notion Press.
+// Lays out interior.html with Paged.js in headless Chromium, prints it to a 5x8 in PDF and converts
+// it to greyscale with Ghostscript for Notion Press.
 //
 //   node render_interior.js            -> out/hidden-uttarakhand-interior.pdf
 const { chromium } = require('playwright');
@@ -24,7 +24,12 @@ const path = require('path');
     return flow.total;
   });
   const file = path.join(out, 'hidden-uttarakhand-interior.pdf');
-  await page.pdf({ path: file, preferCSSPageSize: true, printBackground: true });
+  const raw = path.join(out, 'interior-rgb.pdf');
+  await page.pdf({ path: raw, preferCSSPageSize: true, printBackground: true });
   await browser.close();
+  // a pure greyscale PDF for the black-and-white press
+  require('child_process').execFileSync('gs', ['-q', '-dSAFER', '-dBATCH', '-dNOPAUSE', '-sDEVICE=pdfwrite', '-dPDFSETTINGS=/prepress',
+    '-sColorConversionStrategy=Gray', '-dProcessColorModel=/DeviceGray', '-dAutoRotatePages=/None', `-sOutputFile=${file}`, raw]);
+  fs.unlinkSync(raw);
   console.log(`Wrote ${file}: ${pages} pages`);
 })().catch(e => { console.error(e); process.exit(1); });

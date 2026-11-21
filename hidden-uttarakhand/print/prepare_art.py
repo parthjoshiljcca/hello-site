@@ -56,5 +56,10 @@ mask = Image.new('L', logo.size, 0)
 tracked(ImageDraw.Draw(mask), 1090, 300, LABEL, ImageFont.truetype(CINZEL, 58), track=24, fill=255)
 grad = np.linspace(255, 175, logo.height)[:, None, None] * np.ones((1, logo.width, 3))
 logo.paste(Image.fromarray(grad.astype(np.uint8)), (0, 0), mask)
-logo.save(os.path.join(DIR, 'cover', 'author-logo.png'))
+# black becomes transparent (alpha from brightness, colour un-premultiplied), so the logo sits on any
+# background without a blend mode, which does not survive the CMYK conversion
+la = np.asarray(logo).astype(float)
+alpha = np.clip(la.max(2) * 1.15, 0, 255)
+rgb = np.clip(la / np.maximum(alpha[..., None] / 255, 1e-3), 0, 255)
+Image.fromarray(np.dstack([rgb, alpha]).astype(np.uint8), 'RGBA').save(os.path.join(DIR, 'cover', 'author-logo.png'))
 print('front-art-300dpi.jpg', art.size, '· author-logo.png', logo.size)
