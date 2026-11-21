@@ -51,7 +51,7 @@ ABOUT = [
     '<p>By day, <span class="sc">Prof. Parth D. Joshi</span> teaches young minds how machines think. By night, he writes code while the house sleeps. And somewhere in between, he collects stories — of gods, ghosts, and the places where the two meet.</p>',
     '<p>For twelve years he has been an Assistant Professor at L. J. College of Computer Applications (LJCCA), Ahmedabad, where his students know him as the professor who answers a doubt with a story. He is the founder and mentor of CodeSprint Labs and AiRA Lab.</p>',
     '<p>A believer who codes, he lights a diya every evening, has never once passed a mandir without folding his hands — and still has not googled <i>Nanda Kot 1967</i>.</p>',
-    '<p><i>Hidden Uttarakhand</i> is his first novel.</p>',
+    '<p><i>Hidden Uttarakhand</i> is his latest book.</p>',
 ]
 
 ORDER = ['cast', 'preface', 'note', 'intro', 'prologue',
