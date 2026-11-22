@@ -19,6 +19,7 @@ const PAGES = +(execFileSync('pdfinfo', [path.join(__dirname, 'out', 'hidden-utt
 const SPINE = opt('spine', +(Math.ceil(PAGES / 2) * 2 * .563 / 248).toFixed(3));   // unless given, from the page count
 const W = BLEED * 2 + TRIM_W * 2 + SPINE, H = TRIM_H + BLEED * 2;
 const DIR = __dirname;
+const ZONE = { x: 1.85, y: 6.1 };   // barcode keep-out, inches from the back's top-left bleed corner
 
 // The back cover sells the book: a hook, the blurb, the book's promise, a short author line
 const PEAK = `<svg viewBox="0 0 24 12" width="26" height="13"><path d="M1 11 L7 4 L10 7 L14 1 L19 7 L21 5 L23 11" fill="none" stroke="#c9a45a" stroke-width="1.1" stroke-linejoin="round"/><path d="M12.4 3.3 L14 1 L15.6 3.2 L14.7 2.9 L14 3.7 L13.3 2.9Z" fill="#c9a45a"/></svg>`;
@@ -34,22 +35,24 @@ const page = `<!doctype html><html><head><meta charset="utf-8"><style>
   html, body { width: ${W}in; height: ${H}in; background: #000; }
   .panel { position: absolute; top: 0; height: ${H}in; overflow: hidden; }
   /* back: black; text in the template's safe zone, 0.5 in inside the trim */
-  .back { left: 0; width: ${BLEED + TRIM_W}in; background: radial-gradient(ellipse 90% 60% at 50% 35%, #15110a 0%, #000 70%); color: #e8dcc2; }
+  .back { left: 0; width: ${BLEED + TRIM_W}in; background: radial-gradient(ellipse 85% 42% at 50% 30%, #15110a 0%, #000 100%); color: #e8dcc2; }
   .back .safe { position: absolute; left: ${BLEED + .5}in; right: .5in; top: ${BLEED + .5}in; bottom: ${BLEED + 1.5}in; }
-  .back .hook { font: italic 16pt/1.25 Alegreya; text-align: center; color: #efc970; margin-top: .05in; }
-  .back .blurb { margin-top: .26in; padding: 0 .07in; }
-  .back .blurb p { font: 9.5pt/1.48 Alegreya; text-align: justify; hyphens: auto; margin-bottom: .62em; color: #e6dcc4; }
+  .back .hook { font: italic 15pt/1.2 Alegreya; text-align: center; color: #efc970; margin-top: 0; }
+  .back .blurb { margin-top: .15in; padding: 0 .07in; }
+  .back .blurb p { font: 9.3pt/1.42 Alegreya; text-align: justify; hyphens: auto; margin-bottom: .5em; color: #e6dcc4; }
   .back .blurb p.turn { font-style: italic; color: #f0d79c; text-align: center; }
   .back .blurb b { font-weight: 400; font-style: italic; color: #f3cf7a; }
-  .rule { display: flex; align-items: center; justify-content: center; gap: .1in; margin: .2in 0 .14in; }
+  .rule { display: flex; align-items: center; justify-content: center; gap: .1in; margin: .14in 0 .1in; }
   .rule span { display: block; width: 1.05in; border-top: .7pt solid #8a6a2e; }
   .back .promise { text-align: center; font: 7.6pt/1.75 'Alegreya SC'; letter-spacing: .06em; color: #cdb37a; }
   .back .promise em { font-style: normal; color: #f0cf86; }
   .back .bio span { font-style: normal; color: #e2c27a; }
-  .back .bio { margin-top: .2in; text-align: center; font: italic 8.4pt/1.45 Alegreya; color: #bfb194; padding: 0 .1in; }
-  .back img.author { display: block; width: 2.5in; margin: .08in auto 0; }
-  .back .barcode { position: absolute; left: ${BLEED + 2.52}in; top: ${BLEED + 6.58}in; width: 1.75in; height: 1.08in; }   /* the template's barcode & MRP box: left clear */
-  .back .tag { position: absolute; left: ${BLEED + .5}in; bottom: ${BLEED + .32}in; font: 7pt Cinzel; letter-spacing: .25em; color: #9c8a63; text-transform: uppercase; line-height: 1.7; }
+  .back .bio { margin-top: .14in; text-align: center; font: italic 8.4pt/1.45 Alegreya; color: #bfb194; padding: 0 .1in; }
+  .back img.author { display: block; width: 1.95in; margin: .03in auto 0; }
+  /* Notion Press's upload check reserves the lower right of the back for the barcode (seen on its
+     preview at about 1.9 in from the left bleed edge and 6.3 in from the top): kept empty, flat black */
+  .back .barcode { position: absolute; left: ${ZONE.x}in; top: ${ZONE.y}in; right: 0; bottom: 0; background: #000; }
+  .back .tag { position: absolute; left: ${BLEED + .5}in; bottom: ${BLEED + .32}in; font: 7pt Cinzel; letter-spacing: .16em; color: #9c8a63; text-transform: uppercase; line-height: 1.7; }
   /* spine */
   .spine { left: ${BLEED + TRIM_W}in; width: ${SPINE}in; background: #000; }
   .spine .txt { position: absolute; left: 50%; top: 50%; width: ${TRIM_H - .9}in; transform: translate(-50%, -50%) rotate(90deg);
@@ -74,7 +77,7 @@ const page = `<!doctype html><html><head><meta charset="utf-8"><style>
     <div class="bio">Prof. Parth D. Joshi teaches young minds how machines think, writes code while the house sleeps, and collects stories of gods, ghosts and the places where the two meet. He is the author of <span>Ramayana Reimagined: The Eternal Legacy</span>.</div>
     <img class="author" src="cover/author-logo.png">
   </div>
-  <div class="tag">Fiction · Folklore<br>Adventure</div>
+  <div class="tag">Fiction<br>Folklore<br>Adventure</div>
   <div class="barcode"></div></div>
   <div class="panel spine"><div class="txt"><span class="t">HIDDEN UTTARAKHAND</span>
     <svg class="m" viewBox="0 0 64 34"><path d="M2 32 L20 10 L28 18 L40 2 L62 32 Z" fill="none" stroke="#c9a45a" stroke-width="3" stroke-linejoin="round"/></svg>
@@ -89,6 +92,18 @@ const page = `<!doctype html><html><head><meta charset="utf-8"><style>
   const p = await browser.newPage({ viewport: { width: Math.round(W * 96), height: Math.round(H * 96) } });
   await p.goto('file://' + path.join(DIR, 'cover.html'));
   await p.evaluate(() => document.fonts.ready);
+  const hits = await p.evaluate(({ x, y }) => {
+    const px = 96, out = [];
+    for (const el of document.querySelectorAll('.back *:not(.barcode)')) {
+      if (el.children.length) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width && r.right / px > x && r.bottom / px > y) out.push(`${el.className || el.tagName} ends at ${(r.right / px).toFixed(2)}, ${(r.bottom / px).toFixed(2)} in`);
+    }
+    const last = Math.max(...[...document.querySelectorAll('.back .safe > *')].map(e => e.getBoundingClientRect().bottom)) / px;
+    return { out, last };
+  }, ZONE);
+  console.log(`back content ends ${hits.last.toFixed(2)} in from the top (barcode zone starts ${ZONE.y})`);
+  if (hits.out.length) { console.error('in the barcode zone:\n  ' + hits.out.join('\n  ')); process.exit(1); }
   const rgb = path.join(DIR, 'out', 'cover-rgb.pdf'), cmyk = path.join(DIR, 'out', 'hidden-uttarakhand-cover.pdf');
   await p.pdf({ path: rgb, width: `${W}in`, height: `${H}in`, printBackground: true, preferCSSPageSize: true });
   execFileSync('gs', ['-q', '-dSAFER', '-dBATCH', '-dNOPAUSE', '-sDEVICE=pdfwrite', '-dPDFSETTINGS=/prepress', '-sColorConversionStrategy=CMYK',
