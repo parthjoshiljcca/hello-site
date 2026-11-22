@@ -144,3 +144,17 @@ section#sources ol, section#sources ul { padding-left: 1.2em; font-size: 8.8pt; 
 section#sources li { margin: .3em 0; text-align: left; }
 section#about p { text-indent: 0; text-align: left; margin: 0 0 .7em; }
 section#about p.colophon { font-size: 7.5pt; line-height: 1.5; color: #555; text-align: center; margin-top: 1.6em; }
+
+/* ---- the day and place under each chapter title ---- */
+.cday { display: flex; align-items: center; justify-content: center; gap: .45em; margin-top: .55em; font: 500 7.4pt 'Alegreya SC'; letter-spacing: .2em; text-transform: lowercase; color: #444; }
+.cday .pin { width: 6px; height: 9px; }
+.cday i { font-style: normal; color: #888; }
+
+/* ---- the route map and the days ---- */
+section#route .routemap { width: 100%; height: auto; margin: 0 0 .7em; }
+/* two columns as inline-blocks, which Paged.js keeps side by side */
+.rdays { font-size: 0; }
+.rdays > div { display: inline-block; width: 47.5%; vertical-align: top; font-size: 10.8pt; }
+.rdays > div + div { margin-left: 5%; }
+.rday { display: flex; align-items: baseline; gap: .55em; padding: .16em 0; border-bottom: .5pt dotted #aaa; font-size: 8.6pt; line-height: 1.25; }
+.rday b { flex: 0 0 1.4em; font: 600 7.6pt Cinzel; text-align: right; }

@@ -152,3 +152,83 @@ def moon_and_stars():
 def snowfall():
     rnd = random.Random(7)
     return ''.join(f'<circle cx="{rnd.random() * 400:.1f}" cy="{rnd.random() * 60:.1f}" r="{.6 + rnd.random() * .8:.1f}" fill="{MID}"/>' for _ in range(60))
+
+
+# ---- the route map: the fifteen days of the journey on the real map, with rivers and peaks ------
+STOPS = [(30.459, 78.066), (30.146, 78.598), (30.255, 78.80), (30.735, 79.067), (30.49, 79.21), (30.665, 79.73), (30.555, 79.565),
+         (30.17, 79.62), (29.85, 79.75), (29.62, 79.67), (29.675, 80.05), (29.40, 80.03), (29.33, 80.09), (30.10, 80.20), (30.067, 80.239)]
+RIVERS = {
+    'Bhagirathi': [(30.99, 78.94), (30.73, 78.44), (30.38, 78.48), (30.146, 78.598)],
+    'Alaknanda': [(30.744, 79.49), (30.555, 79.565), (30.40, 79.32), (30.26, 79.22), (30.285, 78.98), (30.22, 78.78), (30.146, 78.598)],
+    'Mandakini': [(30.735, 79.067), (30.65, 79.02), (30.52, 79.08), (30.285, 78.98)],
+    'Ganga': [(30.146, 78.598), (30.087, 78.268), (29.945, 78.164)],
+    'Saryu': [(30.02, 79.92), (29.84, 79.77), (29.60, 79.96), (29.43, 80.25)],
+    'Kali': [(30.30, 80.75), (29.85, 80.54), (29.56, 80.40), (29.43, 80.25), (29.07, 80.11)],
+}
+PEAKS = {'Nanda Devi': (30.376, 79.971), 'Trishul': (30.31, 79.77), 'Panchachuli': (30.21, 80.42), 'Kedarnath': (30.80, 79.07)}
+PEAK_LABEL = {'Kedarnath': (10, 2, 'start'), 'Trishul': (8, 15.5, 'start'), 'Nanda Devi': (11, 2, 'start'), 'Panchachuli': (0, 13, 'middle')}
+RIVER_LABEL = {'Bhagirathi': 2, 'Alaknanda': 4, 'Mandakini': 2, 'Ganga': 2, 'Saryu': 2, 'Kali': 3}
+BOX = (77.85, 28.95, 80.85, 31.1)   # lon0, lat0, lon1, lat1
+
+
+def _xy(lat, lon, w=400):
+    k = w / ((BOX[2] - BOX[0]) * math.cos(math.radians(30)))
+    return (lon - BOX[0]) * math.cos(math.radians(30)) * k, (BOX[3] - lat) * k
+
+
+def _smooth(pts):
+    """A smooth path through points (Catmull-Rom as cubic Béziers)."""
+    p = [pts[0]] + pts + [pts[-1]]
+    d = f'M{p[1][0]:.1f} {p[1][1]:.1f}'
+    for i in range(1, len(p) - 2):
+        (x0, y0), (x1, y1), (x2, y2), (x3, y3) = p[i - 1], p[i], p[i + 1], p[i + 2]
+        d += f' C{x1 + (x2 - x0) / 6:.1f} {y1 + (y2 - y0) / 6:.1f} {x2 - (x3 - x1) / 6:.1f} {y2 - (y3 - y1) / 6:.1f} {x2:.1f} {y2:.1f}'
+    return d
+
+
+def route_map(cls='routemap'):
+    W = 400
+    H = round(_xy(BOX[1], BOX[0])[1])
+    out = [f'<rect x="1" y="1" width="{W - 2}" height="{H - 2}" fill="none" stroke="{INK}" stroke-width="1.2"/>',
+           f'<rect x="5" y="5" width="{W - 10}" height="{H - 10}" fill="none" stroke="{MID}" stroke-width=".5"/>']
+    # faint graticule
+    for lat in (29.5, 30, 30.5, 31):
+        y = _xy(lat, BOX[0])[1]
+        out.append(f'<line x1="5" y1="{y:.1f}" x2="{W - 5}" y2="{y:.1f}" stroke="#e4e4e4" stroke-width=".5"/>')
+    for lon in (78, 78.5, 79, 79.5, 80, 80.5):
+        x = _xy(BOX[3], lon)[0]
+        out.append(f'<line x1="{x:.1f}" y1="5" x2="{x:.1f}" y2="{H - 5}" stroke="#e4e4e4" stroke-width=".5"/>')
+    for name, pts in RIVERS.items():
+        xy = [_xy(*p) for p in pts]
+        out.append(f'<path d="{_smooth(xy)}" fill="none" stroke="#9a9a9a" stroke-width="1.3" stroke-linecap="round"/>')
+        mx, my = xy[RIVER_LABEL[name]] if name != 'Ganga' else ((xy[1][0] + xy[2][0]) / 2, (xy[1][1] + xy[2][1]) / 2 + 12)
+        out.append(f'<text x="{mx + 4:.1f}" y="{my - 3:.1f}" font-family="Alegreya" font-style="italic" font-size="10.9" fill="#808080">{name}</text>')
+    for name, (lat, lon) in PEAKS.items():
+        x, y = _xy(lat, lon)
+        out.append(f'<path d="M{x - 7:.1f} {y + 5:.1f} L{x:.1f} {y - 7:.1f} L{x + 7:.1f} {y + 5:.1f}Z" fill="#fff" stroke="{INK}" stroke-width=".9"/>'
+                   f'<path d="M{x - 3:.1f} {y - 1.8:.1f} L{x:.1f} {y - 7:.1f} L{x + 3:.1f} {y - 1.8:.1f} L{x:.1f} {y - 3.2:.1f}Z" fill="{INK}"/>'
+                   f'<text x="{x + PEAK_LABEL[name][0]:.1f}" y="{y + PEAK_LABEL[name][1] * 1.3:.1f}" text-anchor="{PEAK_LABEL[name][2]}" font-family="Alegreya SC" font-size="10.2" fill="{INK}">{name}</text>')
+    x, y = _xy(30.26, 79.73)   # Roopkund, the skeleton lake, at the foot of Trishul
+    out.append(f'<ellipse cx="{x:.1f}" cy="{y:.1f}" rx="3.2" ry="2" fill="{MID}"/><text x="{x + 6:.1f}" y="{y + 3:.1f}" font-family="Alegreya" font-style="italic" font-size="9.4" fill="{MID}">Roopkund</text>')
+    stops = [_xy(*p) for p in STOPS]
+    start = _xy(30.19, 78.19)   # flying in at Jolly Grant, Dehradun
+    route = ' '.join(f'{"M" if i == 0 else "L"}{x:.1f} {y:.1f}' for i, (x, y) in enumerate([start] + stops))
+    out.append(f'<path d="{route}" fill="none" stroke="{INK}" stroke-width="1.3" stroke-dasharray="3.5 3" stroke-linecap="round" stroke-linejoin="round"/>')
+    sx, sy = start
+    out.append(f'<path d="M{sx - 5:.1f} {sy:.1f} L{sx + 5:.1f} {sy:.1f} M{sx:.1f} {sy - 5:.1f} L{sx:.1f} {sy + 5:.1f}" stroke="{INK}" stroke-width="1"/>'
+               f'<text x="{sx:.1f}" y="{sy + 17:.1f}" text-anchor="middle" font-family="Alegreya SC" font-size="10.2" fill="{INK}">Dehradun</text>')
+    nudge = {12: (-16, 2), 13: (14, 9), 15: (15, 9), 14: (5, -16), 7: (-2, 12), 6: (8, -11), 11: (12, -8), 4: (0, 12), 5: (0, 4)}
+    for i, (x, y) in enumerate(stops, 1):
+        dx, dy = nudge.get(i, (0, 0))
+        if dx or dy:
+            out.append(f'<line x1="{x:.1f}" y1="{y:.1f}" x2="{x + dx:.1f}" y2="{y + dy:.1f}" stroke="{INK}" stroke-width=".6"/>')
+        out.append(f'<circle cx="{x + dx:.1f}" cy="{y + dy:.1f}" r="8.6" fill="#fff" stroke="{INK}" stroke-width="1.1"/>'
+                   f'<text x="{x + dx:.1f}" y="{y + dy + 3.6:.1f}" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="10.2" fill="{INK}">{i}</text>')
+    # compass rose, bottom left
+    cx, cy = 34, H - 36
+    out.append(f'<circle cx="{cx}" cy="{cy}" r="13" fill="none" stroke="{MID}" stroke-width=".6"/>'
+               f'<path d="M{cx} {cy - 19} L{cx + 3.5} {cy} L{cx} {cy + 19} L{cx - 3.5} {cy}Z" fill="#fff" stroke="{INK}" stroke-width=".8"/>'
+               f'<path d="M{cx} {cy - 19} L{cx + 3.5} {cy} L{cx - 3.5} {cy}Z" fill="{INK}"/>'
+               f'<path d="M{cx - 15} {cy} L{cx} {cy - 2.6} L{cx + 15} {cy} L{cx} {cy + 2.6}Z" fill="none" stroke="{INK}" stroke-width=".6"/>'
+               f'<text x="{cx}" y="{cy - 22}" text-anchor="middle" font-family="Cinzel" font-weight="600" font-size="10.2" fill="{INK}">N</text>')
+    return _svg(f'0 0 {W} {H}', ''.join(out), cls)

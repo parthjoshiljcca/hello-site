@@ -47,6 +47,37 @@ def clean(markup, sid):
     return gray(markup)
 
 
+def smart_quotes(markup):
+    """Typewriter quotes to typographic ones, in the text only (tags, SVG and style untouched).
+    A quote opens after a space or an opening bracket, at the start, or after a dash when a word
+    follows; otherwise it closes.
+    An apostrophe between letters, or before a year or a clipped word ('90s, 'em), is ’."""
+    out, prev = [], ' '
+    for tok in re.split(r'(<svg.*?</svg>|<style.*?</style>|<[^>]+>)', markup, flags=re.S):
+        if tok.startswith('<'):
+            out.append(tok)
+            continue
+        t = html.unescape(tok)
+        res = []
+        for i, ch in enumerate(t):
+            nxt = t[i + 1] if i + 1 < len(t) else ''
+            # after a dash a quote opens only if a word follows (—“is economics”); “Main—” closes it
+            opening = prev.isspace() or prev in '([{/“‘' or (prev in '—–-' and nxt != '' and not nxt.isspace())
+            if ch == '"':
+                ch = '“' if opening else '”'
+            elif ch == "'":
+                if prev.isalnum() and (nxt.isalnum()):
+                    ch = '’'
+                elif opening and re.match(r"(\d\d|em\b|cause\b|til\b|n\b)", t[i + 1:i + 7]):
+                    ch = '’'
+                else:
+                    ch = '‘' if opening and nxt and not nxt.isspace() else '’'
+            res.append(ch)
+            prev = ch
+        out.append(html.escape(''.join(res), quote=False))
+    return ''.join(out)
+
+
 # About the Author for print: the website's version, rewritten to be more engaging and to not tie
 # the author to a few subjects (used inside the book and on the back cover)
 ABOUT = [
@@ -80,6 +111,10 @@ def cast_pairs(inner):
     return re.sub(r'<div class="cards">.*?</div></div></div></div>(?=\s*(<h3|$|</?section|\s*<div class="finis"))', cards, inner, flags=re.S)
 
 
+ROUTE = {m.group(1): (html.unescape(m.group(2)), html.unescape(m.group(3))) for m in re.finditer(
+    r'<a href="#(\w+)"><span class="day">(.*?)</span><span class="place">(.*?)</span>', sections['route'][1])}
+PIN = O._svg('0 0 10 14', f'<path d="M5 13.5 C1.5 8.5 .6 6.8 .6 5 A4.4 4.4 0 0 1 9.4 5 C9.4 6.8 8.5 8.5 5 13.5Z" fill="{O.INK}"/><circle cx="5" cy="5" r="1.7" fill="#fff"/>', 'pin')
+
 ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV']
 
 body, toc = [], []
@@ -95,12 +130,16 @@ for sid in ORDER:
     inner = re.sub(r'<div class="finis">.*?</div>', f'<div class="finis">{O.motif("diya")}</div>', inner, flags=re.S)
     if sid == 'cast':
         inner = cast_pairs(inner)
+    if sid == 'route':
+        days = [f'<div class="rday"><b>{n}</b><span>{html.escape(place)}</span></div>' for n, (_, place) in enumerate(ROUTE.values(), 1)]
+        inner = re.sub(r'<ol class="route-list">.*?</ol>', lambda m: O.route_map() + '<div class="rdays"><div>' + ''.join(days[:8]) + '</div><div>' + ''.join(days[8:]) + '</div></div>', inner, flags=re.S)
     if sid.startswith('ch'):   # chapter opener: banner, seal, label, title, pahadi rule
         n = int(sid[2:])
         banner = re.search(r'<svg[^>]*class="banner".*?</svg>', inner, re.S)
         art = re.sub(r'#([0-9a-f]{2})\1\1\b', lambda m: '#' + f'{round(120 + int(m.group(1), 16) * .53):02x}' * 3, banner.group(0)) if banner else ''   # lift the greys: a light engraving, not a dark block
         head = (f'<header class="opener">{art}{O.seal(ROMAN[n - 1])}'
-                f'<div class="clabel">{html.escape(attr(sid, "data-label"))}</div><h2 class="ctitle">{html.escape(title)}</h2>{O.zigzag()}</header>')
+                f'<div class="clabel">{html.escape(attr(sid, "data-label"))}</div><h2 class="ctitle">{html.escape(title)}</h2>{O.zigzag()}'
+                f'<div class="cday">{PIN}<span>{ROUTE[sid][0]}</span><i>·</i><span>{html.escape(ROUTE[sid][1])}</span></div></header>')
         inner = re.sub(r'<header class="opener">.*?</header>', lambda m: head, inner, count=1, flags=re.S)
     else:   # other openers: the diya over the label and title
         inner = re.sub(r'<div class="medal">.*?</div>', '', inner, count=1, flags=re.S)
@@ -155,6 +194,7 @@ page = f"""<!doctype html>
 </body>
 </html>
 """
+page = smart_quotes(page)
 open(os.path.join(DIR, 'interior.html'), 'w', encoding='utf-8').write(page)
 words = len(re.sub(r'<[^>]+>', ' ', ''.join(body)).split())
 print(f'interior.html: {len(ORDER)} sections, {words} words')
