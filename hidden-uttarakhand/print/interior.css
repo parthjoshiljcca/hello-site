@@ -40,7 +40,7 @@
 html { font-family: Alegreya, 'Noto Serif Devanagari', serif; font-size: 10.8pt; line-height: 1.43; color: #111;
        font-variant-numeric: oldstyle-nums proportional-nums; font-kerning: normal; }
 body { margin: 0; }
-p { margin: 0; text-align: justify; text-indent: 1.25em; hyphens: auto; widows: 2; orphans: 2; }
+p { margin: 0; text-align: justify; text-indent: 1.25em; hyphens: manual; widows: 2; orphans: 2; }
 em, i { font-style: italic; }
 strong, b { font-weight: 700; }
 .sc { font-family: 'Alegreya SC', serif; letter-spacing: .03em; }
@@ -59,7 +59,7 @@ section.front { page: front; break-before: right; }
 .titlepage .tp-by { font: 500 7pt 'Alegreya SC'; letter-spacing: .34em; text-transform: lowercase; color: #666; margin-top: 1.05in; }
 .titlepage .tp-author { font: 600 13pt Cinzel; letter-spacing: .22em; text-transform: uppercase; margin-top: .06in; }
 .copyright { break-before: left; padding-top: 2.3in; }
-.copyright p { font-size: 7pt; line-height: 1.5; text-indent: 0; margin-bottom: .9em; text-align: left; color: #222; hyphens: auto; }
+.copyright p { font-size: 7pt; line-height: 1.5; text-indent: 0; margin-bottom: .9em; text-align: left; color: #222; hyphens: manual; }
 .copyright .cp-title { font: 600 9.5pt Cinzel; letter-spacing: .14em; text-transform: uppercase; }
 .copyright .cp-np { text-align: center; margin-top: 1.4em; }
 .epigraph-page { text-align: center; padding-top: 1.55in; }
@@ -113,7 +113,7 @@ section.part .panorama { width: 100%; margin-top: .85in; }
 blockquote { margin: 1em 0; }
 blockquote.diary { font: 9.6pt/1.6 Kalam, cursive; border-left: 1.4pt solid #888; padding: .25em 0 .25em .9em; margin: 1.1em 0 1.1em .15em; }
 blockquote.diary p, blockquote.diary li { text-align: left; hyphens: manual; }
-blockquote.diary .dhead { font-weight: 700; margin-bottom: .3em; }
+blockquote.diary .dhead { font-weight: 700; margin-bottom: .3em; break-inside: avoid; break-after: avoid; }
 blockquote.diary ol { margin: .2em 0 0; padding-left: 1.3em; }
 blockquote.diary li { margin: .15em 0; }
 .verse { font-style: italic; text-align: center; margin: .8em 0; }
@@ -131,7 +131,7 @@ svg.star { width: 7px; height: 7px; display: inline-block; }
 .card .mono { width: 42px; height: 42px; margin: 0 auto .3em; }
 .cname { font: 600 9.6pt/1.2 Cinzel; letter-spacing: .02em; }
 .cepi { font-style: italic; font-size: 8pt; color: #555; margin: .1em 0 .25em; }
-.cdesc { font-size: 8.2pt; line-height: 1.38; text-indent: 0; text-align: center; hyphens: auto; }
+.cdesc { font-size: 8.2pt; line-height: 1.38; text-indent: 0; text-align: center; hyphens: manual; }
 .ccarry { font-size: 7.6pt; line-height: 1.35; color: #333; margin-top: .3em; }
 .ccarry span { font: 500 6.8pt 'Alegreya SC'; letter-spacing: .12em; text-transform: lowercase; color: #666; margin-right: .3em; }
 

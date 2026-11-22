@@ -32,4 +32,7 @@ const path = require('path');
     '-sColorConversionStrategy=Gray', '-dProcessColorModel=/DeviceGray', '-dAutoRotatePages=/None', `-sOutputFile=${file}`, raw]);
   fs.unlinkSync(raw);
   console.log(`Wrote ${file}: ${pages} pages`);
+  // Paged.js has dropped text at page breaks before: every word of the source must be in the PDF
+  try { console.log(require('child_process').execFileSync('python3', [path.join(__dirname, 'check_text.py')]).toString().trim().split('\n').pop()); }
+  catch (e) { console.error('TEXT MISSING FROM THE PDF:\n' + e.stdout); process.exitCode = 1; }
 })().catch(e => { console.error(e); process.exit(1); });

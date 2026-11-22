@@ -162,58 +162,40 @@ POLISH = [
      "Nobody knows why. The legend says the goddess's hailstorm.",
      '<li>Roopkund: three groups of dead, a thousand years apart. Nobody knows why.', 1),
 
-    # English glosses for readers without Hindi, in the narrator's voice, after the longest speeches
+    # English glosses for readers without Hindi: the dialogue stays, followed by one short line, never a retelling
     ('raste se utar jaata hai."</p>\n',
-     'raste se utar jaata hai."</p>\n<p>Big and old, he meant. It can wear an animal\'s shape or a man\'s, and it calls '
-     'in a shepherd\'s voice, so the traveller thinks a friend is close by and follows the voice off the road.</p>\n', 1),
+     'raste se utar jaata hai."</p>\n<p>A shape-shifter, he meant, that calls in a shepherd\'s voice and leads travellers off the road.</p>\n', 1),
     ('<p>I have never once in my life seen Shaoni ask',
-     '<p>What that man was looking for, she told him, could poison not just his village but the whole Ganga. We were trying '
-     'to stop him. He would not have to be afraid. Would he sing the song for us, just once?</p>\n'
+     '<p>Would he sing it once, she asked, so we could stop a man hunting something that could poison the Ganga?</p>\n'
      '<p>I have never once in my life seen Shaoni ask', 1),
     ('aur neeche, aur neeche.</em>"</p>\n',
-     'aur neeche, aur neeche.</em>"</p>\n<p>A team had come, he said, English and Indian, looking for a box that would be '
-     'warm and must not be touched. They searched for days and found nothing. One night in camp he heard a sahib say the '
-     'snow might have swallowed it: a warm thing keeps melting its way down, and down.</p>\n', 1),
+     'aur neeche, aur neeche.</em>"</p>\n<p>A box that would be warm, he meant, and the snow might simply have swallowed it.</p>\n', 1),
     ('Saal bhar baad bhi garam."</p>\n',
-     'Saal bhar baad bhi garam."</p>\n<p>The next year, on Nanda Kot, they had left another. When they went back for it, it '
-     'had melted itself a cave in the snow, and it was still warm a year later.</p>\n', 1),
+     'Saal bhar baad bhi garam."</p>\n<p>The device on Nanda Kot, the year after, had melted itself a warm cave in the snow.</p>\n', 1),
     ('Ki saboot hai ek purana gaana?"</p>\n',
-     'Ki saboot hai ek purana gaana?"</p>\n<p>He respected me, he said. I was a professor. But think: what would he tell the '
-     'SP? That a professor had taken a trekking company owner\'s notebook and now said the man was hunting CIA plutonium, '
-     'and the evidence was an old song?</p>\n', 1),
+     'Ki saboot hai ek purana gaana?"</p>\n<p>No SP would believe it, he meant: a borrowed notebook, CIA plutonium, and an old song for evidence.</p>\n', 1),
     ('saab khud aa rahe hain."</p>\n',
-     'saab khud aa rahe hain."</p>\n<p>They were paying very well, he said. The season was over, and nobody went up in '
-     'this snow. But these people wanted to, for some kind of survey. They were meant to leave that morning; then they '
-     'had told him to wait, because the boss was coming himself.</p>\n', 1),
+     'saab khud aa rahe hain."</p>\n<p>Big money, an empty season, a "survey" in deep snow, and the boss coming up himself.</p>\n', 1),
     ('Roopkund ke paas ruk gaye the. Bas."</p>\n',
-     'Roopkund ke paas ruk gaye the. Bas."</p>\n<p>The stone was never at Roopkund, his grandfather had said. It had come '
-     'down from far higher, from the big mountain, when the snow broke away and carried it to a glacier the shepherds '
-     'could reach. They walked three days in the snow. On the way back they stopped near Roopkund for a night. That was '
-     'all.</p>\n', 1),
+     'Roopkund ke paas ruk gaye the. Bas."</p>\n<p>The stone had never been at Roopkund, he meant. The snow had carried it down from the big mountain.</p>\n', 1),
     ('Aur tum gaayab the."</p>\n',
-     'Aur tum gaayab the."</p>\n<p>Day one: Golu in the corridor with his camera on before the spoons fell. Day two: '
-     'the @ND65 comment on his live stream. Day five: his car coming up the road with the same red mud. Day six: an old '
-     'woman calling him Gaurav, and Golu running, and Rohan knowing where we had been that same night. Day seven: his '
-     'drone flying straight to Rohan\'s camp. Day nine: Golu at the jagar, and by morning Rohan knew where we were, and '
-     'Golu was gone.</p>\n', 1),
+     'Aur tum gaayab the."</p>\n<p>Day by day, he laid it out: the camera, the comment, the red mud, the name Gaurav, the drone, the jagar.</p>\n', 1),
     ('Isse becha toh Nanda ki aankh khul jaayegi.</em>"</p>\n',
-     'Isse becha toh Nanda ki aankh khul jaayegi.</em>"</p>\n<p>A twisted piece of iron, she meant. Burning hot when her '
-     'father-in-law lifted it out of the snow, and cold ever since. He wrapped it in cloth, kept it in a wooden box and let '
-     'no one touch it. It belonged to Nanda, he used to say. Sell it, and the goddess would open her eyes.</p>\n', 1),
+     'Isse becha toh Nanda ki aankh khul jaayegi.</em>"</p>\n<p>A twisted piece of iron, she meant, hot from the snow and cold ever since, and it belonged to Nanda.</p>\n', 1),
     ('<p>She started threading marigolds again.</p>',
-     '<p>Two years ago, she said, a porter had come: polite, clever, quick on snow, fond of old songs. His grandfather '
-     'used to sing this one. He asked where the warm stone was, and she told him to ask his grandfather first. He laughed '
-     'and said he\'d come back next month, after an expedition.</p>\n<p>She started threading marigolds again.</p>', 1),
+     '<p>A young porter, she meant, polite and quick on snow, who had come asking about the warm stone two years ago.</p>\n'
+     '<p>She started threading marigolds again.</p>', 1),
     ('Aur sab hanste hain."</p>\n',
-     'Aur sab hanste hain."</p>\n<p>The police had called it grief, he said: a voice note, an old song, a rich man\'s '
-     'company. So he had thought it through. Nobody listens to a village boy. Nobody listens to an engineer. But a silly '
-     'YouTuber who hunts ghosts? Nobody takes him seriously, and he can go anywhere, at any hour, camera in hand, and '
-     'everyone just laughs.</p>\n', 1),
+     'Aur sab hanste hain."</p>\n<p>Nobody takes a ghost-hunting YouTuber seriously, he meant, so nobody stops him going anywhere.</p>\n', 1),
     ('Ab toh phal bhi phenkte hain, pathar ke saath."</p>\n',
-     'Ab toh phal bhi phenkte hain, pathar ke saath."</p>\n<p>A battle of stones, he meant, at the temple of Barahi '
-     'Devi: four clans hurling stones at each other from behind wooden shields. Once, the story goes, the goddess wanted '
-     'a human life every year. When it was the turn of an old woman\'s only grandson, she begged, and the goddess agreed to '
-     'take one man\'s worth of blood instead of one man\'s life. These days they throw fruit too.</p>\n', 1),
+     'Ab toh phal bhi phenkte hain, pathar ke saath."</p>\n<p>A battle of stones at the Barahi Devi temple, he meant, fought from behind wooden shields.</p>\n', 1),
+
+    # "reader" down to about a dozen, kept where the direct address lands
+    ("<p>I'm a believer, reader. I've told you that.", "<p>I'm a believer. I've told you that.", 1),
+    ("<p>I'm a believer, reader. Believers don't need", "<p>I'm a believer. Believers don't need", 1),
+    ("She told us. And reader, I'm going to tell it to you", "She told us. And I'm going to tell it to you", 1),
+    ("But I'm telling you now, reader, so you can't say", "But I'm telling you now, so you can't say", 1),
+    ('nobody puts on a postcard, reader. Not the ghosts.', 'nobody puts on a postcard. Not the ghosts.', 1),
 
     # the police after the climax: not two easy hours
     ('<p>The man with the stars watched for a long time. Then he picked up his phone.</p>\n<p>By ten, the lookout notice for '
