@@ -8,6 +8,7 @@ import os
 import re
 import sys
 
+import corrections
 import ornaments as O
 
 DIR = os.path.dirname(os.path.abspath(__file__))
@@ -16,7 +17,7 @@ YEAR, AUTHOR = 2026, 'Parth D. Joshi'
 src = open(sys.argv[1], encoding='utf-8').read()
 start = src.index('<section data-kind="full" class="cover" id="cover" data-title="Hidden Uttarakhand"')
 end = src.index('<section data-kind="full" class="cover" id="cover"', start + 10)   # the Hindi edition starts here
-english = src[start:end]
+english = corrections.apply(src[start:end])   # the print edition's revisions (corrections.py)
 sections = {m.group(2): (m.group(1), m.group(3)) for m in re.finditer(r'<section ([^>]*?)id="([\w-]+)"[^>]*>(.*?)</section>', english, re.S)}
 attrs = {m.group(1): m.group(0) for m in re.finditer(r'<section [^>]*?id="([\w-]+)"[^>]*>', english)}
 
