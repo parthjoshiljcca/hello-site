@@ -158,3 +158,14 @@ section#route .routemap { width: 100%; height: auto; margin: 0 0 .7em; }
 .rdays > div + div { margin-left: 5%; }
 .rday { display: flex; align-items: baseline; gap: .55em; padding: .16em 0; border-bottom: .5pt dotted #aaa; font-size: 8.6pt; line-height: 1.25; }
 .rday b { flex: 0 0 1.4em; font: 600 7.6pt Cinzel; text-align: right; }
+
+/* ---- also by the author ---- */
+.alsoby { text-align: center; padding-top: 1.2in; break-before: right; }
+.alsoby .divider { width: 64%; margin: 0 auto .3in; }
+.alsoby .ab-label { font: 500 8pt 'Alegreya SC'; letter-spacing: .42em; text-transform: lowercase; color: #555; }
+.alsoby .ab-author { font: 600 14pt Cinzel; letter-spacing: .16em; text-transform: uppercase; margin: .08in 0 .14in; }
+.alsoby .zigzag { width: 46%; margin: 0 auto .5in; }
+.alsoby .ab-title { font: 600 17pt/1.15 Cinzel; letter-spacing: .03em; }
+.alsoby .ab-sub { font: italic 12pt Alegreya; color: #333; margin-top: .06in; }
+.alsoby .ab-where { font: 9pt/1.5 Alegreya; color: #444; margin-top: .22in; }
+.alsoby .ab-more { font: italic 9pt Alegreya; color: #666; margin-top: .45in; }

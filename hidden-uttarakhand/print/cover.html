@@ -4,9 +4,9 @@
   @font-face { font-family: 'Alegreya SC'; src: url(fonts/AlegreyaSC-500.ttf); }
   @font-face { font-family: Cinzel; src: url(fonts/Cinzel-400.ttf); }
   @font-face { font-family: Cinzel; font-weight: 600; src: url(fonts/Cinzel-600.ttf); }
-  @page { size: 10.814in 8.278in; margin: 0; }
+  @page { size: 10.818000000000001in 8.278in; margin: 0; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { width: 10.814in; height: 8.278in; background: #000; }
+  html, body { width: 10.818000000000001in; height: 8.278in; background: #000; }
   .panel { position: absolute; top: 0; height: 8.278in; overflow: hidden; }
   /* back: black; text in the template's safe zone, 0.5 in inside the trim */
   .back { left: 0; width: 5.139in; background: radial-gradient(ellipse 90% 60% at 50% 35%, #15110a 0%, #000 70%); color: #e8dcc2; }
@@ -20,19 +20,20 @@
   .rule span { display: block; width: 1.05in; border-top: .7pt solid #8a6a2e; }
   .back .promise { text-align: center; font: 7.6pt/1.75 'Alegreya SC'; letter-spacing: .06em; color: #cdb37a; }
   .back .promise em { font-style: normal; color: #f0cf86; }
+  .back .bio span { font-style: normal; color: #e2c27a; }
   .back .bio { margin-top: .2in; text-align: center; font: italic 8.4pt/1.45 Alegreya; color: #bfb194; padding: 0 .1in; }
   .back img.author { display: block; width: 2.5in; margin: .08in auto 0; }
   .back .barcode { position: absolute; left: 2.659in; top: 6.719in; width: 1.75in; height: 1.08in; }   /* the template's barcode & MRP box: left clear */
   .back .tag { position: absolute; left: 0.639in; bottom: 0.459in; font: 7pt Cinzel; letter-spacing: .25em; color: #9c8a63; text-transform: uppercase; line-height: 1.7; }
   /* spine */
-  .spine { left: 5.139in; width: 0.536in; background: #000; }
+  .spine { left: 5.139in; width: 0.54in; background: #000; }
   .spine .txt { position: absolute; left: 50%; top: 50%; width: 7.1in; transform: translate(-50%, -50%) rotate(90deg);
                 display: flex; align-items: center; justify-content: space-between; color: #e2b75a; white-space: nowrap; }
   .spine .t { font: 14.0pt Cinzel; letter-spacing: .14em; }
   .spine .a { font: 9.0pt Cinzel; letter-spacing: .18em; color: #c9a45a; }
-  .spine .m { width: 0.20in; }
+  .spine .m { width: 0.21in; }
   /* front */
-  .front { left: 5.675000000000001in; width: 5.139in; }
+  .front { left: 5.679in; width: 5.139in; }
   .front img { width: 100%; height: 100%; object-fit: cover; object-position: 0 50%; display: block; }
 </style></head><body>
   <div class="panel back"><div class="safe">
@@ -45,7 +46,7 @@
     </div>
     <div class="rule"><span></span><svg viewBox="0 0 24 12" width="26" height="13"><path d="M1 11 L7 4 L10 7 L14 1 L19 7 L21 5 L23 11" fill="none" stroke="#c9a45a" stroke-width="1.1" stroke-linejoin="round"/><path d="M12.4 3.3 L14 1 L15.6 3.2 L14.7 2.9 L14 3.7 L13.3 2.9Z" fill="#c9a45a"/></svg><span></span></div>
     <div class="promise">Everything marked as <em>fact</em> is fact.<br>Everything marked as <em>legend</em> is legend.<br>Everything else is a <em>story</em>.</div>
-    <div class="bio">Prof. Parth D. Joshi teaches young minds how machines think, writes code while the house sleeps, and collects stories of gods, ghosts and the places where the two meet.</div>
+    <div class="bio">Prof. Parth D. Joshi teaches young minds how machines think, writes code while the house sleeps, and collects stories of gods, ghosts and the places where the two meet. He is the author of <span>Ramayana Reimagined: The Eternal Legacy</span>.</div>
     <img class="author" src="cover/author-logo.png">
   </div>
   <div class="tag">Fiction · Folklore<br>Adventure</div>

@@ -14,7 +14,9 @@ const fs = require('fs');
 const path = require('path');
 
 const opt = (k, d) => +(process.argv.find(a => a.startsWith(`--${k}=`)) || `=${d}`).split('=')[1];
-const TRIM_W = 5, TRIM_H = 8, BLEED = opt('bleed', .139), SPINE = opt('spine', .536);
+const TRIM_W = 5, TRIM_H = 8, BLEED = opt('bleed', .139);
+const PAGES = +(execFileSync('pdfinfo', [path.join(__dirname, 'out', 'hidden-uttarakhand-interior.pdf')]).toString().match(/Pages:\s+(\d+)/)[1]);
+const SPINE = opt('spine', +(Math.ceil(PAGES / 2) * 2 * .563 / 248).toFixed(3));   // unless given, from the page count
 const W = BLEED * 2 + TRIM_W * 2 + SPINE, H = TRIM_H + BLEED * 2;
 const DIR = __dirname;
 
@@ -43,6 +45,7 @@ const page = `<!doctype html><html><head><meta charset="utf-8"><style>
   .rule span { display: block; width: 1.05in; border-top: .7pt solid #8a6a2e; }
   .back .promise { text-align: center; font: 7.6pt/1.75 'Alegreya SC'; letter-spacing: .06em; color: #cdb37a; }
   .back .promise em { font-style: normal; color: #f0cf86; }
+  .back .bio span { font-style: normal; color: #e2c27a; }
   .back .bio { margin-top: .2in; text-align: center; font: italic 8.4pt/1.45 Alegreya; color: #bfb194; padding: 0 .1in; }
   .back img.author { display: block; width: 2.5in; margin: .08in auto 0; }
   .back .barcode { position: absolute; left: ${BLEED + 2.52}in; top: ${BLEED + 6.58}in; width: 1.75in; height: 1.08in; }   /* the template's barcode & MRP box: left clear */
@@ -68,7 +71,7 @@ const page = `<!doctype html><html><head><meta charset="utf-8"><style>
     </div>
     <div class="rule"><span></span>${PEAK}<span></span></div>
     <div class="promise">Everything marked as <em>fact</em> is fact.<br>Everything marked as <em>legend</em> is legend.<br>Everything else is a <em>story</em>.</div>
-    <div class="bio">Prof. Parth D. Joshi teaches young minds how machines think, writes code while the house sleeps, and collects stories of gods, ghosts and the places where the two meet.</div>
+    <div class="bio">Prof. Parth D. Joshi teaches young minds how machines think, writes code while the house sleeps, and collects stories of gods, ghosts and the places where the two meet. He is the author of <span>Ramayana Reimagined: The Eternal Legacy</span>.</div>
     <img class="author" src="cover/author-logo.png">
   </div>
   <div class="tag">Fiction · Folklore<br>Adventure</div>
