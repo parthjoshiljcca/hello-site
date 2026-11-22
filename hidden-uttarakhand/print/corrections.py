@@ -18,6 +18,11 @@ FIXES = [
     # ...and Rohan was at the Savoy two days before Maletha
     ('"Do din pehle. Sehgal.', '"Kal aaya tha. Sehgal.', 1),
 
+    # Ch 2: Rishikesh to Devprayag is the Ganga's valley; the Alaknanda begins above Devprayag
+    ('turned up the Alaknanda valley towards Devprayag', 'turned up the Ganga valley towards Devprayag', 1),
+    # Ch 9: Shaoni's night descent from Bhagwabasa, after her talk with Bhalla near midnight
+    ('Hira bhaiya ne subah dikhaya tha. Chaar ghante.', 'Hira bhaiya ne subah dikhaya tha. Paanch ghante.', 1),
+
     # Ch 3 diary: Golu first says "Delhi se" in Ch 6; and there is one road to Kedarnath
     ("He told us he's from Delhi.</li>", "Where is he from? He never says.</li>", 1),
     ('There are at least three roads to Kedarnath from Mussoorie. I checked.',
@@ -75,7 +80,10 @@ FIXES = [
     ('a cheerful boy in a blue cap.', 'a cheerful boy with frost in his eyebrows and nothing on his head.', 1),
 
     # Ch 14: from Champawat to Munsiyari is 7-9 hours, so they leave in the morning and still arrive after dark
-    ('We left at three in the afternoon,', 'We left at nine in the morning,', 1),
+    # (Ch 13 runs to the 2:16 p.m. comment, so they leave at noon, read it on the road, and reach the
+    # trailhead after dark, five hours behind Rohan; Bhaguli Amma's goodnight moves to midnight)
+    ('We left at three in the afternoon,', "We left at noon, the moment Gaurav's video went up,", 1),
+    ("At nine o'clock exactly, Bhaguli Amma stood up", 'At midnight exactly, Bhaguli Amma stood up', 1),
     # Ch 14: Jeetu Bagdwal and Khait Parvat
     ('a young man of Garhwal who played the flute more beautifully than anyone had ever played. One day he went up into '
      'the high meadows and played, alone.',
@@ -97,14 +105,14 @@ FIXES = [
     # Author's Note: no spoiler, and the friends' names are changed
     ('Deepak and Gaurav Rawat, Bachi Ram ji, Kamla Devi, Dhana ji, Hira, and every',
      'Bachi Ram ji, Kamla Devi, Dhana ji, Hira, the porters and their families, and every', 1),
-    ('Shaoni and Kshitij are real, and appear as themselves.', 'Shaoni and Kshitij are real, and appear as themselves, under changed names.', 1),
+    ('Shaoni and Kshitij are real, and appear as themselves.', 'Shaoni and Kshitij are real, and appear in these pages under changed names.', 1),
 
     # Sources: drop entries left from an earlier draft, add the ones the book draws on
-    (' &#183; "Haat Kalika Temple," <i>Shubh Panchang</i>.', '.', 1),
+    (' &#183; "Haat Kalika Temple," <i>Shubh Panchang</i>.', '', 1),
     (' &#183; <i>Epic Singing of Garhwal: The Story of Kirthipal and Kunjepal</i>, Smithsonian Folkways. &#183; "Jeet Singh Negi," Wikipedia.',
      ' &#183; <i>Jeetu Bagdwal</i>, Garhwali folk ballad of Khait Parvat (oral tradition), and its stage versions by Jeet Singh Negi and Abodh Bandhu Bahuguna.', 1),
     (' &#183; "Ramman, religious festival and ritual theatre of the Garhwal Himalayas," UNESCO Intangible Cultural Heritage.', '', 1),
-    (' &#183; "Mangsir Bagwal," <i>Drishti IAS</i>.', '.', 1),
+    (' &#183; "Mangsir Bagwal," <i>Drishti IAS</i>.', '', 1),
     ('"Satopanth Tal," Wikipedia. &#183; "Naukuchiatal Lake," Incredible India.',
      '"The Savoy, Mussoorie," Wikipedia. &#183; "Dhari Devi Temple," Wikipedia. &#183; "2013 North India floods," Wikipedia. '
      '&#183; "Patal Bhuvaneshwar," Wikipedia. &#183; "Abbott Mount," Wikipedia. &#183; "Myrica esculenta," Wikipedia.', 1),
