@@ -82,7 +82,7 @@ def smart_quotes(markup):
 # the author to a few subjects (used inside the book and on the back cover)
 ABOUT = [
     '<p>By day, <span class="sc">Prof. Parth D. Joshi</span> teaches young minds how machines think. By night, he writes code while the house sleeps. And somewhere in between, he collects stories — of gods, ghosts, and the places where the two meet.</p>',
-    '<p>For twelve years he has been an Assistant Professor at L. J. College of Computer Applications (LJCCA), Ahmedabad, where his students know him as the professor who answers a doubt with a story. He is the founder and mentor of CodeSprint Labs and AiRA Lab.</p>',
+    '<p>For twelve years he has been an Assistant Professor at L.&nbsp;J.&nbsp;College of Computer Applications (LJCCA), Ahmedabad, where his students know him as the professor who answers a doubt with a story. In September 2026, L.&nbsp;J.&nbsp;University honoured him with the Guru Gaurav Award. He is the founder and mentor of CodeSprint Labs and AiRA Lab.</p>',
     '<p>A believer who codes, he lights a diya every evening, has never once passed a mandir without folding his hands — and still has not googled <i>Nanda Kot 1967</i>.</p>',
     '<p>He is also the author of <i>Ramayana Reimagined: The Eternal Legacy</i>, available in more than 150 countries, and of several academic books. <i>Hidden Uttarakhand</i> is his latest.</p>',
 ]
