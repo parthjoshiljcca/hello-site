@@ -159,6 +159,30 @@ for sid in ORDER:
     label = f'<span class="tn">{ROMAN[int(sid[2:]) - 1]}</span>' if sid.startswith('ch') else '<span class="tn"></span>'
     toc.append(f'<li class="{"tch" if cls == "chapter" else "tfront"}"><a href="#{sid}">{label}<span class="tt">{html.escape(title)}</span><span class="dots"></span></a></li>')
 
+DEDICATION = [
+    ['Mummy ke liye,', 'jinhone kaha tha, "Bhoot ke peeche mat padna."', 'Sorry, Mummy. Par sweater teen pehne the.'],
+    ['Un do doston ke liye,', 'jinhe is kitaab mein doosre naam mile.', 'Ek, jiske risk column mein har row <i>Low</i> thi,', 'aur ek, jisne sab likh liya.', 'Tum jaante ho tum kaun ho.'],
+    ['Aur Basanti ke liye,', 'jisne humse bhi bure log dekhe hain.', 'Bas, thode se.'],
+    ['Devbhoomi ke devi-devtaon ke liye,', 'Nanda Maa, Golu Devta,', 'aur har us devta ke liye jo jagar ki raat neeche utarte hain.', 'Maine har mandir pe haath jode.', 'Aapne har mod pe sambhaala.'],
+    None,   # page turn
+    ['Aur Uttarakhand ke pyaare logon ke liye,', 'jinhone ek ajnabi ko chai pilaayi,', 'apne geet sunaaye,', 'aur andhere mein raasta dikhaaya.', 'Pahad pe hum kabhi akele nahi the.', 'Aap the.'],
+    ['Har us padhne waale ke liye', 'jisse trip se pehle kaha gaya,', '"Bas relax karenge."', 'Tumhe pata tha. Tumhe hamesha pata tha.'],
+    ['Aur us jungle ke liye', 'jisne raat 3:12 baje mera naam pukaara.', 'Maine tab jawab nahi diya tha.', 'Yeh kitaab, mera jawab hai.'],
+]
+
+
+def dedication():
+    pages, cur = [], []
+    for st in DEDICATION + [None]:
+        if st is None:
+            pages.append(cur); cur = []
+        else:
+            cur.append('<p>' + '<br>'.join(st) + '</p>')
+    first = f'<div class="ded-page">{O.motif("diya")}<div class="ded-label">For</div>{"".join(pages[0])}</div>'
+    second = f'<div class="ded-page ded-cont">{"".join(pages[1])}<div class="ded-sign">— Parth</div>{O.divider("bell")}</div>'
+    return f'<section class="front dedication">{first}{second}</section>'
+
+
 epigraph = clean(sections['epigraph'][1], 'epigraph')
 css = open(os.path.join(DIR, 'interior.css'), encoding='utf-8').read()   # inline: Paged.js cannot fetch file:// stylesheets
 page = f"""<!doctype html>
@@ -185,6 +209,7 @@ page = f"""<!doctype html>
   <p>The Author of this book is solely responsible and liable for its content including but not limited to the views, representations, descriptions, statements, information, opinions and references [“Content”]. The Content of this book shall not constitute or be construed or deemed to reflect the opinion or expression of the Publisher or Editor. Neither the Publisher nor Editor endorse or approve the Content of this book or guarantee the reliability, accuracy or completeness of the Content published herein and do not make any representations or warranties of any kind, express or implied, including but not limited to the implied warranties of merchantability, fitness for a particular purpose. The Publisher and Editor shall not be liable whatsoever for any errors, omissions, whether such errors or omissions result from negligence, accident, or any other cause or claims for loss or damages of any kind, including without limitation, indirect or consequential loss or damage arising out of use, inability to use, or about the reliability, accuracy or sufficiency of the information contained in this book.</p>
   <p class="cp-np">Made with ♥ on the Notion Press Platform<br>www.notionpress.com</p>
 </section>
+{dedication()}
 <section class="front epigraph-page">{O.peak_icon()}{epigraph}{O.divider('bell')}</section>
 <section class="front contents"><span class="run">Contents</span>
   <header class="opener plain">{O.divider('diya', 'divider top')}<div class="clabel">The Book</div><h2 class="ctitle">Contents</h2></header>

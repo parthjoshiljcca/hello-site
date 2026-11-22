@@ -169,3 +169,14 @@ section#route .routemap { width: 100%; height: auto; margin: 0 0 .7em; }
 .alsoby .ab-sub { font: italic 12pt Alegreya; color: #333; margin-top: .06in; }
 .alsoby .ab-where { font: 9pt/1.5 Alegreya; color: #444; margin-top: .22in; }
 .alsoby .ab-more { font: italic 9pt Alegreya; color: #666; margin-top: .45in; }
+
+/* ---- dedication: a two-page spread of short stanzas ---- */
+.dedication { text-align: center; }
+.dedication .ded-page { padding-top: .35in; }
+.dedication .ded-cont { break-before: page; padding-top: .55in; }
+.dedication svg { display: block; width: 30px; height: auto; margin: 0 auto .1in; }
+.dedication .ded-label { font: 500 8pt 'Alegreya SC'; letter-spacing: .42em; text-transform: lowercase; color: #555; margin-bottom: .26in; }
+.dedication p { font: italic 9.6pt/1.5 Alegreya; text-indent: 0; text-align: center; text-align-last: center; hyphens: none; margin: 0 0 1.05em; color: #222; }
+.dedication p i { font-style: normal; }
+.dedication .ded-sign { font: 600 10pt Cinzel; letter-spacing: .14em; margin: .2in 0 .25in; }
+.dedication .divider { width: 52%; margin: 0 auto; }
