@@ -27,17 +27,17 @@ _V = NARRATOR['voice']
 VOICES = {
     'narrator': NARRATOR,
     'shaoni': dict(voice=_V, pace=1.03, temp=1.0),                  # crisp, quick
-    'kshitij': dict(voice=_V, pace=.94, temp=.8, loud=.9),           # flat, quiet, deadpan
-    'gabbar': dict(voice=_V, pace=.88, temp=1.0, loud=1.12),         # slow, weighty
+    'kshitij': dict(voice=_V, pace=.98, temp=.8, loud=.9),           # flat, quiet, deadpan
+    'gabbar': dict(voice=_V, pace=.95, temp=1.0, loud=1.12),         # slow, weighty
     'golu': dict(voice=_V, pace=1.1, temp=1.0, loud=1.25),          # fast and loud, for the camera
-    'rohan': dict(voice=_V, pace=.92, temp=1.0, loud=.9),            # unhurried, smooth
-    'bhalla': dict(voice=_V, pace=.92, temp=1.0, loud=.95),
+    'rohan': dict(voice=_V, pace=.97, temp=1.0, loud=.9),            # unhurried, smooth
+    'bhalla': dict(voice=_V, pace=.97, temp=1.0, loud=.95),
     'mummy': dict(voice=_V, pace=1.0, temp=1.0, loud=1.08),
     'waiter': dict(voice=_V, pace=1.0, temp=.9),
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
-GAP_IN, GAP_PARA, GAP_SCENE = .26, .6, 2.0
-BEAT = .55   # extra breath around a short, heavy paragraph ("मैं मुड़ा।", "भाप।")
+GAP_IN, GAP_PARA, GAP_SCENE = .2, .45, 1.5
+BEAT = .25   # extra breath around a short, heavy paragraph ("मैं मुड़ा।", "भाप।")
 # how numbers and abbreviations are spoken; the text keeps its own spelling
 SAY = [('5:40 बजे', 'पाँच-चालीस बजे'), ('Rs 100', 'सौ रुपये'), ('1911', 'उन्नीस सौ ग्यारह'), ('1902', 'उन्नीस सौ दो'),
        ('19 सितंबर', 'उन्नीस सितंबर'), ('रूम 112', 'रूम एक सौ बारह'), ('2:14 बजे', 'दो बजकर चौदह मिनट पर'),
@@ -51,6 +51,30 @@ def spoken(text):
     if re.search(r'[0-9]', text):
         raise SystemExit(f'add a spoken form for the number in: {text[:80]}')
     return text
+
+
+def tighten(a, longest=.45, keep=.32, db=-38):
+    """Shorten every silence inside a take that runs longer than `longest` seconds down to `keep`:
+    the voice sometimes stops for a second or more at a '…', which drags."""
+    w = int(.02 * SR)
+    n = len(a) // w
+    if n < 3:
+        return a
+    frames = np.sqrt((a[:n * w].reshape(n, w) ** 2).mean(1))
+    quiet = frames < 10 ** (db / 20) * max(1e-6, np.abs(a).max())
+    out, i = [], 0
+    while i < n:
+        j = i
+        while j < n and quiet[j] == quiet[i]:
+            j += 1
+        seg = a[i * w:j * w]
+        if quiet[i] and (j - i) * w > longest * SR:
+            h = int(keep * SR / 2)
+            seg = np.concatenate([seg[:h] * np.linspace(1, 0, h), seg[-h:] * np.linspace(0, 1, h)])
+        out.append(seg)
+        i = j
+    out.append(a[n * w:])
+    return np.concatenate(out).astype(np.float32)
 
 
 def trim(a, db=-42):
@@ -131,7 +155,7 @@ def voice(seg):
     i, who, text, kind = seg
     v = VOICES[who]
     pace = v['pace'] * (.9 if kind == 'song' else 1)
-    a = trim(speak(spoken(text), v['voice'], round(pace, 2), v.get('temp'), 0.0, v.get('loud', 1.0)))
+    a = tighten(trim(speak(spoken(text), v['voice'], round(pace, 2), v.get('temp'), 0.0, v.get('loud', 1.0))))
     a = fx(a, v.get('fx'))
     return a if a.ndim == 2 else S.st(a)
 
