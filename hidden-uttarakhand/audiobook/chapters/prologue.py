@@ -1,5 +1,5 @@
 # The Prologue of the Hindi audiobook: a page torn from a notebook at 3:12 a.m. on Khaliya Top.
-TITLE = 'पूर्वकथा।'
+TITLE = 'प्रोलॉग।'
 DAY = None
 SKIP_FIRST = 1
 SPEAKERS = {'क्षि…तिज…': 'forest'}

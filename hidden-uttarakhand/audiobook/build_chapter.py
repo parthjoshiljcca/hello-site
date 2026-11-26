@@ -226,7 +226,8 @@ def build(name):
     # the voice timeline
     pieces, para_at, t = [], {}, 0.0
     intro = theme(14.0)
-    head = [('narrator', 'छिपा हुआ उत्तराखंड।'), ('narrator', 'लेखक, पार्थ डी. जोशी।'), ('narrator', ch.TITLE)]
+    # the book's own names, as on the cover and in the contents (spelt in Devanagari only so the voice says them in English)
+    head = [('narrator', 'हिडन उत्तराखंड।'), ('narrator', 'अ बुक बाय, पार्थ डी. जोशी।'), ('narrator', ch.TITLE)]
     if ch.DAY:
         head.append(('narrator', ch.DAY))
     t = 5.5

@@ -1,7 +1,7 @@
 # Chapter 1 of the Hindi audiobook: who says each quoted line (by the line's opening words), and the
 # sound design (music beds and effects) placed by paragraph. Parth's own lines stay in the narrator's voice.
-TITLE = 'अध्याय एक। बंद कमरा, मरी हुई मेम, भूखा प्रोफ़ेसर।'
-DAY = 'दिन एक। मसूरी।'
+TITLE = 'चैप्टर वन। रूम लॉक्ड, लेडी डेड, प्रोफ़ेसर हंग्री।'
+DAY = 'डे वन। मसूरी।'
 SKIP_FIRST = 2          # the file's "अध्याय एक" and title lines; TITLE is announced instead
 
 SPEAKERS = {
