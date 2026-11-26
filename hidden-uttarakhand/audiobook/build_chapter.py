@@ -199,6 +199,33 @@ def bed(name, sec):
         for k in range(int(sec / 4)):
             S.place(mus, S.st(S.pluck([62, 69, 66, 64][k % 4], 2.0) * .12, -.2), k * 4)
         mus += S.st(S.drone(sec, (50, 57), 600) * .09)
+    elif name == 'roadday':
+        mus += S.st(S.drone(sec, (50, 57), 800) * .16)
+        for k in range(int(sec / 2.0)):
+            S.place(mus, S.st(S.pluck([50, 57][k % 2], 1.2) * .1, -.2), k * 2.0)
+    elif name == 'roadnight':
+        mus += S.st(S.drone(sec, (45, 52), 600) * .2) + S.st(S.strings(sec, (45, 52), 1000) * .1)
+    elif name == 'lore':
+        mus += S.st(S.drone(sec, (38, 45), 500) * .24)
+        for k in range(int(sec / 3.2)):
+            S.place(mus, S.st(S.drum('low') * .32), k * 3.2)
+        for k in range(int(sec / 9)):
+            S.place(mus, S.reverb(S.st(S.bell(74, 4) * .09, .3), 2.6, .5), 4 + k * 9)
+    elif name == 'chase':
+        mus += S.st(S.heartbeat(sec, 104) * .9) + S.st(S.strings(sec, (40, 47, 52), 1800) * .34)
+        for k in range(int(sec / .58)):
+            S.place(mus, S.st(S.drum('high' if k % 4 == 2 else 'low') * (.25 if k % 4 == 2 else .4)), k * .58)
+    elif name == 'ghat':
+        mus += S.st(S.drone(sec, (40, 47), 450) * .26) + S.st(S.strings(sec, (40, 47), 900) * .1)
+        for k in range(int(sec / 8)):
+            S.place(mus, S.reverb(S.st(S.bell(64, 5) * .07, -.3), 3.0, .55), 2 + k * 8)
+    elif name == 'dhaba':
+        mus += S.st(S.drone(sec, (50, 57, 62), 900) * .12)
+        for k in range(int(sec / 3.6)):
+            S.place(mus, S.st(S.pluck([62, 66, 69, 66][k % 4], 2.2) * .1, .15), k * 3.6)
+    elif name == 'golu':
+        for k in range(int(sec / 1.5)):
+            S.place(mus, S.st(S.pluck([72, 76, 79, 76, 74, 71][k % 6], .9) * .1, (k % 2) * .4 - .2), k * 1.5)
     else:
         raise SystemExit(f'unknown bed {name}')
     return amb, mus
@@ -231,6 +258,11 @@ def sfx(name, voice_cache):
     if name == 'zip': return S.zip_() * 1.2
     if name == 'page': return S.page() * 1.4
     if name == 'keys': return S.keys() * 1.3
+    if name == 'skid': return S.skid()
+    if name == 'bell': return S.temple_bell() * .8
+    if name == 'firepop': return S.firepop()
+    if name == 'ping': return S.ping()
+    if name == 'phonevideo': return voice_cache['phonevideo']
     if name == 'call_far': return voice_cache['forest'] * .55
     if name == 'call_parth': return voice_cache['parth'] * .8
     raise SystemExit(f'unknown sfx {name}')
@@ -302,6 +334,10 @@ def build(name):
         S.place(mus, S.fade(m, 2.0, 2.2), start)
     cache = {'forest': fx(trim(speak('क्षि…तिज…', VOICES['forest']['voice'], .7, 1.0)), 'forest'),
              'parth': fx(trim(speak('पा…र्थ…', VOICES['forest']['voice'], .7, 1.0)), 'forest')}
+    if any(c == 'sfx:phonevideo' for _, c in cues):   # Golu's video played out of a phone, across the ghat
+        v = trim(speak('घोस्ट फ़ैमिली… वो देखो… सफ़ेद साया…', VOICES['golu']['voice'], 1.0, 1.0, 0.0, 1.2))
+        v = S.band(v, 500, 3200, 3)
+        cache['phonevideo'] = S.reverb(S.st(np.tanh(v * 3 / np.abs(v).max()) * .3, -.35), 2.2, .45)
     sfxt = np.zeros((n, 2), np.float32)
     for i, c in cues:
         if c.startswith('sfx:'):

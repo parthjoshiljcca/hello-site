@@ -446,3 +446,30 @@ def keys():
         x = np.sin(2 * np.pi * f * tt) * np.exp(-tt * 40)
         place(out, st(x.astype(np.float32) * .08, rng.uniform(-.3, .5)), rng.uniform(0, .6))
     return out
+
+
+def skid():
+    out = np.zeros((int(1.4 * SR), 2), np.float32)
+    d = 1.0
+    x = band(noise(d), 600, 4000) * np.sin(np.pi * t(d) / d) ** 2 * .35
+    place(out, st(x, .3), 0)
+    place(out, thump(.8), .9)
+    return out
+
+
+def temple_bell():
+    return reverb(st(bell(69, 6.0) * .6, .1), 3.0, .4)
+
+
+def firepop():
+    out = np.zeros((int(1.0 * SR), 2), np.float32)
+    for k in range(4):
+        c = band(noise(.03), 1500, 9000) * decay(int(.03 * SR), .005) * rng.uniform(.4, 1)
+        place(out, st(c, rng.uniform(-.4, .4)), k * .07 + rng.uniform(0, .05))
+    return out
+
+
+def ping():
+    n = int(.5 * SR); tt = np.arange(n) / SR
+    x = (np.sin(2 * np.pi * 1760 * tt) * .6 + np.sin(2 * np.pi * 2637 * tt) * .3) * np.exp(-tt * 9)
+    return st(x.astype(np.float32) * .25, .3)
