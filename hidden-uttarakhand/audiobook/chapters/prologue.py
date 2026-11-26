@@ -7,10 +7,10 @@ VOICED = {}
 DIARY_FROM = None
 SONG = []
 CUES = [
-    ('एक अजनबी की नोटबुक', 'bed:campfire'),
+    ('एक स्ट्रेंजर की नोटबुक', 'bed:campfire'),
     ('हवा कोई दस मिनट', 'bed:stillness'),
     ('और फिर, आग की रोशनी', 'sfx:heartbeat'),
-    ('आवाज़ फिर पुकार रही है', 'sfx:call_far'),
-    ('वह कह रही है… पार्थ', 'sfx:call_parth'),
-    ('यह शुरू हुआ', 'sfx:sting_light'),
+    ('आवाज़ फिर से पुकार रही है', 'sfx:call_far'),
+    ('वो कह रही है… पार्थ', 'sfx:call_parth'),
+    ('ये शुरू हुआ', 'sfx:sting_light'),
 ]
