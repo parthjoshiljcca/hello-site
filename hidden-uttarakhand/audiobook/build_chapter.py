@@ -20,18 +20,21 @@ from tts import SR, speak
 DIR = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(DIR, 'out')
 
+# One storyteller voice for everything (the author's choice): characters are told apart only by how the
+# lines are delivered (pace, force and the pauses around them), never by changing the voice or its pitch.
 NARRATOR = dict(voice='shubh_hi_stories_dramatic', pace=1.1, temp=1.0)
+_V = NARRATOR['voice']
 VOICES = {
     'narrator': NARRATOR,
-    'shaoni': dict(voice='simran_hi_narration', pace=1.04, temp=1.0),
-    'kshitij': dict(voice='vaibhav_hi_social', pace=1.05, temp=1.0),
-    'gabbar': dict(voice='ashok_hi_character', pace=.94, temp=1.0),
-    'golu': dict(voice='vipul_hi_social', pace=1.1, temp=1.0),
-    'rohan': dict(voice='ratan_hi_latenight', pace=.98, temp=1.0),
-    'bhalla': dict(voice='kabir_hi_conversational', pace=.95, temp=1.0),
-    'mummy': dict(voice='suman_hi_companion', pace=.98, temp=.7, fx='phone'),
-    'waiter': dict(voice='amit_hi_conversational', pace=1.05, temp=.9),
-    'forest': dict(voice='kabir_hi_conversational', pace=.75, temp=1.0, fx='forest'),
+    'shaoni': dict(voice=_V, pace=1.06, temp=1.0),                  # crisp, quick
+    'kshitij': dict(voice=_V, pace=.98, temp=.8, loud=.9),           # flat, quiet, deadpan
+    'gabbar': dict(voice=_V, pace=.92, temp=1.0, loud=1.12),         # slow, weighty
+    'golu': dict(voice=_V, pace=1.16, temp=1.0, loud=1.25),          # fast and loud, for the camera
+    'rohan': dict(voice=_V, pace=.95, temp=1.0, loud=.9),            # unhurried, smooth
+    'bhalla': dict(voice=_V, pace=.95, temp=1.0, loud=.95),
+    'mummy': dict(voice=_V, pace=1.02, temp=1.0, loud=1.08),
+    'waiter': dict(voice=_V, pace=1.06, temp=.9),
+    'forest': dict(voice=_V, pace=.75, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
 GAP_IN, GAP_PARA, GAP_SCENE = .22, .5, 1.8
 # how numbers and abbreviations are spoken; the text keeps its own spelling
@@ -112,7 +115,7 @@ def voice(seg):
     i, who, text, kind = seg
     v = VOICES[who]
     pace = v['pace'] * (.9 if kind == 'song' else 1)
-    a = trim(speak(spoken(text), v['voice'], round(pace, 2), v.get('temp')))
+    a = trim(speak(spoken(text), v['voice'], round(pace, 2), v.get('temp'), 0.0, v.get('loud', 1.0)))
     a = fx(a, v.get('fx'))
     return a if a.ndim == 2 else S.st(a)
 
