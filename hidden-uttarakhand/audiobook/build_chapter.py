@@ -34,6 +34,8 @@ VOICES = {   # no loudness or pitch changes: those made Gabbar and Golu sound pu
     'bhalla': dict(voice=_V, pace=.98, temp=1.0),
     'mummy': dict(voice=_V, pace=1.0, temp=1.0),
     'waiter': dict(voice=_V, pace=1.0, temp=1.0),
+    'bachiram': dict(voice=_V, pace=.96, temp=1.0),                 # ninety-one, unhurried
+    'stranger': dict(voice=_V, pace=.98, temp=1.0),
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
 GAP_IN, GAP_PARA, GAP_SCENE = .2, .45, 1.5
@@ -250,6 +252,34 @@ def bed(name, sec):
     elif name == 'golu':
         for k in range(int(sec / 1.5)):
             S.place(mus, S.st(S.pluck([72, 76, 79, 76, 74, 71][k % 6], .9) * .1, (k % 2) * .4 - .2), k * 1.5)
+    elif name == 'morning':
+        amb += S.birds(sec, .3) * .7
+        for k in range(int(sec / 3.4)):
+            S.place(mus, S.st(S.pluck([62, 66, 69, 71][k % 4], 1.8) * .11, -.1), k * 3.4)
+    elif name == 'legend':
+        mus += S.st(S.drone(sec, (45, 52, 57), 700) * .2)
+        fl = S.reverb(S.st(S.flute(S.SHEPHERD, 60) * .22, -.2), 2.8, .45)
+        S.place(mus, fl, 4.0)
+        for k in range(int(sec / 4.8)):
+            S.place(mus, S.st(S.drum('low') * .22), 2 + k * 4.8)
+    elif name == 'village':
+        amb += S.birds(sec, .25) * .6
+        mus += S.st(S.drone(sec, (50, 57, 62), 900) * .1)
+        for k in range(int(sec / 2.8)):
+            S.place(mus, S.st(S.pluck([62, 64, 66, 69, 66, 64][k % 6], 1.6) * .1, .2), k * 2.8)
+    elif name == 'porch':
+        mus += S.st(S.drone(sec, (43, 50, 55), 600) * .18) + S.st(S.strings(sec, (43, 50), 900) * .08)
+    elif name == 'discovery':
+        mus += S.st(S.strings(sec, (50, 57, 62, 66), 1600) * .22) + S.st(S.drone(sec, (50, 57), 700) * .12)
+        for k in range(int(sec / 1.2)):
+            S.place(mus, S.st(S.pluck([74, 81][k % 2], .8) * .07, .3), k * 1.2)
+    elif name == 'temple':
+        mus += S.st(S.drone(sec, (48, 55, 60), 700) * .18)
+        for k in range(int(sec / 10)):
+            S.place(mus, S.temple_bell() * .25, 3 + k * 10)
+    elif name == 'threat':
+        mus += S.st(S.drone(sec, (41, 48), 500) * .24) + S.st(S.strings(sec, (41, 48, 53), 1200) * .18)
+        mus += S.st(S.heartbeat(sec, 66) * .45)
     else:
         raise SystemExit(f'unknown bed {name}')
     return amb, mus
