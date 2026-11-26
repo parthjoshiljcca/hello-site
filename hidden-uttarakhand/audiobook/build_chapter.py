@@ -79,34 +79,49 @@ def clean(s, quote=False):
     return s
 
 
-def segments(ch, paras):
-    """[(para index, speaker, text, kind)]: kind 'line' or 'title'."""
+def read_script(path):
+    """The chapter script: paragraphs, '###' scene breaks, and '## ...' directives for the next paragraph
+    (bed:<scene>, sfx:<effect>, song, diary, voice:<who>). Returns (paragraphs, {index: [directives]})."""
+    paras, marks, pending = [], {}, []
+    for line in open(path, encoding='utf-8').read().split('\n'):
+        if line.startswith('## '):
+            pending.append(line[3:].strip()); continue
+        if not line.strip():
+            continue
+        if pending:
+            marks[len(paras)] = pending; pending = []
+        paras.append(line)
+    return paras, marks
+
+
+def segments(paras, marks):
+    """[(para index, speaker, text, kind)]; quotes carry their speaker as "{who}...", {p} being the narrator."""
     out, diary = [], False
     for i, p in enumerate(paras):
-        if i < ch.SKIP_FIRST or not p.strip():
-            continue
+        m = marks.get(i, [])
         if p.strip() == '###':
             out.append((i, None, None, 'break')); continue
-        if ch.DIARY_FROM and p.startswith(ch.DIARY_FROM):
-            out.append((i, 'narrator', clean(p.replace('—', ',')) + '।', 'line')); diary = True; continue
+        if 'diary' in m:
+            out.append((i, 'narrator', clean(p), 'line')); diary = True; continue
         if diary:
             out.append((i, 'kshitij', clean(p), 'line')); continue
-        v = next((who for k, who in ch.VOICED.items() if p.startswith(k)), None)
+        v = next((d[6:] for d in m if d.startswith('voice:')), None)
         if v:
             out.append((i, v, clean(p), 'line')); continue
-        if any(p.startswith(k) for k in ch.SONG):
-            out.append((i, 'narrator', clean(p).rstrip('…') + '…', 'song')); continue
+        if 'song' in m:
+            out.append((i, 'narrator', clean(p).rstrip(',…') + '…', 'song')); continue
         pos = 0
-        for m in re.finditer(r'"([^"]+)"', p):
-            before = p[pos:m.start()]
-            if clean(before):
-                out.append((i, 'narrator', clean(before), 'line'))
-            q = m.group(1)
-            who = max(((k, w) for k, w in ch.SPEAKERS.items() if q.startswith(k)), key=lambda kw: len(kw[0]), default=(None, None))[1]
-            if who is None:
-                raise SystemExit(f'no speaker for quote in paragraph {i}: "{q[:50]}"')
-            out.append((i, who, clean(q, quote=True), 'line'))
-            pos = m.end()
+        for q in re.finditer(r'"([^"]+)"', p):
+            if clean(p[pos:q.start()]):
+                out.append((i, 'narrator', clean(p[pos:q.start()]), 'line'))
+            tag = re.match(r'\{(\w+)\}', q.group(1))
+            if not tag:
+                raise SystemExit(f'quote without a {{speaker}} in paragraph {i}: "{q.group(1)[:50]}"')
+            who = 'narrator' if tag.group(1) == 'p' else tag.group(1)
+            if who not in VOICES:
+                raise SystemExit(f'unknown speaker {who} in paragraph {i}')
+            out.append((i, who, clean(q.group(1)[tag.end():], quote=True), 'line'))
+            pos = q.end()
         if clean(p[pos:]):
             out.append((i, 'narrator', clean(p[pos:]), 'line'))
     return out
@@ -231,8 +246,9 @@ def duck(voice_track, depth):
 
 def build(name):
     ch = importlib.import_module(f'chapters.{name}')
-    paras = open(os.path.join(DIR, 'text', f'{name}.txt'), encoding='utf-8').read().split('\n')
-    segs = segments(ch, paras)
+    paras, marks = read_script(os.path.join(DIR, 'text', f'{name}.txt'))
+    segs = segments(paras, marks)
+    cues = [(i, d) for i, ds in sorted(marks.items()) for d in ds if d.startswith(('bed:', 'sfx:'))]
     print(f'{name}: {len(segs)} segments, {sum(len(s[2] or "") for s in segs)} characters')
 
     # the voice timeline
@@ -268,14 +284,13 @@ def build(name):
         S.place(vtrack, a, at)
 
     # scenes and effects, placed by paragraph
-    def at_para(prefix):
-        hits = [i for i, p in enumerate(paras) if p.startswith(prefix)]
-        if not hits or hits[0] not in para_at:
-            raise SystemExit(f'cue not found: {prefix}')
-        return para_at[hits[0]]
+    def at_para(i):
+        if i not in para_at:
+            raise SystemExit(f'cue on paragraph {i}, which has no voice')
+        return para_at[i]
     amb, mus = np.zeros((n, 2), np.float32), np.zeros((n, 2), np.float32)
     S.place(mus, intro, 0)
-    beds = [(at_para(p), c[4:]) for p, c in ch.CUES if c.startswith('bed:')]
+    beds = [(at_para(i), c[4:]) for i, c in cues if c.startswith('bed:')]
     beds.sort()
     for k, (start, b) in enumerate(beds):
         start = max(0, start - 1.2)
@@ -286,15 +301,15 @@ def build(name):
     cache = {'forest': fx(trim(speak('क्षि…तिज…', VOICES['forest']['voice'], .7, 1.0)), 'forest'),
              'parth': fx(trim(speak('पा…र्थ…', VOICES['forest']['voice'], .7, 1.0)), 'forest')}
     sfxt = np.zeros((n, 2), np.float32)
-    for p, c in ch.CUES:
+    for i, c in cues:
         if c.startswith('sfx:'):
-            S.place(sfxt, sfx(c[4:], cache), at_para(p) - .15)
+            S.place(sfxt, sfx(c[4:], cache), at_para(i) - .15)
     S.place(mus, theme(14.0) * .9, total - 13.5)
     # after every reveal (a sting), the beds drop away for a held breath, then come back
     dip = np.ones(n, np.float32)
-    for p, c in ch.CUES:
+    for i, c in cues:
         if c in ('sfx:sting', 'sfx:crash'):
-            a0 = int((at_para(p) + .3) * SR)
+            a0 = int((at_para(i) + .3) * SR)
             shape = np.concatenate([np.linspace(1, .12, int(.25 * SR)), np.full(int(1.6 * SR), .12), np.linspace(.12, 1, int(1.2 * SR))])
             seg = dip[a0:a0 + len(shape)]
             dip[a0:a0 + len(shape)] = np.minimum(seg, shape[:len(seg)])
