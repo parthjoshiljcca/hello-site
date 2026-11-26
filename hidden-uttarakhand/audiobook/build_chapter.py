@@ -150,53 +150,55 @@ def theme(sec=14.0):
 
 
 def bed(name, sec):
-    """A scene's background: (ambience, music) as two stereo arrays."""
+    """A scene's background, music only: (ambience, music). The noise-built ambiences (crowd, wind, fire,
+    pencil, engine rumble, room tone) were taken out: under the voice they read as scraping."""
     z = lambda: np.zeros((int(sec * SR), 2), np.float32)
     amb, mus = z(), z()
     if name == 'campfire':
-        amb += S.fire(sec) * .9 + S.wind(sec, .8) * 1.4 + S.crickets(sec, .6) * .8
-        mus += S.st(S.drone(sec, (38, 45, 50), 500) * .22)
+        amb += S.crickets(sec, .35) * .6
+        mus += S.st(S.drone(sec, (38, 45, 50), 500) * .26)
     elif name == 'stillness':
-        amb += S.fire(sec) * .6
-        mus += S.st(S.drone(sec, (38, 45), 400) * .18)
+        mus += S.st(S.drone(sec, (38, 45), 400) * .2)
     elif name == 'airport':
-        amb += S.murmur(sec, 14) * 3.2 + S.room_tone(sec)
         for k in range(int(sec / 2.4)):
-            S.place(mus, S.st(S.pluck([62, 66, 69, 71, 69, 66][k % 6], 1.4) * .16, -.3 + .1 * (k % 6)), k * 2.4)
+            S.place(mus, S.st(S.pluck([62, 66, 69, 71, 69, 66][k % 6], 1.4) * .2, -.3 + .1 * (k % 6)), k * 2.4)
     elif name == 'outdoor':
-        amb += S.wind(sec, .4) * .8 + S.birds(sec, .5)
+        amb += S.birds(sec, .35) * .8
+        for k in range(int(sec / 3.2)):
+            S.place(mus, S.st(S.pluck([67, 71, 74][k % 3], 1.8) * .12, .2), k * 3.2)
     elif name == 'drive':
-        amb += S.engine(sec, 1500, .7) * .8 + S.wind(sec, .5) * .5
-        mus += S.st(S.drone(sec, (50, 57, 62), 900) * .14)
-        fl = S.reverb(S.st(S.flute(S.SHEPHERD, 70) * .3, .2), 2.4, .35)
+        mus += S.st(S.drone(sec, (50, 57, 62), 900) * .16)
+        fl = S.reverb(S.st(S.flute(S.SHEPHERD, 70) * .32, .2), 2.4, .35)
         S.place(mus, fl, 3.0)
+        if sec > 40:
+            S.place(mus, fl * .8, sec * .55)
     elif name == 'lobby':
-        amb += S.room_tone(sec) * 1.5 + S.murmur(sec, 6) * 1.5 + S.clock(sec) * 1.2
+        mus += S.st(S.drone(sec, (52, 59, 64), 800) * .1)
+        for k in range(int(sec / 5)):
+            S.place(mus, S.st(S.pluck([76, 74, 71, 69][k % 4], 2.2) * .1, -.2), 1 + k * 5)
     elif name == 'dining':
-        amb += S.murmur(sec, 10) * 2.2 + S.clinks(sec, .7) + S.room_tone(sec)
+        for k in range(int(sec / 4)):
+            S.place(mus, S.st(S.pluck([62, 66, 69, 74, 69, 66][k % 6], 2.4) * .11, (k % 3 - 1) * .3), k * 4)
     elif name == 'mystery':
-        amb += S.murmur(sec, 8) * 1.0 + S.clinks(sec, .3) * .6
-        mus += S.st(S.drone(sec, (45, 52, 57), 700) * .2) + S.st(S.strings(sec, (45, 52), 1200) * .12)
+        mus += S.st(S.drone(sec, (45, 52, 57), 700) * .24) + S.st(S.strings(sec, (45, 52), 1200) * .14)
         for k in range(int(sec / 6)):
-            S.place(mus, S.st(S.bell(81, 4) * .08, .4), 2 + k * 6)
+            S.place(mus, S.st(S.bell(81, 4) * .1, .4), 2 + k * 6)
     elif name == 'night':
-        amb += S.room_tone(sec) * 1.2 + S.clock(sec) * 1.6
-        mus += S.st(S.drone(sec, (41, 48), 450) * .16)
+        mus += S.st(S.drone(sec, (41, 48), 450) * .2)
+        for k in range(int(sec / 7)):
+            S.place(mus, S.st(S.bell(77, 5) * .05, -.4), 3 + k * 7)
     elif name == 'tension':
-        amb += S.room_tone(sec)
         mus += S.st(S.heartbeat(sec, 74) * .8) + S.st(S.strings(sec, (40, 47, 52), 1700) * .32)
     elif name == 'breakfast':
-        amb += S.birds(sec, .7) + S.clinks(sec, .5) + S.murmur(sec, 5) * 1.2
+        amb += S.birds(sec, .45) * .8
         for k in range(int(sec / 3)):
-            S.place(mus, S.st(S.pluck([67, 71, 74, 72][k % 4], 1.4) * .12, .2), k * 3)
+            S.place(mus, S.st(S.pluck([67, 71, 74, 72][k % 4], 1.4) * .13, .2), k * 3)
     elif name == 'suspense':
-        amb += S.room_tone(sec)
-        mus += S.st(S.drone(sec, (43, 50, 55), 650) * .2) + S.st(S.strings(sec, (43, 50), 1100) * .12)
+        mus += S.st(S.drone(sec, (43, 50, 55), 650) * .24) + S.st(S.strings(sec, (43, 50), 1100) * .14)
     elif name == 'diary':
-        amb += S.pencil(sec, 1.2) * 1.4
         for k in range(int(sec / 4)):
-            S.place(mus, S.st(S.pluck([62, 69, 66, 64][k % 4], 2.0) * .1, -.2), k * 4)
-        mus += S.st(S.drone(sec, (50, 57), 600) * .08)
+            S.place(mus, S.st(S.pluck([62, 69, 66, 64][k % 4], 2.0) * .12, -.2), k * 4)
+        mus += S.st(S.drone(sec, (50, 57), 600) * .09)
     else:
         raise SystemExit(f'unknown bed {name}')
     return amb, mus
@@ -213,10 +215,10 @@ def sfx(name, voice_cache):
     if name == 'sting_light': return S.sting_light() * .7
     if name == 'flute': return S.reverb(S.st(S.band(S.flute(S.SHEPHERD, 68), 250, 3500) * .32, .4), 2.4, .4)
     if name == 'crash': return S.crash() * 1.1
-    if name == 'run': return S.footsteps(3.5, 4.5, .45)
+    if name == 'run': return S.footsteps(3.5, 4.5, .45) * .9
     if name == 'whoosh': return S.whoosh(.9) * 1.2
     if name == 'door': return S.door() * .8
-    if name == 'suv': return S.suv_idle(9) * 1.4
+    if name == 'suv': return S.st(S.band(S.engine(9, 750, 0)[:, 0], 30, 200)) * S.env(9 * SR, 1.5, 2.5)[:, None] * 1.2
     if name == 'heartbeat': return S.st(S.heartbeat(22, 64) * .6)
     if name == 'creak': return S.creak()
     if name == 'steps_slow': return S.steps_slow()
