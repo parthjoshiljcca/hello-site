@@ -24,16 +24,16 @@ OUT = os.path.join(DIR, 'out')
 # lines are delivered (pace, force and the pauses around them), never by changing the voice or its pitch.
 NARRATOR = dict(voice='shubh_hi_stories_dramatic', pace=1.0, temp=1.0)   # between brisk and slow: every line lands
 _V = NARRATOR['voice']
-VOICES = {
+VOICES = {   # no loudness or pitch changes: those made Gabbar and Golu sound put-on. Only a touch of pace.
     'narrator': NARRATOR,
-    'shaoni': dict(voice=_V, pace=1.03, temp=1.0),                  # crisp, quick
-    'kshitij': dict(voice=_V, pace=.98, temp=.8, loud=.9),           # flat, quiet, deadpan
-    'gabbar': dict(voice=_V, pace=.95, temp=1.0, loud=1.12),         # slow, weighty
-    'golu': dict(voice=_V, pace=1.1, temp=1.0, loud=1.25),          # fast and loud, for the camera
-    'rohan': dict(voice=_V, pace=.97, temp=1.0, loud=.9),            # unhurried, smooth
-    'bhalla': dict(voice=_V, pace=.97, temp=1.0, loud=.95),
-    'mummy': dict(voice=_V, pace=1.0, temp=1.0, loud=1.08),
-    'waiter': dict(voice=_V, pace=1.0, temp=.9),
+    'shaoni': dict(voice=_V, pace=1.02, temp=1.0),
+    'kshitij': dict(voice=_V, pace=.98, temp=.9),
+    'gabbar': dict(voice=_V, pace=1.0, temp=1.0),
+    'golu': dict(voice=_V, pace=1.05, temp=1.0),
+    'rohan': dict(voice=_V, pace=.98, temp=1.0),
+    'bhalla': dict(voice=_V, pace=.98, temp=1.0),
+    'mummy': dict(voice=_V, pace=1.0, temp=1.0),
+    'waiter': dict(voice=_V, pace=1.0, temp=1.0),
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
 GAP_IN, GAP_PARA, GAP_SCENE = .2, .45, 1.5
@@ -359,7 +359,7 @@ def build(name):
     cache = {'forest': fx(trim(speak('क्षि…तिज…', VOICES['forest']['voice'], .7, 1.0)), 'forest'),
              'parth': fx(trim(speak('पा…र्थ…', VOICES['forest']['voice'], .7, 1.0)), 'forest')}
     if any(c == 'sfx:phonevideo' for _, c in cues):   # Golu's video played out of a phone, across the ghat
-        v = trim(speak('घोस्ट फ़ैमिली… वो देखो… सफ़ेद साया…', VOICES['golu']['voice'], 1.0, 1.0, 0.0, 1.2))
+        v = trim(speak('घोस्ट फ़ैमिली… वो देखो… सफ़ेद साया…', VOICES['golu']['voice'], 1.0, 1.0))
         v = S.band(v, 500, 3200, 3)
         cache['phonevideo'] = S.reverb(S.st(np.tanh(v * 3 / np.abs(v).max()) * .3, -.35), 2.2, .45)
     sfxt = np.zeros((n, 2), np.float32)
