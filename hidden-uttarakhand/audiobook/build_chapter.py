@@ -22,21 +22,21 @@ OUT = os.path.join(DIR, 'out')
 
 # One storyteller voice for everything (the author's choice): characters are told apart only by how the
 # lines are delivered (pace, force and the pauses around them), never by changing the voice or its pitch.
-NARRATOR = dict(voice='shubh_hi_stories_dramatic', pace=1.1, temp=1.0)
+NARRATOR = dict(voice='shubh_hi_stories_dramatic', pace=.95, temp=1.0)   # unhurried, so every line lands
 _V = NARRATOR['voice']
 VOICES = {
     'narrator': NARRATOR,
-    'shaoni': dict(voice=_V, pace=1.06, temp=1.0),                  # crisp, quick
-    'kshitij': dict(voice=_V, pace=.98, temp=.8, loud=.9),           # flat, quiet, deadpan
-    'gabbar': dict(voice=_V, pace=.92, temp=1.0, loud=1.12),         # slow, weighty
-    'golu': dict(voice=_V, pace=1.16, temp=1.0, loud=1.25),          # fast and loud, for the camera
-    'rohan': dict(voice=_V, pace=.95, temp=1.0, loud=.9),            # unhurried, smooth
-    'bhalla': dict(voice=_V, pace=.95, temp=1.0, loud=.95),
-    'mummy': dict(voice=_V, pace=1.02, temp=1.0, loud=1.08),
-    'waiter': dict(voice=_V, pace=1.06, temp=.9),
-    'forest': dict(voice=_V, pace=.75, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
+    'shaoni': dict(voice=_V, pace=.98, temp=1.0),                  # crisp, quick
+    'kshitij': dict(voice=_V, pace=.9, temp=.8, loud=.9),           # flat, quiet, deadpan
+    'gabbar': dict(voice=_V, pace=.85, temp=1.0, loud=1.12),         # slow, weighty
+    'golu': dict(voice=_V, pace=1.05, temp=1.0, loud=1.25),          # fast and loud, for the camera
+    'rohan': dict(voice=_V, pace=.88, temp=1.0, loud=.9),            # unhurried, smooth
+    'bhalla': dict(voice=_V, pace=.88, temp=1.0, loud=.95),
+    'mummy': dict(voice=_V, pace=.95, temp=1.0, loud=1.08),
+    'waiter': dict(voice=_V, pace=.95, temp=.9),
+    'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
-GAP_IN, GAP_PARA, GAP_SCENE = .22, .5, 1.8
+GAP_IN, GAP_PARA, GAP_SCENE = .3, .7, 2.2
 # how numbers and abbreviations are spoken; the text keeps its own spelling
 SAY = [('5:40 बजे', 'पाँच-चालीस बजे'), ('Rs 100', 'सौ रुपये'), ('1911', 'उन्नीस सौ ग्यारह'), ('1902', 'उन्नीस सौ दो'),
        ('19 सितंबर', 'उन्नीस सितंबर'), ('रूम 112', 'रूम एक सौ बारह'), ('2:14 बजे', 'दो बजकर चौदह मिनट पर'),
@@ -232,7 +232,7 @@ def build(name):
         head.append(('narrator', ch.DAY))
     t = 5.5
     for who, text in head:
-        a = trim(speak(text, VOICES[who]['voice'], 1.0, 1.0))
+        a = trim(speak(text, VOICES[who]['voice'], .92, 1.0))
         pieces.append((t, S.st(a))); t += len(a) / SR + .55
     t = max(t + 1.0, 14.0)
     last = None
@@ -269,8 +269,8 @@ def build(name):
         a, m = bed(b, end - start)
         S.place(amb, S.fade(a, 1.5, 1.8), start)
         S.place(mus, S.fade(m, 2.0, 2.2), start)
-    cache = {'forest': fx(trim(speak('क्षि…तिज…', VOICES['forest']['voice'], .75, 1.0)), 'forest'),
-             'parth': fx(trim(speak('पा…र्थ…', VOICES['forest']['voice'], .75, 1.0)), 'forest')}
+    cache = {'forest': fx(trim(speak('क्षि…तिज…', VOICES['forest']['voice'], .7, 1.0)), 'forest'),
+             'parth': fx(trim(speak('पा…र्थ…', VOICES['forest']['voice'], .7, 1.0)), 'forest')}
     sfxt = np.zeros((n, 2), np.float32)
     for p, c in ch.CUES:
         if c.startswith('sfx:'):
