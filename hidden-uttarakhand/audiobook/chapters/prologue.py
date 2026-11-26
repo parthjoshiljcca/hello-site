@@ -1,0 +1,16 @@
+# The Prologue of the Hindi audiobook: a page torn from a notebook at 3:12 a.m. on Khaliya Top.
+TITLE = 'पूर्वकथा।'
+DAY = None
+SKIP_FIRST = 1
+SPEAKERS = {'क्षि…तिज…': 'forest'}
+VOICED = {}
+DIARY_FROM = None
+SONG = []
+CUES = [
+    ('एक अजनबी की नोटबुक', 'bed:campfire'),
+    ('हवा कोई दस मिनट', 'bed:stillness'),
+    ('और फिर, आग की रोशनी', 'sfx:heartbeat'),
+    ('आवाज़ फिर पुकार रही है', 'sfx:call_far'),
+    ('वह कह रही है… पार्थ', 'sfx:call_parth'),
+    ('यह शुरू हुआ', 'sfx:sting_light'),
+]

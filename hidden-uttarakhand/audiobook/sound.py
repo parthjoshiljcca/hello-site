@@ -1,0 +1,375 @@
+# Sound kit for the audiobook, in numpy only: filters done in the frequency domain, a synthetic hall
+# reverb, and the instruments, ambiences and effects the chapters ask for. Everything is stereo float32
+# at 48 kHz, shape (n, 2), and seeded so a rebuild sounds the same.
+import numpy as np
+
+SR = 48000
+rng = np.random.default_rng(7)
+
+
+def t(sec):
+    return np.arange(int(sec * SR)) / SR
+
+
+def st(x, pan=0.0):
+    """mono -> stereo with constant-power pan (-1 left .. 1 right)."""
+    a = (pan + 1) * np.pi / 4
+    return np.stack([x * np.cos(a), x * np.sin(a)], 1).astype(np.float32)
+
+
+def band(x, lo=None, hi=None, slope=1.5):
+    """Zero-phase band filter by FFT with soft edges; x mono or stereo."""
+    if x.ndim == 2:
+        return np.stack([band(x[:, i], lo, hi, slope) for i in range(2)], 1)
+    n = len(x)
+    f = np.fft.rfftfreq(n, 1 / SR)
+    g = np.ones_like(f)
+    if lo:
+        g *= 1 / (1 + (lo / np.maximum(f, 1e-3)) ** (2 * slope))
+    if hi:
+        g *= 1 / (1 + (f / hi) ** (2 * slope))
+    return np.fft.irfft(np.fft.rfft(x) * g, n).astype(np.float32)
+
+
+def noise(sec, color='white'):
+    x = rng.standard_normal(int(sec * SR)).astype(np.float32)
+    if color == 'pink':
+        n = len(x); f = np.fft.rfftfreq(n, 1 / SR)
+        x = np.fft.irfft(np.fft.rfft(x) / np.sqrt(np.maximum(f, 20)), n).astype(np.float32)
+    elif color == 'brown':
+        n = len(x); f = np.fft.rfftfreq(n, 1 / SR)
+        x = np.fft.irfft(np.fft.rfft(x) / np.maximum(f, 20), n).astype(np.float32)
+    return x / (np.abs(x).max() + 1e-9)
+
+
+def env(n, a=.01, r=.2, sustain=True):
+    e = np.ones(n, np.float32)
+    na, nr = int(a * SR), int(r * SR)
+    if na: e[:na] = np.linspace(0, 1, na)
+    if nr and nr < n: e[-nr:] *= np.linspace(1, 0, nr)
+    return e
+
+
+def decay(n, tau):
+    return np.exp(-np.arange(n) / (tau * SR)).astype(np.float32)
+
+
+def fade(x, a=.5, r=.5):
+    x = x.copy(); n = len(x)
+    na, nr = min(int(a * SR), n), min(int(r * SR), n)
+    if na: x[:na] *= np.linspace(0, 1, na)[:, None] if x.ndim == 2 else np.linspace(0, 1, na)
+    if nr: x[-nr:] *= np.linspace(1, 0, nr)[:, None] if x.ndim == 2 else np.linspace(1, 0, nr)
+    return x
+
+
+_IR = {}
+
+
+def reverb(x, size=2.2, wet=.3, bright=6000):
+    """Convolve with a decaying stereo noise tail (cached per size)."""
+    key = (size, bright)
+    if key not in _IR:
+        n = int(size * SR)
+        ir = np.stack([noise(size), noise(size)], 1) * decay(n, size / 6.9)[:, None]
+        ir = band(ir, 120, bright)
+        _IR[key] = ir / np.sqrt((ir ** 2).sum(0, keepdims=True))
+    ir = _IR[key]
+    xs = x if x.ndim == 2 else st(x)
+    n = len(xs) + len(ir)
+    N = 1 << (n - 1).bit_length()
+    y = np.stack([np.fft.irfft(np.fft.rfft(xs[:, i], N) * np.fft.rfft(ir[:, i], N), N)[:len(xs)] for i in range(2)], 1)
+    return (xs * (1 - wet) + y * wet * 2.2).astype(np.float32)
+
+
+def place(buf, x, at):
+    """Add x into buf at time 'at' seconds (clipped to the buffer)."""
+    i = int(at * SR)
+    if i >= len(buf) or i + len(x) <= 0: return
+    j = max(0, -i); i = max(0, i)
+    k = min(len(buf) - i, len(x) - j)
+    buf[i:i + k] += x[j:j + k]
+
+
+def hz(m):
+    return 440 * 2 ** ((m - 69) / 12)
+
+
+# ---- instruments
+def flute(notes, bpm=72, vib=5.2, breath=.06):
+    """A bansuri-like line: notes = [(midi or None, beats), ...]."""
+    beat = 60 / bpm
+    out = []
+    for m, b in notes:
+        d = b * beat
+        n = int(d * SR)
+        if m is None:
+            out.append(np.zeros(n, np.float32)); continue
+        tt = np.arange(n) / SR
+        f = hz(m) * (1 + .006 * np.sin(2 * np.pi * vib * tt) * np.clip(tt / .35, 0, 1))
+        ph = 2 * np.pi * np.cumsum(f) / SR
+        tone = np.sin(ph) + .18 * np.sin(2 * ph) + .06 * np.sin(3 * ph)
+        air = band(noise(d), hz(m) * .8, hz(m) * 3) * breath
+        out.append(((tone * .5 + air) * env(n, .06, min(.25, d * .4))).astype(np.float32))
+    return np.concatenate(out)
+
+
+SHEPHERD = [(74, 1), (76, .5), (79, .5), (81, 1.5), (79, .5), (76, 1), (74, 1.5), (None, .5),
+            (72, .5), (74, .5), (76, 1), (74, .5), (72, .5), (69, 2.5)]   # the shepherd tune from the book's song
+
+
+def drone(sec, notes=(50, 57, 62), bright=900, shimmer=.15):
+    tt = t(sec)
+    x = np.zeros(len(tt), np.float32)
+    for i, m in enumerate(notes):
+        f = hz(m)
+        for k, a in ((1, 1), (2, .45), (3, .25), (4, .12)):
+            x += a * np.sin(2 * np.pi * f * k * tt * (1 + .0015 * i) + i) / len(notes)
+    x *= 1 + shimmer * np.sin(2 * np.pi * .09 * tt)
+    return band(x, 40, bright)
+
+
+def strings(sec, notes, bright=1800, swell=True):
+    """Low string pad: detuned saws, filtered, slow swell."""
+    tt = t(sec)
+    x = np.zeros(len(tt), np.float32)
+    for m in notes:
+        for d in (-.12, 0, .11):
+            f = hz(m + d)
+            x += (2 * ((f * tt) % 1) - 1) / (3 * len(notes))
+    x = band(x, 60, bright)
+    e = np.clip(tt / (sec * .5), 0, 1) ** 1.5 if swell else np.ones_like(tt)
+    return (x * e * env(len(tt), .3, min(1.5, sec / 3))).astype(np.float32)
+
+
+def pluck(m, dur=1.2, bright=3500):
+    n = int(dur * SR)
+    tt = np.arange(n) / SR
+    f = hz(m)
+    x = sum(a * np.sin(2 * np.pi * f * k * tt) * np.exp(-tt * (2.5 + k * 1.5)) for k, a in ((1, 1), (2, .5), (3, .3), (4, .15)))
+    return band(x.astype(np.float32), 80, bright)
+
+
+def bell(m=79, dur=4.0):
+    n = int(dur * SR)
+    tt = np.arange(n) / SR
+    f = hz(m)
+    x = sum(a * np.sin(2 * np.pi * f * r * tt) * np.exp(-tt * d) for r, a, d in ((1, 1, .9), (2.76, .5, 1.6), (5.4, .25, 2.6), (.5, .3, .6)))
+    return (x * .4).astype(np.float32)
+
+
+def drum(kind='low'):
+    """Frame drum / dhol hit."""
+    n = int(.7 * SR); tt = np.arange(n) / SR
+    if kind == 'low':
+        f = 70 * np.exp(-tt * 9) + 48
+        x = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 7)
+        x += band(noise(.7), 80, 600) * np.exp(-tt * 30) * .4
+    else:
+        f = 210 * np.exp(-tt * 14) + 160
+        x = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 16)
+        x += band(noise(.7), 600, 5000) * np.exp(-tt * 45) * .5
+    return x.astype(np.float32)
+
+
+def heartbeat(sec, bpm=62):
+    out = np.zeros(int(sec * SR), np.float32)
+    beat = 60 / bpm
+    k = 0
+    while k * beat < sec - .6:
+        for off, g in ((0, 1), (.28, .7)):
+            x = drum('low') * g
+            place(out, x[:int(.5 * SR)], k * beat + off)
+        k += 1
+    return band(out, 30, 220)
+
+
+# ---- ambiences (stereo)
+def wind(sec, strength=1.0):
+    n = noise(sec, 'pink')
+    tt = t(sec)
+    gust = .55 + .45 * np.sin(2 * np.pi * .07 * tt + rng.uniform(0, 6)) * np.sin(2 * np.pi * .023 * tt + 1)
+    l = band(n * gust, 120, 900 + 500 * strength)
+    r = band(np.roll(n, SR // 3) * gust, 140, 800 + 500 * strength)
+    return np.stack([l, r], 1) * .5 * strength
+
+
+def fire(sec):
+    base = band(noise(sec, 'brown'), 60, 500) * .35
+    out = st(base)
+    k = int(sec * 9)
+    for _ in range(k):
+        c = band(noise(.03), 1500, 9000) * decay(int(.03 * SR), .004) * rng.uniform(.2, 1)
+        place(out, st(c, rng.uniform(-.6, .6)), rng.uniform(0, sec))
+    return out * .6
+
+
+def crickets(sec, density=1.0):
+    out = np.zeros((int(sec * SR), 2), np.float32)
+    for _ in range(int(sec * 1.2 * density)):
+        f = rng.uniform(4200, 5200)
+        n = int(.09 * SR); tt = np.arange(n) / SR
+        chirp = np.sin(2 * np.pi * f * tt) * (np.sin(2 * np.pi * 30 * tt) > 0) * env(n, .005, .02)
+        burst = np.concatenate([chirp, np.zeros(int(.05 * SR))] * rng.integers(2, 5)).astype(np.float32)
+        place(out, st(burst * rng.uniform(.05, .15), rng.uniform(-.9, .9)), rng.uniform(0, sec))
+    return out
+
+
+def murmur(sec, people=10):
+    """Crowd / restaurant murmur: band-limited noise with syllable-rate modulation."""
+    out = np.zeros((int(sec * SR), 2), np.float32)
+    tt = t(sec)
+    for i in range(people):
+        mod = np.clip(np.sin(2 * np.pi * rng.uniform(3, 5.5) * tt + rng.uniform(0, 6)), 0, 1) * \
+              np.clip(np.sin(2 * np.pi * rng.uniform(.1, .3) * tt + rng.uniform(0, 6)), 0, 1)
+        v = band(noise(sec), rng.uniform(250, 450), rng.uniform(1800, 2600)) * mod
+        out += st(v * .12, rng.uniform(-.8, .8))
+    return out
+
+
+def room_tone(sec):
+    return st(band(noise(sec, 'pink'), 40, 400) * .05)
+
+
+def clinks(sec, rate=.6):
+    out = np.zeros((int(sec * SR), 2), np.float32)
+    for _ in range(int(sec * rate)):
+        f = rng.uniform(2500, 5200)
+        n = int(.25 * SR); tt = np.arange(n) / SR
+        x = (np.sin(2 * np.pi * f * tt) + .5 * np.sin(2 * np.pi * f * 2.7 * tt)) * np.exp(-tt * 28)
+        place(out, st(x.astype(np.float32) * rng.uniform(.03, .08), rng.uniform(-.8, .8)), rng.uniform(0, sec))
+    return out
+
+
+def engine(sec, rpm=1100, load=.6):
+    tt = t(sec)
+    f0 = rpm / 60 * 2 * (1 + .04 * np.sin(2 * np.pi * .2 * tt) * load)
+    ph = 2 * np.pi * np.cumsum(f0) / SR
+    x = sum(a * np.sin(k * ph) for k, a in ((1, 1), (2, .6), (3, .35), (4, .2)))
+    x = band(x.astype(np.float32), 30, 400) * .5 + band(noise(sec, 'brown'), 40, 300) * .4 * load
+    road = band(noise(sec, 'pink'), 200, 1500) * .15 * load
+    return st(x + road)
+
+
+def birds(sec, rate=.5):
+    out = np.zeros((int(sec * SR), 2), np.float32)
+    for _ in range(int(sec * rate)):
+        n = int(rng.uniform(.08, .2) * SR); tt = np.arange(n) / SR
+        f = rng.uniform(2800, 4200) * (1 + .3 * np.sin(2 * np.pi * rng.uniform(8, 20) * tt))
+        x = np.sin(2 * np.pi * np.cumsum(f) / SR) * env(n, .01, .05)
+        place(out, st(x.astype(np.float32) * rng.uniform(.03, .08), rng.uniform(-.9, .9)), rng.uniform(0, sec))
+    return out
+
+
+def clock(sec, bpm=60):
+    out = np.zeros((int(sec * SR), 2), np.float32)
+    for k in range(int(sec * bpm / 60)):
+        x = band(noise(.02), 1800, 7000) * decay(int(.02 * SR), .003) * (.12 if k % 2 else .09)
+        place(out, st(x, .3), k * 60 / bpm)
+    return out
+
+
+# ---- one-shot effects (stereo)
+def thump(g=1.0):
+    n = int(.4 * SR); tt = np.arange(n) / SR
+    x = np.sin(2 * np.pi * (90 * np.exp(-tt * 12) + 50) * tt) * np.exp(-tt * 14) + band(noise(.4), 100, 1200) * np.exp(-tt * 40) * .5
+    return st(x.astype(np.float32) * g)
+
+
+def slam():
+    x = thump(1.3)
+    x[:int(.4 * SR)] += st(band(noise(.4), 400, 4000) * decay(int(.4 * SR), .04) * .4)
+    return reverb(x, 1.0, .15)
+
+
+def horn():
+    tt = t(.55)
+    x = sum(np.sign(np.sin(2 * np.pi * f * tt)) * .3 for f in (400, 500))
+    return st(band(x.astype(np.float32), 300, 2500) * env(len(tt), .02, .08) * .35, .2)
+
+
+def phone_ring():
+    out = []
+    for _ in range(2):
+        tt = t(1.0)
+        x = (np.sin(2 * np.pi * 880 * tt) + np.sin(2 * np.pi * 1320 * tt)) * (np.sin(2 * np.pi * 20 * tt) > 0) * .15
+        out += [x.astype(np.float32), np.zeros(int(.8 * SR), np.float32)]
+    return st(np.concatenate(out), .4)
+
+
+def cooker():
+    tt = t(1.6)
+    f = 2100 + 120 * np.sin(2 * np.pi * 7 * tt)
+    x = np.sin(2 * np.pi * np.cumsum(f) / SR) * .3 + band(noise(1.6), 1800, 3500) * .5
+    x = band(x.astype(np.float32), 300, 3400) * env(len(tt), .3, .5) * .25
+    return st(x, -.3)
+
+
+def crash():
+    """A room-service trolley full of spoons going over."""
+    out = np.zeros((int(3.0 * SR), 2), np.float32)
+    place(out, thump(1.4), 0)
+    for _ in range(70):
+        f = rng.uniform(2000, 7000)
+        n = int(.5 * SR); tt = np.arange(n) / SR
+        x = (np.sin(2 * np.pi * f * tt) + .6 * np.sin(2 * np.pi * f * 2.41 * tt)) * np.exp(-tt * rng.uniform(10, 25))
+        place(out, st(x.astype(np.float32) * rng.uniform(.04, .14), rng.uniform(-.9, .9)), rng.exponential(.35))
+    return reverb(out, 1.4, .25)
+
+
+def footsteps(sec, rate=3.2, g=.5):
+    out = np.zeros((int(sec * SR), 2), np.float32)
+    for k in range(int(sec * rate)):
+        x = thump(g * rng.uniform(.6, 1))[:int(.15 * SR)]
+        place(out, x * np.array([1, .8] if k % 2 else [.8, 1], np.float32), k / rate + rng.uniform(0, .03))
+    return reverb(out, 1.2, .2)
+
+
+def door():
+    x = np.zeros((int(1.2 * SR), 2), np.float32)
+    place(x, slam() * .7, 0)
+    click = band(noise(.05), 2000, 6000) * decay(int(.05 * SR), .006) * .4
+    place(x, st(click), .25)
+    return x
+
+
+def whoosh(sec=1.0, up=True):
+    n = noise(sec)
+    tt = t(sec)
+    e = np.sin(np.pi * tt / sec) ** 2
+    lo = 300 + 3000 * (tt / sec if up else 1 - tt / sec)
+    out = np.zeros(len(tt), np.float32)
+    for i in range(0, len(tt), SR // 20):
+        seg = n[i:i + SR // 20]
+        out[i:i + len(seg)] = band(seg, lo[i] * .6, lo[i] * 1.6)
+    return st(out * e * .5)
+
+
+def sting(dark=True):
+    """A low hit with a string swell and a bell: for reveals."""
+    out = np.zeros((int(4.5 * SR), 2), np.float32)
+    place(out, thump(1.6) * 1.2, 0)
+    s = strings(4.2, (38, 45, 50) if dark else (50, 57, 62, 66), 1400, swell=False) * decay(int(4.2 * SR), 1.6) * 1.4
+    place(out, st(s), 0)
+    place(out, st(bell(74 if dark else 81, 4.0) * .35, .2), .02)
+    return reverb(out, 2.6, .35)
+
+
+def sting_light():
+    out = np.zeros((int(2.5 * SR), 2), np.float32)
+    for i, m in enumerate((72, 76, 79, 84)):
+        place(out, st(pluck(m, 1.2) * .5, -.4 + .25 * i), i * .11)
+    return reverb(out, 1.8, .3)
+
+
+def suv_idle(sec=8):
+    x = engine(sec, 750, .3) * 1.3
+    return fade(band(x, 30, 260), 1.5, 2.5)
+
+
+def pencil(sec, rate=2.0):
+    out = np.zeros((int(sec * SR), 2), np.float32)
+    for _ in range(int(sec * rate)):
+        d = rng.uniform(.15, .5)
+        x = band(noise(d), 2500, 8000) * (.5 + .5 * np.sin(2 * np.pi * rng.uniform(8, 14) * t(d))) * env(int(d * SR), .02, .05) * .05
+        place(out, st(x, .3), rng.uniform(0, sec))
+    return out
