@@ -36,6 +36,7 @@ VOICES = {   # no loudness or pitch changes: those made Gabbar and Golu sound pu
     'waiter': dict(voice=_V, pace=1.0, temp=1.0),
     'bachiram': dict(voice=_V, pace=.96, temp=1.0),                 # ninety-one, unhurried
     'stranger': dict(voice=_V, pace=.98, temp=1.0),
+    'umesh': dict(voice=_V, pace=1.02, temp=1.0),                   # the cheerful purohit at Kedarnath
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
 GAP_IN, GAP_PARA, GAP_SCENE = .2, .45, 1.5
@@ -280,6 +281,33 @@ def bed(name, sec):
     elif name == 'threat':
         mus += S.st(S.drone(sec, (41, 48), 500) * .24) + S.st(S.strings(sec, (41, 48, 53), 1200) * .18)
         mus += S.st(S.heartbeat(sec, 66) * .45)
+    elif name == 'heroic':
+        mus += S.st(S.drone(sec, (45, 52, 57), 800) * .16) + S.st(S.strings(sec, (45, 52, 57), 1500) * .14)
+        for k in range(int(sec / 1.6)):
+            S.place(mus, S.st(S.drum('low') * (.3 if k % 2 == 0 else .18)), k * 1.6)
+        fl = S.reverb(S.st(S.flute(S.SHEPHERD, 64) * .2, .2), 2.6, .4)
+        S.place(mus, fl, 6.0)
+    elif name == 'trek':
+        amb += S.birds(sec, .2) * .5
+        for k in range(int(sec / 1.8)):
+            S.place(mus, S.st(S.pluck([57, 62, 64, 62][k % 4], 1.2) * .09, (k % 2) * .3 - .15), k * 1.8)
+        mus += S.st(S.drone(sec, (50, 57), 800) * .08)
+    elif name == 'kedar':
+        mus += S.st(S.drone(sec, (43, 50, 55, 62), 900) * .2) + S.st(S.strings(sec, (43, 50, 55, 59), 1600) * .16)
+        for k in range(int(sec / 9)):
+            S.place(mus, S.temple_bell() * .22, 4 + k * 9)
+    elif name == 'bahi':
+        mus += S.st(S.drone(sec, (48, 55), 650) * .16)
+        for k in range(int(sec / 5)):
+            S.place(mus, S.st(S.pluck([67, 70, 74][k % 3], 2.4) * .08, -.25), 1.5 + k * 5)
+    elif name == 'fog':
+        mus += S.st(S.drone(sec, (39, 46), 420) * .26) + S.st(S.heartbeat(sec, 60) * .4)
+        for k in range(int(sec / 11)):
+            S.place(mus, S.reverb(S.st(S.bell(70, 5) * .06, .5), 3.2, .6), 5 + k * 11)
+    elif name == 'caper':
+        for k in range(int(sec / 1.4)):
+            S.place(mus, S.st(S.pluck([69, 72, 76, 72, 74, 71][k % 6], .9) * .09, (k % 3 - 1) * .35), k * 1.4)
+        mus += S.st(S.drone(sec, (45, 52), 700) * .08)
     else:
         raise SystemExit(f'unknown bed {name}')
     return amb, mus
@@ -315,6 +343,7 @@ def sfx(name, voice_cache):
     if name == 'skid': return S.skid()
     if name == 'bell': return S.temple_bell() * .8
     if name == 'firepop': return S.firepop()
+    if name == 'drumhit': return S.reverb(S.st(S.drum('low') * 1.2), 2.4, .4) + S.reverb(S.st(S.drum('low') * .9), 2.4, .4)
     if name == 'ping': return S.ping()
     if name == 'phonevideo': return voice_cache['phonevideo']
     if name == 'call_far': return voice_cache['forest'] * .55
