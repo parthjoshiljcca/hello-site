@@ -24,15 +24,20 @@ def client():
     return _client
 
 
-def speak(text, speaker, pace=1.0, temperature=None):
+def speak(text, speaker, pace=1.0, temperature=None, pitch=0.0, loudness=1.0):
     """Mono float32 audio at 48 kHz for one request's worth of text (Sarvam takes up to ~2,500 characters)."""
-    key = hashlib.sha1(json.dumps([MODEL, speaker, pace, temperature, text], ensure_ascii=False).encode()).hexdigest()[:20]
+    parts = [MODEL, speaker, pace, temperature, text] + ([pitch, loudness] if (pitch, loudness) != (0.0, 1.0) else [])
+    key = hashlib.sha1(json.dumps(parts, ensure_ascii=False).encode()).hexdigest()[:20]
     path = os.path.join(CACHE, key + '.wav')
     if not os.path.exists(path):
         os.makedirs(CACHE, exist_ok=True)
         kw = dict(text=text, language_code='hi-IN', model=MODEL, speaker=speaker, pace=pace, speech_sample_rate=SR)
         if temperature is not None:
             kw['temperature'] = temperature
+        if pitch:
+            kw['pitch'] = pitch
+        if loudness != 1.0:
+            kw['loudness'] = loudness
         resp = client().text_to_speech.convert(**kw)
         audio, sr = sf.read(io.BytesIO(base64.b64decode(''.join(resp.audios))), dtype='float32')
         assert sr == SR, sr
