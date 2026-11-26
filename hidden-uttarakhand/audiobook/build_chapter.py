@@ -22,21 +22,22 @@ OUT = os.path.join(DIR, 'out')
 
 # One storyteller voice for everything (the author's choice): characters are told apart only by how the
 # lines are delivered (pace, force and the pauses around them), never by changing the voice or its pitch.
-NARRATOR = dict(voice='shubh_hi_stories_dramatic', pace=.95, temp=1.0)   # unhurried, so every line lands
+NARRATOR = dict(voice='shubh_hi_stories_dramatic', pace=1.0, temp=1.0)   # between brisk and slow: every line lands
 _V = NARRATOR['voice']
 VOICES = {
     'narrator': NARRATOR,
-    'shaoni': dict(voice=_V, pace=.98, temp=1.0),                  # crisp, quick
-    'kshitij': dict(voice=_V, pace=.9, temp=.8, loud=.9),           # flat, quiet, deadpan
-    'gabbar': dict(voice=_V, pace=.85, temp=1.0, loud=1.12),         # slow, weighty
-    'golu': dict(voice=_V, pace=1.05, temp=1.0, loud=1.25),          # fast and loud, for the camera
-    'rohan': dict(voice=_V, pace=.88, temp=1.0, loud=.9),            # unhurried, smooth
-    'bhalla': dict(voice=_V, pace=.88, temp=1.0, loud=.95),
-    'mummy': dict(voice=_V, pace=.95, temp=1.0, loud=1.08),
-    'waiter': dict(voice=_V, pace=.95, temp=.9),
+    'shaoni': dict(voice=_V, pace=1.03, temp=1.0),                  # crisp, quick
+    'kshitij': dict(voice=_V, pace=.94, temp=.8, loud=.9),           # flat, quiet, deadpan
+    'gabbar': dict(voice=_V, pace=.88, temp=1.0, loud=1.12),         # slow, weighty
+    'golu': dict(voice=_V, pace=1.1, temp=1.0, loud=1.25),          # fast and loud, for the camera
+    'rohan': dict(voice=_V, pace=.92, temp=1.0, loud=.9),            # unhurried, smooth
+    'bhalla': dict(voice=_V, pace=.92, temp=1.0, loud=.95),
+    'mummy': dict(voice=_V, pace=1.0, temp=1.0, loud=1.08),
+    'waiter': dict(voice=_V, pace=1.0, temp=.9),
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
-GAP_IN, GAP_PARA, GAP_SCENE = .3, .7, 2.2
+GAP_IN, GAP_PARA, GAP_SCENE = .26, .6, 2.0
+BEAT = .55   # extra breath around a short, heavy paragraph ("मैं मुड़ा।", "भाप।")
 # how numbers and abbreviations are spoken; the text keeps its own spelling
 SAY = [('5:40 बजे', 'पाँच-चालीस बजे'), ('Rs 100', 'सौ रुपये'), ('1911', 'उन्नीस सौ ग्यारह'), ('1902', 'उन्नीस सौ दो'),
        ('19 सितंबर', 'उन्नीस सितंबर'), ('रूम 112', 'रूम एक सौ बारह'), ('2:14 बजे', 'दो बजकर चौदह मिनट पर'),
@@ -168,7 +169,7 @@ def bed(name, sec):
         mus += S.st(S.drone(sec, (41, 48), 450) * .16)
     elif name == 'tension':
         amb += S.room_tone(sec)
-        mus += S.st(S.heartbeat(sec, 70) * .5) + S.st(S.strings(sec, (40, 47, 52), 1500) * .2)
+        mus += S.st(S.heartbeat(sec, 74) * .8) + S.st(S.strings(sec, (40, 47, 52), 1700) * .32)
     elif name == 'breakfast':
         amb += S.birds(sec, .7) + S.clinks(sec, .5) + S.murmur(sec, 5) * 1.2
         for k in range(int(sec / 3)):
@@ -202,6 +203,17 @@ def sfx(name, voice_cache):
     if name == 'door': return S.door() * .8
     if name == 'suv': return S.suv_idle(9) * 1.4
     if name == 'heartbeat': return S.st(S.heartbeat(22, 64) * .6)
+    if name == 'creak': return S.creak()
+    if name == 'steps_slow': return S.steps_slow()
+    if name == 'flash': return S.flash()
+    if name == 'thud': return S.slam() * .9
+    if name == 'plane': return S.plane()
+    if name == 'chime': return S.chime() * .8
+    if name == 'carstart': return S.carstart() * .9
+    if name == 'cardoor': return S.cardoor() * .8
+    if name == 'zip': return S.zip_() * 1.2
+    if name == 'page': return S.page() * 1.4
+    if name == 'keys': return S.keys() * 1.3
     if name == 'call_far': return voice_cache['forest'] * .55
     if name == 'call_parth': return voice_cache['parth'] * .8
     raise SystemExit(f'unknown sfx {name}')
@@ -235,13 +247,15 @@ def build(name):
         a = trim(speak(text, VOICES[who]['voice'], .92, 1.0))
         pieces.append((t, S.st(a))); t += len(a) / SR + .55
     t = max(t + 1.0, 14.0)
-    last = None
+    last, last_short = None, False
     for seg in segs:
         i, who, text, kind = seg
         if kind == 'break':
             t += GAP_SCENE; last = None; continue
+        short = kind == 'line' and len(paras[i].strip()) <= 28 and '"' not in paras[i]
         if last is not None:
-            t += GAP_IN if last == i else GAP_PARA
+            t += GAP_IN if last == i else GAP_PARA + (BEAT if short or last_short else 0)
+        last_short = short and last != i
         para_at.setdefault(i, t)
         a = voice(seg)
         pieces.append((t, a))
@@ -276,6 +290,16 @@ def build(name):
         if c.startswith('sfx:'):
             S.place(sfxt, sfx(c[4:], cache), at_para(p) - .15)
     S.place(mus, theme(14.0) * .9, total - 13.5)
+    # after every reveal (a sting), the beds drop away for a held breath, then come back
+    dip = np.ones(n, np.float32)
+    for p, c in ch.CUES:
+        if c in ('sfx:sting', 'sfx:crash'):
+            a0 = int((at_para(p) + .3) * SR)
+            shape = np.concatenate([np.linspace(1, .12, int(.25 * SR)), np.full(int(1.6 * SR), .12), np.linspace(.12, 1, int(1.2 * SR))])
+            seg = dip[a0:a0 + len(shape)]
+            dip[a0:a0 + len(shape)] = np.minimum(seg, shape[:len(seg)])
+    amb *= dip[:, None]
+    mus *= dip[:, None]
 
     mix = vtrack * 1.0 + amb * duck(vtrack, .35) * .55 + mus * duck(vtrack, .6) * .8 + sfxt * duck(vtrack, .25) * .8
     os.makedirs(OUT, exist_ok=True)

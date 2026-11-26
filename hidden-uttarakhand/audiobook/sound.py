@@ -373,3 +373,76 @@ def pencil(sec, rate=2.0):
         x = band(noise(d), 2500, 8000) * (.5 + .5 * np.sin(2 * np.pi * rng.uniform(8, 14) * t(d))) * env(int(d * SR), .02, .05) * .05
         place(out, st(x, .3), rng.uniform(0, sec))
     return out
+
+
+# ---- more one-shots for the performance pass
+def creak():
+    """An old door opening slowly."""
+    sec = 1.4
+    tt = t(sec)
+    f = 180 + 120 * np.sin(2 * np.pi * .6 * tt) + 40 * rng.standard_normal(len(tt)).cumsum() / SR
+    pulses = (np.sin(2 * np.pi * np.cumsum(f) / SR) > .97).astype(np.float32)
+    x = band(pulses, 300, 3000) * env(len(tt), .1, .4) * .5
+    return reverb(st(x, .3), 1.2, .3)
+
+
+def steps_slow(sec=4.0):
+    return footsteps(sec, 1.6, .28) * .8
+
+
+def flash():
+    out = whoosh(.5, up=True) * 1.4
+    zap = band(noise(.4), 3000, 12000) * decay(int(.4 * SR), .08) * .3
+    place(out, st(zap), .3)
+    return out
+
+
+def plane(sec=7.0):
+    x = band(noise(sec, 'pink'), 120, 2500)
+    tt = t(sec)
+    x *= np.sin(np.pi * tt / sec) ** 1.5
+    return st(x * .35, -.2)
+
+
+def chime():
+    out = np.zeros((int(3 * SR), 2), np.float32)
+    for i, m in enumerate((79, 76, 72)):
+        place(out, st(bell(m, 2.5) * .25), i * .45)
+    return reverb(out, 2.0, .35)
+
+
+def carstart():
+    out = np.zeros((int(3.5 * SR), 2), np.float32)
+    crank = engine(.9, 350, .9) * np.sin(2 * np.pi * 6 * t(.9))[:, None] ** 2
+    place(out, crank * .9, 0)
+    rev = engine(2.6, 1900, .9) * env(int(2.6 * SR), .2, 1.0)[:, None]
+    place(out, rev, .85)
+    return out
+
+
+def cardoor():
+    out = np.zeros((int(1.6 * SR), 2), np.float32)
+    place(out, slam() * .7, 0)
+    place(out, slam() * .5, .7)
+    return out
+
+
+def zip_():
+    d = .7
+    x = band(noise(d), 1500, 7000) * (np.sin(2 * np.pi * 60 * t(d)) > .3) * env(int(d * SR), .05, .1) * .25
+    return st(x, .2)
+
+
+def page():
+    d = .45
+    x = band(noise(d), 800, 6000) * np.sin(np.pi * t(d) / d) ** 3 * .35
+    return st(x, -.2)
+
+
+def keys():
+    out = np.zeros((int(1.0 * SR), 2), np.float32)
+    for _ in range(9):
+        f = rng.uniform(3500, 7500); n = int(.15 * SR); tt = np.arange(n) / SR
+        x = np.sin(2 * np.pi * f * tt) * np.exp(-tt * 40)
+        place(out, st(x.astype(np.float32) * .08, rng.uniform(-.3, .5)), rng.uniform(0, .6))
+    return out
