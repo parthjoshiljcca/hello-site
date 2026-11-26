@@ -84,6 +84,7 @@ FIXES = [
     # trailhead after dark, five hours behind Rohan; Bhaguli Amma's goodnight moves to midnight)
     ('We left at three in the afternoon,', "We left at noon, the moment Gaurav's video went up,", 1),
     ("At nine o'clock exactly, Bhaguli Amma stood up", 'At midnight exactly, Bhaguli Amma stood up', 1),
+    ('an old woman who went to bed at nine.', 'an old woman who went to bed at midnight.', 1),   # the Prologue, to match
     # Ch 14: Jeetu Bagdwal and Khait Parvat
     ('a young man of Garhwal who played the flute more beautifully than anyone had ever played. One day he went up into '
      'the high meadows and played, alone.',
