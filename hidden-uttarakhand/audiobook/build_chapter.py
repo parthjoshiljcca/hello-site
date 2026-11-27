@@ -37,6 +37,7 @@ VOICES = {   # no loudness or pitch changes: those made Gabbar and Golu sound pu
     'bachiram': dict(voice=_V, pace=.96, temp=1.0),                 # ninety-one, unhurried
     'stranger': dict(voice=_V, pace=.98, temp=1.0),
     'umesh': dict(voice=_V, pace=1.02, temp=1.0),                   # the cheerful purohit at Kedarnath
+    'dorje': dict(voice=_V, pace=.95, temp=1.0),                    # the old expedition cook on Chandrashila
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
 GAP_IN, GAP_PARA, GAP_SCENE = .2, .45, 1.5
@@ -308,6 +309,44 @@ def bed(name, sec):
         for k in range(int(sec / 1.4)):
             S.place(mus, S.st(S.pluck([69, 72, 76, 72, 74, 71][k % 6], .9) * .09, (k % 3 - 1) * .35), k * 1.4)
         mus += S.st(S.drone(sec, (45, 52), 700) * .08)
+    elif name == 'vigil':
+        mus += S.st(S.drone(sec, (40, 47, 52), 500) * .22) + S.st(S.strings(sec, (40, 47), 1000) * .12)
+    elif name == 'dawn':
+        mus += S.st(S.strings(sec, (50, 57, 62, 66), 1500) * .16) + S.st(S.drone(sec, (50, 57), 800) * .1)
+    elif name == 'meadow':
+        amb += S.birds(sec, .3) * .6
+        mus += S.st(S.drone(sec, (50, 57, 62), 900) * .1)
+        for k in range(int(sec / 3.2)):
+            S.place(mus, S.st(S.pluck([62, 66, 69, 71, 69, 66][k % 6], 1.8) * .1, .1), k * 3.2)
+    elif name == 'receipt':
+        mus += S.st(S.drone(sec, (48, 55), 700) * .1)
+        for k in range(int(sec / 2.2)):
+            S.place(mus, S.st(S.pluck([67, 72, 70, 74][k % 4], 1.0) * .08, (k % 2) * .4 - .2), k * 2.2)
+    elif name == 'tender':
+        mus += S.st(S.strings(sec, (45, 52, 57, 61), 1300) * .14) + S.st(S.drone(sec, (45, 52), 600) * .08)
+    elif name == 'suspicion':
+        mus += S.st(S.drone(sec, (44, 51), 600) * .16)
+        for k in range(int(sec / 2.6)):
+            S.place(mus, S.st(S.pluck([68, 71][k % 2], 1.4) * .08, .3), k * 2.6)
+    elif name == 'pandavlila':
+        mus += S.st(S.drone(sec, (43, 50), 600) * .14)
+        drums = np.zeros((int(sec * SR), 2), np.float32)
+        for k in range(int(sec / .36)):
+            hit = 'high' if k % 4 in (1, 3) else 'low'
+            S.place(drums, S.st(S.drum(hit) * (.35 if hit == 'low' else .2), .4), k * .36)
+        mus += S.reverb(S.band(drums, 60, 1800), 3.0, .7) * .7      # far off, down the valley
+    elif name == 'summit':
+        mus += S.st(S.strings(sec, (43, 50, 55, 59, 62), 1700) * .18) + S.st(S.drone(sec, (43, 50), 700) * .12)
+    elif name == 'dorje':
+        mus += S.st(S.drone(sec, (38, 45, 50), 450) * .24)
+        for k in range(int(sec / 9)):
+            S.place(mus, S.reverb(S.st(S.bell(74, 5) * .06, -.3), 3.0, .6), 3 + k * 9)
+    elif name == 'stars':
+        mus += S.st(S.drone(sec, (41, 48, 53), 500) * .2) + S.st(S.strings(sec, (41, 48), 900) * .1)
+        drums = np.zeros((int(sec * SR), 2), np.float32)
+        for k in range(int(sec / .72)):
+            S.place(drums, S.st(S.drum('low') * .2, .5), k * .72)
+        mus += S.reverb(S.band(drums, 50, 900), 3.4, .8) * .5
     else:
         raise SystemExit(f'unknown bed {name}')
     return amb, mus
