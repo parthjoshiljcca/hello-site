@@ -538,3 +538,26 @@ def whistle_cut():
     x = np.concatenate(out)
     x[-int(.04 * SR):] *= np.linspace(1, 0, int(.04 * SR))
     return reverb(st(x * .35, .35), 2.0, .3)
+
+
+def hurka(sec, bpm=84, g=.3):
+    """The jagariya's hurka: a small hourglass drum ticking under the fingers, a pressed tone that bends."""
+    out = np.zeros(int(sec * SR), np.float32)
+    beat = 60 / bpm
+    k = 0
+    while k * beat / 2 < sec - .5:
+        n = int(.3 * SR); tt = np.arange(n) / SR
+        f = (260 if k % 4 == 0 else 330) * (1 + .12 * np.exp(-tt * 20))
+        x = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * (14 if k % 2 else 9))
+        x += band(noise(.3), 900, 5000) * np.exp(-tt * 60) * .3
+        place(out, (x * (1 if k % 4 == 0 else .6) * g).astype(np.float32), k * beat / 2 + rng.uniform(0, .012))
+        k += 1
+    return out
+
+
+def thali(g=.12):
+    """A big brass plate struck with a stick."""
+    n = int(1.4 * SR); tt = np.arange(n) / SR
+    x = sum(a * np.sin(2 * np.pi * f * tt) * np.exp(-tt * d) for f, a, d in ((610, 1, 3.5), (1490, .6, 5), (2710, .4, 7), (3930, .25, 9)))
+    x += band(noise(1.4), 3000, 9000) * np.exp(-tt * 40) * .4
+    return (x * g).astype(np.float32)

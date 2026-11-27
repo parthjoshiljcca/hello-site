@@ -42,6 +42,8 @@ VOICES = {   # no loudness or pitch changes: those made Gabbar and Golu sound pu
     'kamla': dict(voice=_V, pace=.96, temp=1.0),                    # eighty-six, sharp as a blade
     'bisht': dict(voice=_V, pace=1.0, temp=1.0),                    # the kindly inspector at Joshimath
     'local': dict(voice=_V, pace=1.05, temp=1.0),                   # men arguing at a tea stall
+    'ija': dict(voice=_V, pace=.95, temp=1.0),                      # Gabbar's mother, tiny, unhurried, the boss
+    'god': dict(voice=_V, pace=.8, temp=.8, fx='god'),              # the god speaking through the dangariya at the Jagar
     'hira': dict(voice=_V, pace=.97, temp=1.0),                     # Bhawan Singh's grandson, the Wan porter
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
@@ -99,6 +101,9 @@ def fx(a, kind):
     if kind == 'forest':
         y = S.band(a, 250, 2600) * .5
         return S.reverb(S.st(y, -.5), 3.5, .75)          # stereo, far off to the left
+    if kind == 'god':                                     # same voice, a little lower in the band, in a big still space
+        y = S.band(a, 90, 5000) * .9
+        return S.reverb(S.st(y), 3.0, .45)
     return a
 
 
@@ -398,6 +403,26 @@ def bed(name, sec):
             S.place(mus, S.reverb(S.st(S.bell(73, 6) * .05, (k % 2) * .6 - .3), 3.6, .7), 3 + k * 10)
     elif name == 'rockfall':
         mus += S.st(S.heartbeat(sec, 118) * .8) + S.st(S.strings(sec, (38, 45, 50), 1900) * .3)
+    elif name == 'jagar':      # the hurka alone, like a heartbeat, a low drone under the singing
+        mus += S.st(S.drone(sec, (45, 52), 500) * .14)
+        mus += S.reverb(S.st(S.hurka(sec, 80, .32), .15), 2.0, .3)
+    elif name == 'jagarrise':  # dhol and damau join, the thali rings
+        mus += S.st(S.drone(sec, (45, 52, 57), 700) * .16)
+        mus += S.reverb(S.st(S.hurka(sec, 96, .3), .15), 2.0, .3)
+        for k in range(int(sec / .62)):
+            S.place(mus, S.st(S.drum('low') * (.34 if k % 2 == 0 else .2), -.2), k * .62)
+            if k % 2:
+                S.place(mus, S.st(S.thali(.08), .4), k * .62 + .31)
+    elif name == 'jagarpeak':  # faster and faster, calling the god down
+        sw = S.strings(sec, (45, 52, 57), 1600)
+        mus += S.st(sw * .12 * np.linspace(.4, 1.2, len(sw)).astype(np.float32))
+        mus += S.reverb(S.st(S.hurka(sec, 130, .3), .15), 2.0, .3)
+        k, tk = 0, 0.0
+        while tk < sec - .5:
+            gap = .42 - .2 * tk / sec
+            S.place(mus, S.st(S.drum('low' if k % 2 == 0 else 'high') * (.42 if k % 2 == 0 else .26), (k % 3 - 1) * .25), tk)
+            S.place(mus, S.st(S.thali(.07), .45), tk + gap / 2)
+            k += 1; tk += gap
     else:
         raise SystemExit(f'unknown bed {name}')
     return amb, mus
@@ -438,6 +463,8 @@ def sfx(name, voice_cache):
     if name == 'typing': return S.typing(3.5)
     if name == 'drumhit': return S.reverb(S.st(S.drum('low') * 1.2), 2.4, .4) + S.reverb(S.st(S.drum('low') * .9), 2.4, .4)
     if name == 'ping': return S.ping()
+    if name == 'silence': return np.zeros((SR, 2), np.float32)   # only the held dip in the beds
+    if name == 'thali': return S.reverb(S.st(S.thali(.3), .3), 2.4, .4)
     if name == 'rockfall': return S.rockfall(7.0)
     if name == 'whistle': return S.whistle_cut()
     if name == 'phonevideo': return voice_cache['phonevideo']
@@ -524,7 +551,7 @@ def build(name):
     # after every reveal (a sting), the beds drop away for a held breath, then come back
     dip = np.ones(n, np.float32)
     for i, c in cues:
-        if c in ('sfx:sting', 'sfx:crash', 'sfx:whistle'):
+        if c in ('sfx:sting', 'sfx:crash', 'sfx:whistle', 'sfx:silence'):
             a0 = int((at_para(i) + .3) * SR)
             shape = np.concatenate([np.linspace(1, .12, int(.25 * SR)), np.full(int(1.6 * SR), .12), np.linspace(.12, 1, int(1.2 * SR))])
             seg = dip[a0:a0 + len(shape)]
