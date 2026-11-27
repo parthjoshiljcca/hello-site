@@ -473,3 +473,34 @@ def ping():
     n = int(.5 * SR); tt = np.arange(n) / SR
     x = (np.sin(2 * np.pi * 1760 * tt) * .6 + np.sin(2 * np.pi * 2637 * tt) * .3) * np.exp(-tt * 9)
     return st(x.astype(np.float32) * .25, .3)
+
+
+def drone_buzz(sec=4.0):
+    """A small quadcopter overhead: a tonal buzz with rotor beating, drifting across."""
+    tt = t(sec)
+    f = 210 + 12 * np.sin(2 * np.pi * .3 * tt)
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    x = (np.sign(np.sin(ph)) * .3 + np.sin(2 * ph) * .2) * (1 + .3 * np.sin(2 * np.pi * 23 * tt))
+    x = band(x.astype(np.float32), 150, 2600) * env(len(tt), .8, 1.2) * .18
+    pan = np.linspace(-.6, .6, len(tt))
+    return np.stack([x * np.cos((pan + 1) * np.pi / 4), x * np.sin((pan + 1) * np.pi / 4)], 1).astype(np.float32)
+
+
+def drone_fall():
+    out = np.zeros((int(2.0 * SR), 2), np.float32)
+    tt = t(.6)
+    f = 210 * np.exp(-tt * 3)
+    x = np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * .3 * np.linspace(1, 0, len(tt))
+    place(out, st(band(x.astype(np.float32), 80, 2000) * .2, .5), 0)
+    place(out, thump(.5) * .6, 1.3)
+    return out
+
+
+def typing(sec=3.0):
+    out = np.zeros((int(sec * SR), 2), np.float32)
+    k = 0.0
+    while k < sec - .1:
+        c = band(noise(.02), 2000, 8000) * decay(int(.02 * SR), .003) * rng.uniform(.06, .12)
+        place(out, st(c, .25), k)
+        k += rng.uniform(.06, .18)
+    return out
