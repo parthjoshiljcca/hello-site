@@ -45,6 +45,8 @@ VOICES = {   # no loudness or pitch changes: those made Gabbar and Golu sound pu
     'ija': dict(voice=_V, pace=.95, temp=1.0),                      # Gabbar's mother, tiny, unhurried, the boss
     'god': dict(voice=_V, pace=.8, temp=.8, fx='god'),              # the god speaking through the dangariya at the Jagar
     'dhami': dict(voice=_V, pace=.96, temp=.9),                     # the retired ITBP Commandant at Chitai, measured
+    'dhana': dict(voice=_V, pace=.96, temp=1.0),                    # Kundan Singh's daughter-in-law at the flower stall
+    'guide': dict(voice=_V, pace=1.0, temp=1.0),                    # the cave keeper and the young guide at Patal Bhuvaneshwar
     'hira': dict(voice=_V, pace=.97, temp=1.0),                     # Bhawan Singh's grandson, the Wan porter
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
@@ -440,6 +442,17 @@ def bed(name, sec):
             S.place(mus, S.st(S.pluck([72, 67, 69, 64][k % 4], 2.6) * .08, -.15), k * 3.6)
         for at in np.arange(1.3, sec - 1, 1.7):
             S.place(mus, S.st(S.bell(int(S.rng.choice([84, 88, 91])), 2.0) * .02, S.rng.uniform(-.8, .8)), at)
+    elif name == 'cave':       # ninety feet under the earth: a deep hum, water dripping into the dark
+        mus += S.reverb(S.st(S.drone(sec, (36, 43), 300) * .2), 4.0, .6)
+        for at in np.cumsum(S.rng.exponential(1.1, int(sec / 1.1) + 10)):
+            if at > sec - 1:
+                break
+            S.place(mus, S.reverb(S.st(S.pluck(int(S.rng.choice([84, 86, 88, 91])), .25) * S.rng.uniform(.02, .045),
+                                       S.rng.uniform(-.7, .7)), 3.8, .7), at)
+    elif name == 'flowers':    # the flower stall below Gangolihat: warm, plain
+        mus += S.st(S.drone(sec, (50, 57), 800) * .08)
+        for k in range(int(sec / 3.0)):
+            S.place(mus, S.st(S.pluck([62, 66, 69, 66, 64, 62][k % 6], 1.8) * .09, .15), k * 3.0)
     else:
         raise SystemExit(f'unknown bed {name}')
     return amb, mus
