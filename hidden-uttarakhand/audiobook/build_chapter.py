@@ -38,6 +38,8 @@ VOICES = {   # no loudness or pitch changes: those made Gabbar and Golu sound pu
     'stranger': dict(voice=_V, pace=.98, temp=1.0),
     'umesh': dict(voice=_V, pace=1.02, temp=1.0),                   # the cheerful purohit at Kedarnath
     'dorje': dict(voice=_V, pace=.95, temp=1.0),                    # the old expedition cook on Chandrashila
+    'mahesh': dict(voice=_V, pace=1.04, temp=1.0),                  # Gabbar's cousin, all energy
+    'kamla': dict(voice=_V, pace=.96, temp=1.0),                    # eighty-six, sharp as a blade
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
 GAP_IN, GAP_PARA, GAP_SCENE = .2, .45, 1.5
