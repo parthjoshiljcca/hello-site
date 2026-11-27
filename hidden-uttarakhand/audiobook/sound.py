@@ -504,3 +504,37 @@ def typing(sec=3.0):
         place(out, st(c, .25), k)
         k += rng.uniform(.06, .18)
     return out
+
+
+def rockfall(sec=7.0):
+    """A dry crack high up, then a slope of stones pouring down: rumble, bounces, the big ones close by."""
+    out = np.zeros((int(sec * SR), 2), np.float32)
+    n = int(.25 * SR)
+    crack = band(noise(.25), 900, 6000) * decay(n, .02) * .7
+    place(out, reverb(st(crack, -.2), 3.2, .6), 0)
+    rn = int((sec - 1.2) * SR)
+    rumble = band(noise(sec - 1.2, 'brown'), 30, 400) * env(rn, 1.2, 2.2) * .9
+    place(out, st(rumble), 1.0)
+    for _ in range(160):
+        at = 1.0 + rng.uniform(0, sec - 2.2) ** 1.0
+        g = rng.uniform(.15, .55)
+        x = thump(g)[:int(.3 * SR)]
+        tick = band(noise(.05), 1500, 6000) * decay(int(.05 * SR), .008) * rng.uniform(.05, .2)
+        x[:len(tick)] += st(tick)
+        place(out, x * np.array([1 - rng.uniform(0, .7), 1 - rng.uniform(0, .7)], np.float32), at)
+    for at in (2.6, 3.9):   # the pressure-cooker rock, right beside you
+        place(out, slam() * 1.1, at)
+    return reverb(out, 2.4, .35) * .8
+
+
+def whistle_cut():
+    """A man whistling a pahadi tune by the stove, stopped by a hand on his shoulder before the fourth note."""
+    out = []
+    for m, b in SHEPHERD[:3]:
+        n = int(b * 60 / 92 * SR); tt = np.arange(n) / SR
+        f = hz(m + 12) * (1 + .01 * np.sin(2 * np.pi * 6 * tt))
+        x = np.sin(2 * np.pi * np.cumsum(f) / SR) * .5 + band(noise(n / SR), hz(m + 12) * .9, hz(m + 12) * 1.6) * .08
+        out.append((x * env(n, .03, .06)).astype(np.float32))
+    x = np.concatenate(out)
+    x[-int(.04 * SR):] *= np.linspace(1, 0, int(.04 * SR))
+    return reverb(st(x * .35, .35), 2.0, .3)

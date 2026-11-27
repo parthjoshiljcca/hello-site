@@ -42,6 +42,7 @@ VOICES = {   # no loudness or pitch changes: those made Gabbar and Golu sound pu
     'kamla': dict(voice=_V, pace=.96, temp=1.0),                    # eighty-six, sharp as a blade
     'bisht': dict(voice=_V, pace=1.0, temp=1.0),                    # the kindly inspector at Joshimath
     'local': dict(voice=_V, pace=1.05, temp=1.0),                   # men arguing at a tea stall
+    'hira': dict(voice=_V, pace=.97, temp=1.0),                     # Bhawan Singh's grandson, the Wan porter
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
 GAP_IN, GAP_PARA, GAP_SCENE = .2, .45, 1.5
@@ -391,6 +392,12 @@ def bed(name, sec):
         mus += S.st(S.drone(sec, (45, 52), 700) * .12)
         for k in range(int(sec / .5)):
             S.place(mus, S.st(S.pluck([69, 76][k % 2], .4) * .05, (k % 2) * .5 - .25), k * .5)
+    elif name == 'roopkund':   # the lake of bones at dawn: thin, high, very cold
+        mus += S.st(S.drone(sec, (37, 44), 380) * .24) + S.st(S.strings(sec, (49, 56, 61), 1400) * .1)
+        for k in range(int(sec / 10)):
+            S.place(mus, S.reverb(S.st(S.bell(73, 6) * .05, (k % 2) * .6 - .3), 3.6, .7), 3 + k * 10)
+    elif name == 'rockfall':
+        mus += S.st(S.heartbeat(sec, 118) * .8) + S.st(S.strings(sec, (38, 45, 50), 1900) * .3)
     else:
         raise SystemExit(f'unknown bed {name}')
     return amb, mus
@@ -431,6 +438,8 @@ def sfx(name, voice_cache):
     if name == 'typing': return S.typing(3.5)
     if name == 'drumhit': return S.reverb(S.st(S.drum('low') * 1.2), 2.4, .4) + S.reverb(S.st(S.drum('low') * .9), 2.4, .4)
     if name == 'ping': return S.ping()
+    if name == 'rockfall': return S.rockfall(7.0)
+    if name == 'whistle': return S.whistle_cut()
     if name == 'phonevideo': return voice_cache['phonevideo']
     if name == 'call_far': return voice_cache['forest'] * .55
     if name == 'call_parth': return voice_cache['parth'] * .8
@@ -515,7 +524,7 @@ def build(name):
     # after every reveal (a sting), the beds drop away for a held breath, then come back
     dip = np.ones(n, np.float32)
     for i, c in cues:
-        if c in ('sfx:sting', 'sfx:crash'):
+        if c in ('sfx:sting', 'sfx:crash', 'sfx:whistle'):
             a0 = int((at_para(i) + .3) * SR)
             shape = np.concatenate([np.linspace(1, .12, int(.25 * SR)), np.full(int(1.6 * SR), .12), np.linspace(.12, 1, int(1.2 * SR))])
             seg = dip[a0:a0 + len(shape)]
