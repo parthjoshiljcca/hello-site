@@ -44,6 +44,7 @@ VOICES = {   # no loudness or pitch changes: those made Gabbar and Golu sound pu
     'local': dict(voice=_V, pace=1.05, temp=1.0),                   # men arguing at a tea stall
     'ija': dict(voice=_V, pace=.95, temp=1.0),                      # Gabbar's mother, tiny, unhurried, the boss
     'god': dict(voice=_V, pace=.8, temp=.8, fx='god'),              # the god speaking through the dangariya at the Jagar
+    'dhami': dict(voice=_V, pace=.96, temp=.9),                     # the retired ITBP Commandant at Chitai, measured
     'hira': dict(voice=_V, pace=.97, temp=1.0),                     # Bhawan Singh's grandson, the Wan porter
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
@@ -423,6 +424,22 @@ def bed(name, sec):
             S.place(mus, S.st(S.drum('low' if k % 2 == 0 else 'high') * (.42 if k % 2 == 0 else .26), (k % 3 - 1) * .25), tk)
             S.place(mus, S.st(S.thali(.07), .45), tk + gap / 2)
             k += 1; tk += gap
+    elif name == 'bells':      # the grove at Chitai: thousands of bells, all speaking softly at once
+        mus += S.st(S.drone(sec, (48, 55, 60), 700) * .1)
+        k = 0
+        for at in np.cumsum(S.rng.exponential(.35, int(sec / .35) + 10)):
+            if at > sec - 1:
+                break
+            m = int(S.rng.choice([79, 81, 84, 86, 88, 91, 93]))
+            S.place(mus, S.st(S.bell(m, 2.5) * S.rng.uniform(.015, .05), S.rng.uniform(-.8, .8)), at)
+        for k in range(int(sec / 13)):
+            S.place(mus, S.temple_bell() * .14, 5 + k * 13)
+    elif name == 'petition':   # reading the petitions on the railing: a slow, tender pluck over the bells
+        mus += S.st(S.drone(sec, (48, 55), 650) * .1)
+        for k in range(int(sec / 3.6)):
+            S.place(mus, S.st(S.pluck([72, 67, 69, 64][k % 4], 2.6) * .08, -.15), k * 3.6)
+        for at in np.arange(1.3, sec - 1, 1.7):
+            S.place(mus, S.st(S.bell(int(S.rng.choice([84, 88, 91])), 2.0) * .02, S.rng.uniform(-.8, .8)), at)
     else:
         raise SystemExit(f'unknown bed {name}')
     return amb, mus
