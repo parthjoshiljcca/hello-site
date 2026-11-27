@@ -347,6 +347,18 @@ def bed(name, sec):
         for k in range(int(sec / .72)):
             S.place(drums, S.st(S.drum('low') * .2, .5), k * .72)
         mus += S.reverb(S.band(drums, 50, 900), 3.4, .8) * .5
+    elif name == 'docu':
+        mus += S.st(S.drone(sec, (45, 52), 650) * .16)
+        for k in range(int(sec / 1.0)):
+            S.place(mus, S.st(S.pluck([57, 57, 60, 57][k % 4], .6) * .06, .2), k * 1.0)
+    elif name == 'storm':
+        mus += S.st(S.strings(sec, (38, 45, 50), 1400) * .3) + S.st(S.drone(sec, (33, 40), 300) * .3)
+        for k in range(int(sec / 2.4)):
+            S.place(mus, S.reverb(S.st(S.drum('low') * .3), 2.8, .6), k * 2.4)
+    elif name == 'cold':
+        mus += S.st(S.drone(sec, (40, 47, 52), 500) * .22) + S.st(S.strings(sec, (40, 47), 900) * .12)
+        for k in range(int(sec / 8)):
+            S.place(mus, S.reverb(S.st(S.bell(76, 5) * .06), 3.2, .6), 2 + k * 8)
     else:
         raise SystemExit(f'unknown bed {name}')
     return amb, mus
