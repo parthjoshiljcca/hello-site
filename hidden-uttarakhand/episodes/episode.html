@@ -95,6 +95,23 @@
                font:800 32px Mukta; color:#fff; box-shadow:0 10px 40px rgba(210,70,90,.5); }
   #next .sub svg { width:38px; height:38px; }
 
+  #tcard { position:absolute; left:0; right:0; top:36%; text-align:center; padding:0 80px; opacity:0; }
+  #tcard .t { font:96px/1.25 Tiro; color:var(--snow); text-shadow:0 0 40px rgba(160,200,255,.35), 0 6px 30px rgba(0,0,0,.9); }
+  #tcard .s { font:500 46px/1.4 Mukta; color:var(--gold); margin-top:26px; text-shadow:0 4px 20px rgba(0,0,0,.9); }
+  #vcv { display:none; }
+  body.v, body.v html { width:1080px; height:1920px; }
+  body.v #cv { display:none; }
+  body.v #vcv { display:block; }
+  body.v #capwrap { bottom:330px; }
+  body.v #cap { max-width:980px; font-size:58px; padding:10px 30px 16px; }
+  body.v #big { font-size:120px; top:36%; padding:0 40px; }
+  body.v #big.god { font-size:72px; }
+  body.v #tcard { top:34%; padding:0 60px; }
+  body.v #tcard .t { font-size:84px; }
+  body.v #tcard .s { font-size:44px; }
+  body.v #diary { width:980px; height:1100px; margin:-620px 0 0 -490px; }
+  body.v #diary .tx { font-size:46px; }
+  body.v #hud { left:50px; top:60px; }
   #flash { position:absolute; inset:0; background:#fff; opacity:0; }
   #vig { position:absolute; inset:0; background:radial-gradient(ellipse 75% 70% at 50% 50%, transparent 50%, rgba(0,0,0,.72) 100%); }
   #pulse { position:absolute; inset:0; background:radial-gradient(ellipse 70% 65% at 50% 50%, transparent 40%, rgba(150,20,40,.65) 100%); opacity:0; }
@@ -103,6 +120,8 @@
 </head>
 <body>
 <canvas id="cv" width="1920" height="1080"></canvas>
+<canvas id="vcv" width="1080" height="1920"></canvas>
+<script>if (new URLSearchParams(location.search).get('v')) { document.body.classList.add('v'); document.documentElement.style.width = '1080px'; document.documentElement.style.height = '1920px'; }</script>
 <div id="stage">
   <div id="shadow"></div>
   <div id="book">
@@ -129,6 +148,7 @@
 <div id="big"></div>
 <div id="card"><div class="h" id="cardH"></div><canvas id="wave" class="w" width="650" height="70" style="position:relative"></canvas></div>
 <div id="capwrap"><div id="who"></div><div id="cap"></div></div>
+<div id="tcard"><div class="t" id="tcT"></div><div class="s" id="tcS"></div></div>
 <div id="pulse"></div>
 <div id="vig"></div>
 <div id="next"><div class="bk"><div id="nbk"></div></div><div class="tx">
@@ -140,6 +160,7 @@
 <div id="fade"></div>
 <script>
 const W = 1920, H = 1080, cv = document.getElementById('cv'), cx = cv.getContext('2d');
+const V = !!new URLSearchParams(location.search).get('v'), vx = document.getElementById('vcv').getContext('2d');
 const $ = id => document.getElementById(id);
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
 const ease = x => (x = clamp(x), x * x * (3 - 2 * x));
@@ -433,12 +454,13 @@ const off = document.createElement('canvas'); off.width = W; off.height = H; con
 
 function render(t) {
   const D = EP.duration, cam = 110 * Math.sin(t * .045) + 70 * Math.sin(t * .013 + 1.1);
+  const promo = EP.mode === 'promo', BA = EP.bookAt || 0, bt = t - BA;
   // --- picture: the intro sky, then the story's scenes with a crossfade at each change
-  const story = ease((t - 11.6) / 2.4);
+  const story = promo ? clamp(t / .6) * (1 - ease((t - (BA - .6)) / 1.2)) : ease((t - 11.6) / 2.4);
   cx.globalAlpha = 1;
   drawScene(cx, { bed: 'night', kind: 'night', tod: 'night' }, t, cam * .3);
   cx.fillStyle = `rgba(3,5,10,${.55 * (1 - story)})`; cx.fillRect(0, 0, W, H);
-  if (t > 11.5) {
+  if (promo || t > 11.5) {
     const [s] = sceneAt(t);
     const idx = SC.indexOf(s), prev = idx > 0 ? SC[idx - 1] : null, k = prev ? ease((t - s.at) / 1.4) : 1;
     ox.globalAlpha = 1; drawScene(ox, s, t, cam);
@@ -446,31 +468,40 @@ function render(t) {
     else { cx.globalAlpha = story; cx.drawImage(off, 0, 0); }
     cx.globalAlpha = 1;
   }
-  if (t < 13) particles(cx, t, 70, 77, 'rgba(230,192,106,.85)', -.25, 1.8);
+  if (promo ? bt > 0 : t < 13) particles(cx, t, 70, 77, 'rgba(230,192,106,.85)', -.25, 1.8);
+  if (V) vx.drawImage(cv, 656, 0, 608, 1080, 0, 0, 1080, 1920);
 
   // --- the book: floats in, turns to face us, opens, the chapter page fills in, then we push into the page
-  const bookIn = ease(t / 1.6), turn = ease((t - 1.2) / 2.6), open = ease((t - 4.4) / 2.4), push = ease((t - 11.2) / 2.8);
+  const bookIn = ease(bt / 1.6), turn = ease((bt - 1.2) / 2.6), open = ease((bt - 4.4) / 2.4), push = promo ? 0 : ease((bt - 11.2) / 2.8);
   const book = $('book'), cover = $('cover');
   const bx = lerp(0, 230, open), ry = lerp(-32, -6, turn) + 6 * open, rx = lerp(14, 4, turn);
-  const sc = lerp(.82, 1, bookIn) * lerp(1, 3.4, push);
+  const sc = lerp(.82, 1, bookIn) * lerp(1, 3.4, push) * (V ? .84 : 1);
   book.style.transform = `translateX(${bx + push * -400}px) translateY(${push * 120}px) translateZ(${lerp(-400, 0, bookIn)}px) rotateX(${rx * (1 - push)}deg) rotateY(${ry * (1 - push)}deg) scale(${sc})`;
   cover.style.transform = `rotateY(${-172 * open}deg)`;
-  $('stage').style.opacity = clamp(1 - (t - 12.6) / 1.2);
+  $('stage').style.opacity = promo ? (bt < 0 ? 0 : clamp(bt / .6)) : clamp(1 - (t - 12.6) / 1.2);
   $('shadow').style.opacity = clamp(bookIn * (1 - push) * .9);
   const tl = EP.title, show = (el, a) => { el.style.opacity = a; el.style.transform = `translateY(${(1 - a) * 18}px)`; };
-  show($('pLab'), ease((t - 6.2) / .7));
-  show($('pEn'), ease((t - 7.0) / .8));
-  $('pLab').style.textShadow = `0 0 ${30 * ease((t - (tl[2] ? tl[2].start : 9)) / .4) * clamp(1 - (t - (tl[2] ? tl[2].end : 10)) / 1.5)}px rgba(184,150,63,.8)`;
-  show($('pDay'), ease((t - (tl[3] ? tl[3].start : 9) + .2) / .6));
+  show($('pLab'), ease((bt - 6.2) / .7));
+  show($('pEn'), ease((bt - 7.0) / .8));
+  const g0 = tl[2] ? tl[2].start : 9 + BA, g1 = tl[2] ? tl[2].end : 10 + BA;
+  $('pLab').style.textShadow = `0 0 ${30 * ease((t - g0) / .4) * clamp(1 - (t - g1) / 1.5)}px rgba(184,150,63,.8)`;
+  show($('pDay'), ease((t - (tl[3] ? tl[3].start : 9 + BA) + .2) / .6));
   $('fade').style.opacity = clamp(1 - t / 1.0) + clamp((t - (D - 1.2)) / 1.2);
 
   // --- heads-up: brand, episode, place, progress
-  const hud = ease((t - 13.2) / 1.2) * (1 - ease((t - (D - 13)) / 1));
+  const hud = promo ? 0 : ease((t - 13.2) / 1.2) * (1 - ease((t - (D - 13)) / 1));
   $('hud').style.opacity = hud; $('place').style.opacity = EP.title[3] ? hud : 0;
   $('bar').style.width = (W * clamp((t - T0) / (D - 13 - T0))) + 'px'; $('bar').style.opacity = hud;
 
   // --- captions, the diary page, the big moments
-  const c = t > T0 - .1 && t < D - 12.5 ? capAt(t) : null;
+  const c = (promo ? t < BA : t > T0 - .1 && t < D - 12.5) ? capAt(t) : null;
+  const tc = (EP.cards || []).find(k => t >= k.at && t < k.end);
+  if (tc) {
+    const a = ease((t - tc.at) / .5) * ease((tc.end - t) / .5);
+    $('tcT').textContent = tc.text; $('tcS').textContent = tc.sub;
+    $('tcard').style.opacity = a; $('tcard').style.transform = `scale(${1.06 - .06 * ease((t - tc.at) / 2.5)})`;
+    $('tcS').style.opacity = ease((t - tc.at - .9) / .6);
+  } else $('tcard').style.opacity = 0;
   const inDiary = !!(c && c.diary);
   $('diary').style.opacity = inDiary ? 1 : 0;
   const capEl = $('cap'), whoEl = $('who'), bigEl = $('big');
@@ -505,7 +536,7 @@ function render(t) {
     if (h.fx === 'heartbeat' && d < 22) pulse = Math.max(pulse, .5 + .5 * Math.sin(d * 6.7));
   }
   $('flash').style.opacity = flash; $('pulse').style.opacity = pulse * .8;
-  cv.style.transform = shake ? `translate(${Math.sin(t * 90) * shake}px, ${Math.cos(t * 70) * shake}px) scale(1.02)` : '';
+  (V ? $('vcv') : cv).style.transform = shake ? `translate(${Math.sin(t * 90) * shake}px, ${Math.cos(t * 70) * shake}px) scale(1.02)` : '';
 
   // --- the next-episode card over the closing theme
   const nk = ease((t - (D - 12)) / 1.2);

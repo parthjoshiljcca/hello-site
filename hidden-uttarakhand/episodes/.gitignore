@@ -1,3 +1,4 @@
 stills/
 logs/
 out/.partial-*
+audio/_*.wav

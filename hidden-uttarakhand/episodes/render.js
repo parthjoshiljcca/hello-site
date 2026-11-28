@@ -13,13 +13,16 @@ const DIR = __dirname, FPS = 30;
 const name = process.argv[2];
 const opt = (k, d) => (process.argv.find(a => a.startsWith(`--${k}=`)) || `=${d}`).split('=')[1];
 const STILLS = opt('stills', ''), TO = parseFloat(opt('to', '0'));
-const AUDIO = path.join(DIR, '..', 'audiobook', 'out', `${name}.mp3`);
+const VERT = process.argv.includes('--v');            // 9:16 (1080x1920) instead of 16:9
+const PROMO_AUDIO = path.join(DIR, 'audio', `${name}.mp3`);
+const AUDIO = fs.existsSync(PROMO_AUDIO) ? PROMO_AUDIO : path.join(DIR, '..', 'audiobook', 'out', `${name}.mp3`);
+const VW = VERT ? 1080 : 1920, VH = VERT ? 1920 : 1080, TAG = VERT ? '-9x16' : '';
 
 (async () => {
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ viewport: { width: VW, height: VH }, deviceScaleFactor: 1 });
   page.on('pageerror', e => { console.error(e); process.exit(1); });
-  await page.goto('file://' + path.join(DIR, 'episode.html') + '?ep=' + name);
+  await page.goto('file://' + path.join(DIR, 'episode.html') + '?ep=' + name + (VERT ? '&v=1' : ''));
   await page.evaluate(async () => { await window.ready; });
   const D = await page.evaluate(() => window.EP.duration);
 
@@ -27,14 +30,14 @@ const AUDIO = path.join(DIR, '..', 'audiobook', 'out', `${name}.mp3`);
     fs.mkdirSync(path.join(DIR, 'stills'), { recursive: true });
     for (const t of STILLS.split(',').map(Number)) {
       await page.evaluate(t => render(t), t);
-      await page.screenshot({ path: path.join(DIR, 'stills', `${name}-${t}.png`) });
+      await page.screenshot({ path: path.join(DIR, 'stills', `${name}${TAG}-${t}.png`) });
     }
     return browser.close();
   }
 
   const end = TO || D;
   fs.mkdirSync(path.join(DIR, 'out'), { recursive: true });
-  const out = path.join(DIR, 'out', `hidden-uttarakhand-${name}${TO ? '-preview' : ''}.mp4`);
+  const out = path.join(DIR, 'out', `hidden-uttarakhand-${name}${TAG}${TO ? '-preview' : ''}.mp4`);
   const partial = path.join(DIR, 'out', `.partial-${path.basename(out)}`);   // renamed only once complete
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
     '-i', AUDIO, '-map', '0:v', '-map', '1:a', '-t', String(end),
