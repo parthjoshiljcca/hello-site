@@ -48,6 +48,8 @@ VOICES = {   # no loudness or pitch changes: those made Gabbar and Golu sound pu
     'dhana': dict(voice=_V, pace=.96, temp=1.0),                    # Kundan Singh's daughter-in-law at the flower stall
     'guide': dict(voice=_V, pace=1.0, temp=1.0),                    # the cave keeper and the young guide at Patal Bhuvaneshwar
     'kishan': dict(voice=_V, pace=1.0, temp=1.0),                   # the herdsman below Abbott Mount
+    'gaurav': dict(voice=_V, pace=.97, temp=.9),                    # Golu without the act: soft, steady, pahadi
+    'deepak': dict(voice=_V, pace=1.06, temp=1.0, fx='voicenote'),  # Deepak's last voice note, over a satellite phone in the wind
     'hira': dict(voice=_V, pace=.97, temp=1.0),                     # Bhawan Singh's grandson, the Wan porter
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
@@ -105,6 +107,11 @@ def fx(a, kind):
     if kind == 'forest':
         y = S.band(a, 250, 2600) * .5
         return S.reverb(S.st(y, -.5), 3.5, .75)          # stereo, far off to the left
+    if kind == 'voicenote':                               # a satellite-phone line: narrow, a little broken, wind behind it
+        y = S.band(a, 300, 3400, 3)
+        y = np.tanh(y * 2.5 / max(1e-6, np.abs(y).max())) * .42
+        wind = S.band(S.noise(len(y) / SR, 'pink'), 200, 1800) * .05
+        return S.st((y + wind[:len(y)]).astype(np.float32))
     if kind == 'god':                                     # same voice, a little lower in the band, in a big still space
         y = S.band(a, 90, 5000) * .9
         return S.reverb(S.st(y), 3.0, .45)
