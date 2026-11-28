@@ -583,3 +583,36 @@ def bark(g=.25):
         x = x + band(noise(.16), 500, 3000) * env(n, .005, .06) * .6
         place(out, (np.tanh(x * 2) * g).astype(np.float32), k * .3)
     return out
+
+
+def ringtone(sec=5.0):
+    """A Garhwali wedding tune as a ringtone, out of a phone speaker at full volume: dhol and a bright melody."""
+    out = np.zeros(int(sec * SR), np.float32)
+    k = 0.0
+    while k < sec - .4:
+        place(out, drum('low')[:int(.3 * SR)] * .5, k)
+        place(out, drum('high')[:int(.2 * SR)] * .35, k + .19)
+        place(out, drum('high')[:int(.2 * SR)] * .3, k + .28)
+        k += .38
+    tune = [74, 76, 79, 76, 74, 72, 74, 76, 79, 81, 79, 76, 74, 72, 71, 72]
+    for i, m in enumerate(tune * 2):
+        if i * .19 > sec - .3:
+            break
+        place(out, pluck(m, .22) * .45, i * .19)
+    y = band(out, 450, 3800, 3)
+    return st(np.tanh(y * 3 / max(1e-6, np.abs(y).max())) * .4, .1)
+
+
+def kafal_bird():
+    """Two hill birds calling to each other: one five-note call, one sad three-note answer."""
+    out = np.zeros(int(4.5 * SR), np.float32)
+    def note(f, d):
+        n = int(d * SR); tt = np.arange(n) / SR
+        return (np.sin(2 * np.pi * np.cumsum(f * (1 + .03 * np.sin(2 * np.pi * 9 * tt))) / SR) * env(n, .02, .06)).astype(np.float32)
+    at = 0.0
+    for f, d in ((1500, .16), (1700, .16), (1500, .16), (1300, .2), (1200, .3)):
+        place(out, note(f, d) * .2, at); at += d + .05
+    at += .7
+    for f, d in ((1250, .22), (1100, .22), (980, .4)):
+        place(out, note(f, d) * .15, at); at += d + .07
+    return reverb(st(out, -.2), 2.6, .5)

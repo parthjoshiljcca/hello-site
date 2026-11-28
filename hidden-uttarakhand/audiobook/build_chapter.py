@@ -50,6 +50,8 @@ VOICES = {   # no loudness or pitch changes: those made Gabbar and Golu sound pu
     'kishan': dict(voice=_V, pace=1.0, temp=1.0),                   # the herdsman below Abbott Mount
     'gaurav': dict(voice=_V, pace=.97, temp=.9),                    # Golu without the act: soft, steady, pahadi
     'deepak': dict(voice=_V, pace=1.06, temp=1.0, fx='voicenote'),  # Deepak's last voice note, over a satellite phone in the wind
+    'bhaguli': dict(voice=_V, pace=.94, temp=1.0),                  # Bhaguli Amma, seventy-eight, at her fire on Khaliya
+    'mummyphone': dict(voice=_V, pace=1.0, temp=1.0, fx='speaker'),  # Mummy on speakerphone across the bugyal at 3:14 a.m.
     'hira': dict(voice=_V, pace=.97, temp=1.0),                     # Bhawan Singh's grandson, the Wan porter
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
@@ -107,6 +109,10 @@ def fx(a, kind):
     if kind == 'forest':
         y = S.band(a, 250, 2600) * .5
         return S.reverb(S.st(y, -.5), 3.5, .75)          # stereo, far off to the left
+    if kind == 'speaker':                                 # a phone on full-volume speaker, carrying across a silent meadow
+        y = S.band(a, 350, 3600, 3)
+        y = np.tanh(y * 3 / max(1e-6, np.abs(y).max())) * .6
+        return S.reverb(S.st(y.astype(np.float32)), 2.4, .35)
     if kind == 'voicenote':                               # a satellite-phone line: narrow, a little broken, wind behind it
         y = S.band(a, 300, 3400, 3)
         y = np.tanh(y * 2.5 / max(1e-6, np.abs(y).max())) * .42
@@ -518,6 +524,8 @@ def sfx(name, voice_cache):
     if name == 'thali': return S.reverb(S.st(S.thali(.3), .3), 2.4, .4)
     if name == 'dogs': return .5 * (S.reverb(S.st(S.bark(.3), -.4), 1.8, .35) + S.reverb(S.st(np.roll(S.bark(.22), int(.35 * SR)), .5), 1.8, .35))
     if name == 'airisong': return voice_cache['airisong']
+    if name == 'ringtone': return S.ringtone(5.0) * 1.2
+    if name == 'kafal': return S.kafal_bird() * .3
     if name == 'rockfall': return S.rockfall(7.0)
     if name == 'whistle': return S.whistle_cut()
     if name == 'phonevideo': return voice_cache['phonevideo']
