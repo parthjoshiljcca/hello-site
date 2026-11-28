@@ -480,6 +480,19 @@ def bed(name, sec):
         for at in np.arange(6, sec - 2, 7.5):
             S.place(procession, S.reverb(S.st(S.bark(S.rng.uniform(.15, .25)), S.rng.uniform(-.8, .8)), 1.8, .35), at + S.rng.uniform(0, 2))
         mus += procession * grow
+    elif name == 'rajula':     # an old man with a dhol at a Munsiyari tea shop, singing the oldest love story in Kumaon
+        mus += S.st(S.drone(sec, (45, 52, 57), 700) * .14)
+        for k in range(int(sec / .9)):
+            S.place(mus, S.st(S.drum('low' if k % 3 == 0 else 'high') * (.28 if k % 3 == 0 else .14), .25), k * .9)
+        fl = S.reverb(S.st(S.flute(S.SHEPHERD, 56) * .2, -.25), 2.6, .4)
+        for at in np.arange(3.0, sec - 10, 26):
+            S.place(mus, fl, at)
+    elif name == 'farewell':   # the drive down to Kathgodam, windows open, old songs on the stereo
+        mus += S.st(S.drone(sec, (50, 57, 62), 900) * .12)
+        for k in range(int(sec / 2.4)):
+            S.place(mus, S.st(S.pluck([62, 66, 69, 74, 71, 69, 66, 64][k % 8], 1.6) * .1, (k % 2) * .3 - .15), k * 2.4)
+        fl = S.reverb(S.st(S.flute(S.SHEPHERD, 72) * .2, .2), 2.4, .35)
+        S.place(mus, fl, 2.0)
     else:
         raise SystemExit(f'unknown bed {name}')
     return amb, mus
