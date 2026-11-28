@@ -37,7 +37,7 @@ const AUDIO = path.join(DIR, '..', 'audiobook', 'out', `${name}.mp3`);
   const out = path.join(DIR, 'out', `hidden-uttarakhand-${name}${TO ? '-preview' : ''}.mp4`);
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
     '-i', AUDIO, '-map', '0:v', '-map', '1:a', '-t', String(end),
-    '-c:v', 'libx264', '-preset', 'medium', '-crf', '20', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k',
+    '-c:v', 'libx264', '-preset', 'slow', '-tune', 'animation', '-crf', '29', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k',
     '-movflags', '+faststart', out], { stdio: ['pipe', 'inherit', 'inherit'] });
   const done = new Promise((res, rej) => ff.on('exit', c => (c ? rej(new Error('ffmpeg failed')) : res())));
   const N = Math.round(end * FPS);

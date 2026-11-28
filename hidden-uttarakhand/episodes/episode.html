@@ -348,10 +348,14 @@ function cave(c, t) {
   c.fillStyle = '#060a10'; c.fillRect(0, 0, W, H);
   const g = c.createRadialGradient(960, 600, 40, 960, 600, 800); g.addColorStop(0, 'rgba(90,150,170,.35)'); g.addColorStop(1, 'rgba(0,0,0,0)');
   c.fillStyle = g; c.fillRect(0, 0, W, H);
-  c.fillStyle = '#0d151f'; const r = rng(21);
+  const r = rng(21);
   for (let i = 0; i < 40; i++) { const x = r() * W, h = 80 + r() * 260, w = 20 + r() * 50;
+    const near = 1 - Math.min(1, Math.abs(x - 960) / 900);
+    const rg = c.createLinearGradient(x - w, 0, x + w, 0); rg.addColorStop(0, '#0b131c'); rg.addColorStop(.5, `rgba(${60 + 70 * near},${110 + 70 * near},${120 + 70 * near},1)`); rg.addColorStop(1, '#0b131c');
+    c.fillStyle = rg;
     c.beginPath(); c.moveTo(x - w, 0); c.lineTo(x, h); c.lineTo(x + w, 0); c.fill();
     c.beginPath(); c.moveTo(x - w * 1.3, H); c.lineTo(x + 30, H - h * .7); c.lineTo(x + w * 1.3, H); c.fill(); }
+  c.fillStyle = 'rgba(4,8,12,.35)'; c.fillRect(0, 0, W, H);
   for (let i = 0; i < 12; i++) { const x = rng(i + 3)() * W, ph = (t * .5 + i * .37) % 1;   // drips
     c.globalAlpha = 1 - ph; c.fillStyle = '#9fd3dc'; c.beginPath(); c.arc(x, 120 + ph * 700, 4, 0, 6.3); c.fill(); }
   c.globalAlpha = 1;
@@ -428,7 +432,7 @@ window.ready = ready;
 const off = document.createElement('canvas'); off.width = W; off.height = H; const ox = off.getContext('2d');
 
 function render(t) {
-  const D = EP.duration, cam = 120 * Math.sin(t * .045) + t * 2.2;
+  const D = EP.duration, cam = 110 * Math.sin(t * .045) + 70 * Math.sin(t * .013 + 1.1);
   // --- picture: the intro sky, then the story's scenes with a crossfade at each change
   const story = ease((t - 11.6) / 2.4);
   cx.globalAlpha = 1;
