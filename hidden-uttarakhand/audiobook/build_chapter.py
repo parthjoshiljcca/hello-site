@@ -52,6 +52,7 @@ VOICES = {   # no loudness or pitch changes: those made Gabbar and Golu sound pu
     'deepak': dict(voice=_V, pace=1.06, temp=1.0, fx='voicenote'),  # Deepak's last voice note, over a satellite phone in the wind
     'bhaguli': dict(voice=_V, pace=.94, temp=1.0),                  # Bhaguli Amma, seventy-eight, at her fire on Khaliya
     'mummyphone': dict(voice=_V, pace=1.0, temp=1.0, fx='speaker'),  # Mummy on speakerphone across the bugyal at 3:14 a.m.
+    'hod': dict(voice=_V, pace=.97, temp=.9),                       # Parth's Head of Department, over his glasses
     'hira': dict(voice=_V, pace=.97, temp=1.0),                     # Bhawan Singh's grandson, the Wan porter
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
