@@ -47,6 +47,7 @@ VOICES = {   # no loudness or pitch changes: those made Gabbar and Golu sound pu
     'dhami': dict(voice=_V, pace=.96, temp=.9),                     # the retired ITBP Commandant at Chitai, measured
     'dhana': dict(voice=_V, pace=.96, temp=1.0),                    # Kundan Singh's daughter-in-law at the flower stall
     'guide': dict(voice=_V, pace=1.0, temp=1.0),                    # the cave keeper and the young guide at Patal Bhuvaneshwar
+    'kishan': dict(voice=_V, pace=1.0, temp=1.0),                   # the herdsman below Abbott Mount
     'hira': dict(voice=_V, pace=.97, temp=1.0),                     # Bhawan Singh's grandson, the Wan porter
     'forest': dict(voice=_V, pace=.7, temp=1.0, fx='forest'),       # the call from the trees: same voice, far off
 }
@@ -453,6 +454,19 @@ def bed(name, sec):
         mus += S.st(S.drone(sec, (50, 57), 800) * .08)
         for k in range(int(sec / 3.0)):
             S.place(mus, S.st(S.pluck([62, 66, 69, 66, 64, 62][k % 6], 1.8) * .09, .15), k * 3.0)
+    elif name == 'airi':       # Airi's procession out of the fog: cattle bells swinging closer, a slow drum, dogs
+        grow = np.linspace(.35, 1.0, int(sec * SR)).astype(np.float32)[:, None]
+        procession = np.zeros((int(sec * SR), 2), np.float32)
+        procession += S.st(S.drone(sec, (38, 45, 50), 450) * .22)
+        for k in range(int(sec / 2.2)):
+            S.place(procession, S.reverb(S.st(S.drum('low') * .3), 2.8, .5), k * 2.2)
+        for at in np.cumsum(S.rng.exponential(.45, int(sec / .45) + 10)):
+            if at > sec - 1.5:
+                break
+            S.place(procession, S.reverb(S.st(S.cattle_bell(S.rng.uniform(.06, .12)), S.rng.uniform(-.7, .7)), 2.2, .45), at)
+        for at in np.arange(6, sec - 2, 7.5):
+            S.place(procession, S.reverb(S.st(S.bark(S.rng.uniform(.15, .25)), S.rng.uniform(-.8, .8)), 1.8, .35), at + S.rng.uniform(0, 2))
+        mus += procession * grow
     else:
         raise SystemExit(f'unknown bed {name}')
     return amb, mus
@@ -495,6 +509,8 @@ def sfx(name, voice_cache):
     if name == 'ping': return S.ping()
     if name == 'silence': return np.zeros((SR, 2), np.float32)   # only the held dip in the beds
     if name == 'thali': return S.reverb(S.st(S.thali(.3), .3), 2.4, .4)
+    if name == 'dogs': return .5 * (S.reverb(S.st(S.bark(.3), -.4), 1.8, .35) + S.reverb(S.st(np.roll(S.bark(.22), int(.35 * SR)), .5), 1.8, .35))
+    if name == 'airisong': return voice_cache['airisong']
     if name == 'rockfall': return S.rockfall(7.0)
     if name == 'whistle': return S.whistle_cut()
     if name == 'phonevideo': return voice_cache['phonevideo']
@@ -569,6 +585,9 @@ def build(name):
         S.place(mus, S.fade(m, 2.0, 2.2), start)
     cache = {'forest': fx(trim(speak('क्षि…तिज…', VOICES['forest']['voice'], .7, 1.0)), 'forest'),
              'parth': fx(trim(speak('पा…र्थ…', VOICES['forest']['voice'], .7, 1.0)), 'forest')}
+    if any(c == 'sfx:airisong' for _, c in cues):    # Gabbar singing his naani's Airi jagar, out in the fog
+        v = trim(speak('ऐड़ी देवा… ऐड़ी देवा… हो…', VOICES['gabbar']['voice'], .72, 1.0))
+        cache['airisong'] = S.reverb(S.st(S.band(v, 120, 4000) * .5, -.3), 3.4, .65)
     if any(c == 'sfx:phonevideo' for _, c in cues):   # Golu's video played out of a phone, across the ghat
         v = trim(speak('घोस्ट फ़ैमिली… वो देखो… सफ़ेद साया…', VOICES['golu']['voice'], 1.0, 1.0))
         v = S.band(v, 500, 3200, 3)

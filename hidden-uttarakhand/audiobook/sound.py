@@ -561,3 +561,25 @@ def thali(g=.12):
     x = sum(a * np.sin(2 * np.pi * f * tt) * np.exp(-tt * d) for f, a, d in ((610, 1, 3.5), (1490, .6, 5), (2710, .4, 7), (3930, .25, 9)))
     x += band(noise(1.4), 3000, 9000) * np.exp(-tt * 40) * .4
     return (x * g).astype(np.float32)
+
+
+def cattle_bell(g=.1):
+    """A big brass cattle bell swung once: hollow, clanky, low."""
+    n = int(1.6 * SR); tt = np.arange(n) / SR
+    f0 = rng.uniform(380, 620)
+    x = sum(a * np.sin(2 * np.pi * f0 * r * tt) * np.exp(-tt * d) for r, a, d in ((1, 1, 3), (2.3, .7, 4.5), (3.9, .4, 6), (5.2, .25, 9)))
+    x += band(noise(1.6), 1500, 6000) * np.exp(-tt * 50) * .5
+    return (x * g).astype(np.float32)
+
+
+def bark(g=.25):
+    """A village dog barking twice, out in the fog."""
+    out = np.zeros(int(.7 * SR), np.float32)
+    for k in range(2):
+        n = int(.16 * SR); tt = np.arange(n) / SR
+        f = 520 * np.exp(-tt * 4) + 260
+        ph = 2 * np.pi * np.cumsum(f) / SR
+        x = (np.sin(ph) + .5 * np.sin(2 * ph) + .3 * np.sin(3 * ph)) * env(n, .01, .08)
+        x = x + band(noise(.16), 500, 3000) * env(n, .005, .06) * .6
+        place(out, (np.tanh(x * 2) * g).astype(np.float32), k * .3)
+    return out
