@@ -22,8 +22,9 @@ def _no_api():
 tts.client = _no_api
 import build_chapter as B                     # noqa: E402
 
-ORDER = ['prologue'] + [f'ch{i}' for i in range(1, 16)] + ['end']
-EN = {'prologue': 'Prologue', 'ch1': 'Room Locked, Lady Dead, Professor Hungry', 'ch2': 'Rule One: Never Look Back at the Ghat',
+ORDER = ['dedication', 'cast', 'preface', 'note', 'intro', 'prologue'] + [f'ch{i}' for i in range(1, 16)] + ['end']   # the book's own order
+EN = {'dedication': 'Dedication', 'cast': 'The Cast', 'preface': 'Preface', 'note': "Author's Note",
+      'intro': 'Introduction: What Happened on Nanda Devi, 1965', 'prologue': 'Prologue', 'ch1': 'Room Locked, Lady Dead, Professor Hungry', 'ch2': 'Rule One: Never Look Back at the Ghat',
       'ch3': 'The Water That Cost a Son', 'ch4': 'The Rock That Stopped a River', 'ch5': 'Five Pieces of a God',
       'ch6': 'The Village That Never Forgave Hanuman', 'ch7': 'The CIA Left Something on Our Mountain',
       'ch8': 'Who Brought the Greeks to Skeleton Lake?', 'ch9': 'The Night the Drums Woke the Gods',
@@ -31,9 +32,14 @@ EN = {'prologue': 'Prologue', 'ch1': 'Room Locked, Lady Dead, Professor Hungry',
       'ch12': 'The Doctor Who Knew Who Would Die', 'ch13': 'The Tigress Nobody Could Stop',
       'ch14': "Don't Answer If the Forest Calls Your Name", 'ch15': 'Some Questions the Mountains Keep',
       'end': 'Epilogue: Ten Months Later'}
-LABEL = {'prologue': 'प्रोलॉग', 'end': 'एपिलॉग', **{f'ch{i}': f'एपिसोड {i}' for i in range(1, 16)}}
+LABEL = {'dedication': 'डेडिकेशन', 'cast': 'द कास्ट', 'preface': 'प्रीफ़ेस', 'note': 'ऑथर्स नोट', 'intro': 'इंट्रोडक्शन', 'prologue': 'प्रोलॉग', 'end': 'एपिलॉग', **{f'ch{i}': f'एपिसोड {i}' for i in range(1, 16)}}
 # a line from the next episode for the "next time" card: a hook, never a spoiler of how it ends
-HOOK = {'ch1': 'मसूरी का एक होटल। एक बंद कमरा। और एक लेडी, जो उन्नीस सौ ग्यारह से वहीं है।',
+HOOK = {'cast': 'एक प्रोफ़ेसर, उसके दोस्त, एक ड्राइवर, और कुछ लोग, जिनसे आप बचना चाहेंगे।',
+        'preface': 'अहमदाबाद का एक लड़का, और पहाड़ों से उसकी पहली मुलाक़ात।',
+        'note': 'एक चेतावनी। प्लीज़ पढ़िए। लेखक ने इस पर बहुत मेहनत की है।',
+        'intro': 'नंदा देवी, उन्नीस सौ पैंसठ। इस हिस्से में सब कुछ सच है।',
+        'prologue': 'रात के तीन बजकर बारह मिनट। खलिया टॉप। और जंगल से आती एक आवाज़।',
+        'ch1': 'मसूरी का एक होटल। एक बंद कमरा। और एक लेडी, जो उन्नीस सौ ग्यारह से वहीं है।',
         'ch2': 'पीछे एक काली एस-यू-वी। आगे एक घाट। और पहाड़ का पहला नियम: पीछे मुड़कर मत देखना।',
         'ch3': 'एक गाँव, जिसने पानी के बदले एक बेटा दिया। और एक गीत, जो सच निकला।',
         'ch4': 'केदारनाथ। एक चट्टान, जिसने एक नदी रोक दी। और रोहन, हमसे एक क़दम आगे।',
