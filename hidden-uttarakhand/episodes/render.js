@@ -35,10 +35,11 @@ const AUDIO = path.join(DIR, '..', 'audiobook', 'out', `${name}.mp3`);
   const end = TO || D;
   fs.mkdirSync(path.join(DIR, 'out'), { recursive: true });
   const out = path.join(DIR, 'out', `hidden-uttarakhand-${name}${TO ? '-preview' : ''}.mp4`);
+  const partial = path.join(DIR, 'out', `.partial-${path.basename(out)}`);   // renamed only once complete
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
     '-i', AUDIO, '-map', '0:v', '-map', '1:a', '-t', String(end),
     '-c:v', 'libx264', '-preset', 'slow', '-tune', 'animation', '-crf', '29', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '192k',
-    '-movflags', '+faststart', out], { stdio: ['pipe', 'inherit', 'inherit'] });
+    '-movflags', '+faststart', '-f', 'mp4', partial], { stdio: ['pipe', 'inherit', 'inherit'] });
   const done = new Promise((res, rej) => ff.on('exit', c => (c ? rej(new Error('ffmpeg failed')) : res())));
   const N = Math.round(end * FPS);
   const t0 = Date.now();
@@ -49,5 +50,6 @@ const AUDIO = path.join(DIR, '..', 'audiobook', 'out', `${name}.mp3`);
     if (f % 900 === 0) console.log(`frame ${f}/${N}  ${((Date.now() - t0) / 1000).toFixed(0)}s`);
   }
   ff.stdin.end(); await browser.close(); await done;
+  fs.renameSync(partial, out);
   console.log('Wrote', out);
 })().catch(e => { console.error(e); process.exit(1); });
